@@ -1,0 +1,75 @@
+﻿<Page
+    x:Class="IntranetUWP.Views.FoodOrderPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:IntranetUWP.Views"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls" 
+    xmlns:animations="using:Microsoft.Toolkit.Uwp.UI.Animations" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:usercontrols="using:IntranetUWP.UserControls" xmlns:data="using:IntranetUWP.Models"
+    mc:Ignorable="d" Background="White">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="400"/>
+        </Grid.ColumnDefinitions>
+        <controls:AdaptiveGridView x:Name="FoodGridView" animations:ReorderGridAnimation.Duration="300" HorizontalContentAlignment="Center"
+                                   DesiredWidth="355" StretchContentForSingleRow="False" OneRowModeEnabled="False" Padding="0" SelectionMode="None">
+            <controls:AdaptiveGridView.Header>
+                <TextBlock Text="Lunch" FontSize="30" Foreground="Black" Margin="10"
+                           FontWeight="Bold"/>
+            </controls:AdaptiveGridView.Header>
+            <controls:AdaptiveGridView.ItemContainerTransitions>
+                <TransitionCollection>
+                    <EntranceThemeTransition IsStaggeringEnabled="True" FromHorizontalOffset="400" FromVerticalOffset="450"/>
+                </TransitionCollection>
+            </controls:AdaptiveGridView.ItemContainerTransitions>
+            <controls:AdaptiveGridView.ItemTemplate>
+                <DataTemplate x:DataType="data:FoodDTO">
+                    <usercontrols:FoodCard FoodName="{x:Bind FoodName}" FoodEnglishName="{x:Bind FoodEnglishName}"/>
+                </DataTemplate>
+            </controls:AdaptiveGridView.ItemTemplate>
+        </controls:AdaptiveGridView>
+        <Pivot Grid.Column="1">
+            <PivotItem Padding="0">
+                <PivotItem.Header>
+                    <Image Source="/Assets/iDealogic.png" Width="100" Height="50"/>
+                </PivotItem.Header>
+                <ListView ItemsSource="{x:Bind Users}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <usercontrols:MemberCard/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </PivotItem>
+            <PivotItem>
+                <PivotItem.Header>
+                    <Image Source="/Assets/Devinition.png" Width="100" Height="50"/>
+                </PivotItem.Header>
+                <ListView ItemsSource="{x:Bind Users}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <usercontrols:MemberCard/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </PivotItem>
+        </Pivot>
+        <CommandBar Background="{ThemeResource SystemControlAcrylicElementBrush}" IsOpen="False" DefaultLabelPosition="Right"
+                    VerticalAlignment="Bottom" RequestedTheme="Light">
+            <AppBarButton Icon="Add" Label="Add"/>
+            <AppBarButton Icon="Edit" Label="Edit"/>
+            <AppBarButton Icon="Share" Label="Share"/>
+            <CommandBar.SecondaryCommands>
+                <AppBarButton Icon="Setting" Label="Settings">
+                    <AppBarButton.KeyboardAccelerators>
+                        <KeyboardAccelerator Modifiers="Control" Key="I" />
+                    </AppBarButton.KeyboardAccelerators>
+                </AppBarButton>
+            </CommandBar.SecondaryCommands>
+        </CommandBar>
+    </Grid>
+</Page>

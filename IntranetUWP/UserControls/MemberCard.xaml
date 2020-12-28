@@ -1,0 +1,24 @@
+﻿<UserControl
+    x:Class="IntranetUWP.UserControls.MemberCard"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:IntranetUWP.UserControls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" RequestedTheme="Light"
+    d:DesignHeight="300"
+    d:DesignWidth="400">
+
+    <RelativePanel Width="350" Height="120">
+        <PersonPicture x:Name="Avatar" Margin="5" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignHorizontalCenterWithPanel="True"
+                       Width="70" RelativePanel.AlignVerticalCenterWithPanel="True"/>
+        <StackPanel RelativePanel.RightOf="Avatar" VerticalAlignment="Center"
+                    RelativePanel.AlignVerticalCenterWithPanel="True">
+            <TextBlock Text="Ronald Reagan" FontSize="15" Margin="5"/>
+            <TextBlock Text="iDealogic" Margin="5"/>
+        </StackPanel>
+        <ComboBox RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True"
+                  Margin="5" PlaceholderText="Chưa chọn">
+        </ComboBox>
+    </RelativePanel>
+</UserControl>

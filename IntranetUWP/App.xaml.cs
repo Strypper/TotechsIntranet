@@ -70,13 +70,28 @@ namespace IntranetUWP
                     // When the navigation stack isn't restored navigate to the first page,
                     // configuring the new page by passing required information as a navigation
                     // parameter
+                    var CoreView = CoreApplication.GetCurrentView();
+                    var AppView = ApplicationView.GetForCurrentView();
+                    CoreApplicationViewTitleBar coreTitleBar = CoreView.TitleBar;
+                    coreTitleBar.ExtendViewIntoTitleBar = false;
+                    
+
+                    ApplicationViewTitleBar titleBar = AppView.TitleBar;
+                    //titleBar.ButtonBackgroundColor = Colors.Transparent;
+                    //titleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
+                    switch (RequestedTheme)
+                    {
+                        case ApplicationTheme.Light:
+                            titleBar.ButtonForegroundColor = Colors.Black;
+                            titleBar.BackgroundColor = Color.FromArgb(255, 230, 230, 230);
+                            break;
+                        case ApplicationTheme.Dark:
+                            titleBar.BackgroundColor = Color.FromArgb(255, 31, 31, 31);
+                            titleBar.ButtonForegroundColor = Colors.White;
+                            break;
+                    }
                     rootFrame.Navigate(typeof(MainPage), e.Arguments);
                 }
-
-                CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar = true;
-                ApplicationViewTitleBar titleBar = ApplicationView.GetForCurrentView().TitleBar;
-                titleBar.ButtonBackgroundColor = Colors.Transparent;
-                titleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
                 // Ensure the current window is active
                 Window.Current.Activate();
             }

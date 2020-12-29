@@ -132,11 +132,20 @@
     <Compile Include="UserControls\MemberCard.xaml.cs">
       <DependentUpon>MemberCard.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\MemberProfileCard.xaml.cs">
+      <DependentUpon>MemberProfileCard.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ChatHubPage.xaml.cs">
       <DependentUpon>ChatHubPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\FoodOrderPage.xaml.cs">
       <DependentUpon>FoodOrderPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MemberChildPages\DevinitionMemberPage.xaml.cs">
+      <DependentUpon>DevinitionMemberPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MemberChildPages\iDealogicMemberPage.xaml.cs">
+      <DependentUpon>iDealogicMemberPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MemberPage.xaml.cs">
       <DependentUpon>MemberPage.xaml</DependentUpon>
@@ -154,6 +163,16 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\DemoPurpose\Users\MenHair.jpg" />
+    <Content Include="Assets\DemoPurpose\Users\MenHair1.jpg" />
+    <Content Include="Assets\DemoPurpose\Users\MenHair2.jpg" />
+    <Content Include="Assets\DemoPurpose\Users\MenHair3.jpg" />
+    <Content Include="Assets\DemoPurpose\Users\MenHair4.jpg" />
+    <Content Include="Assets\DemoPurpose\Users\MenHair5.jpg" />
+    <Content Include="Assets\DemoPurpose\Users\MenHair6.jpg" />
+    <Content Include="Assets\DemoPurpose\Users\MenHair7.jpg" />
+    <Content Include="Assets\DemoPurpose\Users\MenHair8.jpg" />
+    <Content Include="Assets\DemoPurpose\Users\MenHair9.jpg" />
     <Content Include="Assets\Devinition.png" />
     <Content Include="Assets\Green Salad.svg" />
     <Content Include="Assets\iDealogic.png" />
@@ -184,11 +203,23 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UserControls\MemberProfileCard.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\ChatHubPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\FoodOrderPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MemberChildPages\DevinitionMemberPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MemberChildPages\iDealogicMemberPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -232,6 +263,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Assets\FoodAssets\" />
     <Folder Include="ViewModels\" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">

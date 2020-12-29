@@ -53,6 +53,11 @@
                             <Setter Property="HorizontalAlignment" Value="Stretch"/>
                         </Style>
                     </ListView.ItemContainerStyle>
+                    <ListView.ItemContainerTransitions>
+                        <TransitionCollection>
+                            <EntranceThemeTransition IsStaggeringEnabled="True" FromVerticalOffset="450"/>
+                        </TransitionCollection>
+                    </ListView.ItemContainerTransitions>
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <usercontrols:MemberCard Margin="0,10,0,0"/>
@@ -81,7 +86,7 @@
             </PivotItem>
         </Pivot>
         <CommandBar Background="{ThemeResource SystemControlAcrylicElementBrush}" IsOpen="False" DefaultLabelPosition="Right"
-                    VerticalAlignment="Bottom" RequestedTheme="Light" Grid.Row="1" Grid.ColumnSpan="2">
+                    VerticalAlignment="Bottom" Grid.Row="1" Grid.ColumnSpan="2">
             <CommandBar.Content>
                 <TextBlock Text="2 days until menu close, deadline for choosing your dish is 12pm Thursday" Margin="10"
                            TextWrapping="Wrap"/>

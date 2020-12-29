@@ -9,8 +9,17 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
+    <Page.Resources>
+        <AcrylicBrush x:Key="NavigationViewTopPaneBackground"
+              BackgroundSource="HostBackdrop"
+              FallbackColor="{ThemeResource SystemAltHighColor}"
+              TintColor="{ThemeResource SystemAltHighColor}"
+              TintOpacity=".6"
+              TintTransitionDuration="00:00:00.500" />
+    </Page.Resources>
 
-    <winui:NavigationView PaneDisplayMode="Left" IsBackButtonVisible="Collapsed" IsTitleBarAutoPaddingEnabled="False" IsSettingsVisible="True"
+
+    <winui:NavigationView PaneDisplayMode="Left" IsBackButtonVisible="Collapsed" IsTitleBarAutoPaddingEnabled="True" IsSettingsVisible="True"
                           SelectionChanged="NavigationViewPanel_SelectionChanged">
         <winui:NavigationView.PaneHeader>
             <Image Source="/Assets/iDealogic.png" Width="90" Height="30" HorizontalAlignment="Left"/>

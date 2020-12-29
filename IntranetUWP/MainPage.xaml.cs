@@ -52,8 +52,8 @@ namespace IntranetUWP
                 case "ChatHub":
                     TheMainFrame.Navigate(typeof(ChatHubPage));
                     break;
-                case "":
-                    TheMainFrame.Navigate(typeof(ChatHubPage));
+                case "Member":
+                    TheMainFrame.Navigate(typeof(MemberPage));
                     break;
             }
         }

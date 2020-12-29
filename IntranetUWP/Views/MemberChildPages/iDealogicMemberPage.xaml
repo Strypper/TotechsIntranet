@@ -1,0 +1,101 @@
+﻿<Page
+    x:Class="IntranetUWP.Views.MemberChildPages.iDealogicMemberPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:IntranetUWP.Views.MemberChildPages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls" xmlns:data="using:IntranetUWP.Models"
+    mc:Ignorable="d"
+    Background="{ThemeResource SystemControlAcrylicWindowBrush}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top" Padding="10">
+            <TextBlock FontSize="30" Margin="10">
+                <Run Text="&#xE13D;" FontFamily="Segoe MDL2 Assets"/>
+                <Run Text="50"/>
+            </TextBlock>
+            <TextBlock FontSize="30" Margin="10">
+                <Run Text="&#xE902;" FontFamily="Segoe MDL2 Assets"/>
+                <Run Text="8"/>
+            </TextBlock>
+        </StackPanel>
+        <Border VerticalAlignment="Top" HorizontalAlignment="Center">
+            <controls:Carousel ItemsSource="{x:Bind Users}" VerticalAlignment="Center" HorizontalAlignment="Center" 
+                               ItemMargin="30" ItemDepth="100" ItemRotationY="10" TransitionDuration="500">
+                <controls:Carousel.EasingFunction>
+                    <CubicEase EasingMode="EaseOut" />
+                </controls:Carousel.EasingFunction>
+                <controls:Carousel.ItemTemplate>
+                    <DataTemplate x:DataType="data:UserDTO">
+                        <Image Width="350" Height="500" VerticalAlignment="Center" Source="{x:Bind ProfileImageUrl}" Stretch="UniformToFill" />
+                    </DataTemplate>
+                </controls:Carousel.ItemTemplate>
+            </controls:Carousel>
+        </Border>
+
+
+        <Grid VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top">
+                <TextBlock HorizontalAlignment="Center" FontSize="30" FontWeight="Bold">
+                    <Run Text="&#xE156;" FontFamily="Segoe MDL2 Assets"/>
+                    <Run Text="Information"/>
+                </TextBlock>
+                <TextBlock Margin="10" FontSize="25">
+                    <Run Text="&#xE13D;" FontFamily="Segoe MDL2 Assets"/>
+                    <Run Text="Name: "/>
+                    <Run Text="To Hoang Viet"/>
+                </TextBlock>
+                <TextBlock Margin="10" FontSize="25">
+                    <Run Text="&#xE902;" FontFamily="Segoe MDL2 Assets"/>
+                    <Run Text="Team: "/>
+                    <Run Text="CostsHub"/>
+                </TextBlock>
+                <TextBlock Margin="10" FontSize="25">
+                    <Run Text="&#xE821;" FontFamily="Segoe MDL2 Assets"/>
+                    <Run Text="Role: "/>
+                    <Run Text="Fullstack Developer"/>
+                </TextBlock>
+                <TextBlock Margin="10" FontSize="25">
+                    <Run Text="&#xECA7;" FontFamily="Segoe MDL2 Assets"/>
+                    <Run Text="Level: "/>
+                    <Run Text="Associate Developer"/>
+                </TextBlock>
+            </StackPanel>
+
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Column="2">
+                <TextBlock HorizontalAlignment="Center" FontSize="30" FontWeight="Bold">
+                    <Run Text="&#xEC4A;" FontFamily="Segoe MDL2 Assets"/>
+                    <Run Text="Top Skills"/>
+                </TextBlock>
+                <TextBlock Text="Design" FontSize="25"/>
+                <ProgressBar Width="400" Height="10" CornerRadius="2" Margin="0,5,0,5" Value="70"/>
+                <TextBlock Text="Universal Windows Platform" FontSize="25"/>
+                <ProgressBar Width="400" Height="10" CornerRadius="2" Margin="0,5,0,5" Value="100"/>
+                <TextBlock Text="ASP.NET CORE" FontSize="25"/>
+                <ProgressBar Width="400" Height="10" CornerRadius="2" Margin="0,5,0,5" Value="65"/>
+                <TextBlock Text="ENTITY FRAMEWORK CORE" FontSize="25"/>
+                <ProgressBar Width="400" Height="10" CornerRadius="2" Margin="0,5,0,5" Value="60"/>
+            </StackPanel>
+
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Column="1" Padding="20,0,20,0">
+                <TextBlock HorizontalAlignment="Center" FontSize="30" FontWeight="Bold">
+                    <Run Text="&#xED15;" FontFamily="Segoe MDL2 Assets"/>
+                    <Run Text="Hello There !"/>
+                </TextBlock>
+                <TextBlock HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"
+                           Text="Hey friend! the name is Strypper, great to be here. I'm a software engineer bring the beautiful of fluent design language to our modern technology. My main core sit in the dotNET echosystem. Feel free to ask me for help, because that's what I'm here for, to bring our organization to another level" 
+                           Margin="5" FontSize="20"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Page>

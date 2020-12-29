@@ -5,10 +5,19 @@
     xmlns:local="using:IntranetUWP.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    mc:Ignorable="d">
 
-    <Grid>
 
-    </Grid>
+    <NavigationView PaneDisplayMode="Top" IsBackButtonVisible="Collapsed" IsSettingsVisible="False"
+                    SelectionChanged="NavigationViewPanel_SelectionChanged">
+        <NavigationView.MenuItems>
+            <NavigationViewItem x:Name="iDealogic">
+                <Image Source="/Assets/iDealogic.png" Width="100" Height="25"/>
+            </NavigationViewItem>
+            <NavigationViewItem x:Name="Devinition">
+                <Image Source="/Assets/Devinition.png" Width="100" Height="25"/>
+            </NavigationViewItem>
+        </NavigationView.MenuItems>
+        <Frame x:Name="MemberMainFrame"/>
+    </NavigationView>
 </Page>

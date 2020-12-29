@@ -4,10 +4,12 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:IntranetUWP"
     xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
-    xmlns:Core="using:Microsoft.Xaml.Interactions.Core" xmlns:ToolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls" xmlns:ToolkitBehaviors="using:Microsoft.Toolkit.Uwp.UI.Animations.Behaviors">
+    xmlns:Core="using:Microsoft.Xaml.Interactions.Core" xmlns:ToolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls" 
+    xmlns:ToolkitBehaviors="using:Microsoft.Toolkit.Uwp.UI.Animations.Behaviors">
 
     <Application.Resources>
         <ResourceDictionary>
+            
             <ControlTemplate x:Key="ChooseFoodButtonStyle" TargetType="ToggleButton">
                 <ContentPresenter x:Name="ContentPresenter" AutomationProperties.AccessibilityView="Raw" 
                                   BackgroundSizing="{TemplateBinding BackgroundSizing}" 
@@ -179,8 +181,8 @@
                     </VisualStateManager.VisualStateGroups>
                 </ContentPresenter>
             </ControlTemplate>
-            
-            
+
+
             <Style TargetType="GridViewItem" x:Key="HuetroGridViewItemRevealStyle">
                 <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
                 <Setter Property="Background" Value="Transparent" />
@@ -351,6 +353,9 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+            <ResourceDictionary.MergedDictionaries>
+                <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
+            </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

@@ -9,8 +9,8 @@
     d:DesignHeight="300"
     d:DesignWidth="400">
 
-    <RelativePanel Width="350" Height="120">
-        <PersonPicture x:Name="Avatar" Margin="5" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignHorizontalCenterWithPanel="True"
+    <RelativePanel HorizontalAlignment="Stretch" Width="365" CornerRadius="5" Background="White" Padding="10">
+        <PersonPicture x:Name="Avatar" Margin="0,5,5,5" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignHorizontalCenterWithPanel="True"
                        Width="70" RelativePanel.AlignVerticalCenterWithPanel="True"/>
         <StackPanel RelativePanel.RightOf="Avatar" VerticalAlignment="Center"
                     RelativePanel.AlignVerticalCenterWithPanel="True">

@@ -1,8 +1,10 @@
-﻿using System;
+﻿using IntranetUWP.Views;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -25,6 +27,35 @@ namespace IntranetUWP
         public MainPage()
         {
             this.InitializeComponent();
+            TheMainFrame.Navigate(typeof(FoodOrderPage));
+        }
+
+        private void NavigationViewPanel_SelectionChanged(Microsoft.UI.Xaml.Controls.NavigationView sender, Microsoft.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs args)
+        {
+            Microsoft.UI.Xaml.Controls.NavigationViewItem item = args.SelectedItem as Microsoft.UI.Xaml.Controls.NavigationViewItem;
+            NavView_Navigate(item);
+        }
+
+        private void NavView_Navigate(Microsoft.UI.Xaml.Controls.NavigationViewItem item)
+        {
+            switch (item.Name)
+            {
+                case "LunchOrder":
+                    TheMainFrame.Navigate(typeof(FoodOrderPage));
+                    break;
+                case "TeaBreak":
+                    TheMainFrame.Navigate(typeof(TeaBreakPage));
+                    break;
+                case "PlayTime":
+                    TheMainFrame.Navigate(typeof(PlayTimePage));
+                    break;
+                case "ChatHub":
+                    TheMainFrame.Navigate(typeof(ChatHubPage));
+                    break;
+                case "":
+                    TheMainFrame.Navigate(typeof(ChatHubPage));
+                    break;
+            }
         }
     }
 }

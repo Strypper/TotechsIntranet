@@ -123,6 +123,7 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\FoodDTO.cs" />
+    <Compile Include="Models\FoodOrder.cs" />
     <Compile Include="Models\UserDTO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserControls\FoodCard.xaml.cs">
@@ -131,8 +132,20 @@
     <Compile Include="UserControls\MemberCard.xaml.cs">
       <DependentUpon>MemberCard.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\ChatHubPage.xaml.cs">
+      <DependentUpon>ChatHubPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\FoodOrderPage.xaml.cs">
       <DependentUpon>FoodOrderPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MemberPage.xaml.cs">
+      <DependentUpon>MemberPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PlayTimePage.xaml.cs">
+      <DependentUpon>PlayTimePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TeaBreakPage.xaml.cs">
+      <DependentUpon>TeaBreakPage.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -171,7 +184,23 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\ChatHubPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\FoodOrderPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MemberPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PlayTimePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\TeaBreakPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

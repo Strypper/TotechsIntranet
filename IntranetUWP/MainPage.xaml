@@ -4,12 +4,44 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:IntranetUWP"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:winui="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
 
-    <NavigationView PaneDisplayMode="Top">
-        <NavigationViewItem Content="Lunch"/>
-    </NavigationView>
+    <winui:NavigationView PaneDisplayMode="Left" IsBackButtonVisible="Collapsed" IsTitleBarAutoPaddingEnabled="False" IsSettingsVisible="True"
+                          SelectionChanged="NavigationViewPanel_SelectionChanged">
+        <winui:NavigationView.PaneHeader>
+            <Image Source="/Assets/iDealogic.png" Width="90" Height="30" HorizontalAlignment="Left"/>
+        </winui:NavigationView.PaneHeader>
+        <winui:NavigationView.MenuItems>
+            <winui:NavigationViewItem x:Name="LunchOrder" Content="Lunch order - Đặt đồ ăn trưa" IsSelected="True">
+                <winui:NavigationViewItem.Icon>
+                    <FontIcon FontFamily="Segoe UI Emoji" Glyph="&#x1F371;"/>
+                </winui:NavigationViewItem.Icon>
+            </winui:NavigationViewItem>
+            <winui:NavigationViewItem x:Name="TeaBreak" Content="Tea break - Nghỉ ngơi thứ 5">
+                <winui:NavigationViewItem.Icon>
+                    <FontIcon FontFamily="Segoe UI Emoji" Glyph="&#x2615;" />
+                </winui:NavigationViewItem.Icon>
+            </winui:NavigationViewItem>
+            <winui:NavigationViewItem x:Name="PlayTime" Content="Play time - Tìm bạn chơi">
+                <winui:NavigationViewItem.Icon>
+                    <FontIcon FontFamily="Segoe UI Emoji" Glyph="&#x2694;" />
+                </winui:NavigationViewItem.Icon>
+            </winui:NavigationViewItem>
+            <winui:NavigationViewItem x:Name="ChatHub" Content="Chat hub">
+                <winui:NavigationViewItem.Icon>
+                    <FontIcon FontFamily="Segoe UI Emoji" Glyph="&#x1F4AC;" />
+                </winui:NavigationViewItem.Icon>
+            </winui:NavigationViewItem>
+            <winui:NavigationViewItem x:Name="Member" Content="Members">
+                <winui:NavigationViewItem.Icon>
+                    <FontIcon FontFamily="Segoe UI Emoji" Glyph="&#x1F603;" />
+                </winui:NavigationViewItem.Icon>
+            </winui:NavigationViewItem>
+        </winui:NavigationView.MenuItems>
+        <Frame x:Name="TheMainFrame"/>
+    </winui:NavigationView>
 </Page>

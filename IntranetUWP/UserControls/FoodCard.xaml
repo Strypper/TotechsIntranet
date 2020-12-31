@@ -24,8 +24,8 @@
                     <ColumnDefinition Width="80"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <ToggleButton Content="CHỌN" FontWeight="Bold"
-                    VerticalAlignment="Bottom" Margin="10,0,0,10" Width="70"  FontSize="12"/>
+                <ToggleButton Content="CHỌN" FontWeight="Bold" Click="ToggleButton_Click" IsChecked="{x:Bind IsSelected, Mode=TwoWay}"
+                              VerticalAlignment="Bottom" Margin="10,0,0,10" Width="70"  FontSize="12"/>
                 <Grid Grid.Column="1" VerticalAlignment="Bottom" Margin="11">
                     <StackPanel VerticalAlignment="Bottom">
                         <TextBlock Text="40%" />
@@ -38,8 +38,12 @@
             </Grid>
         </ToolkitControls:DropShadowPanel>
         <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Left">
-            <Image Source="ms-appx:///Assets/LunchFood.svg" Width="70" Height="70"
-                   VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,0,0,0"/>
+            <Grid Margin="20,0,0,0">
+                <Image x:Name="MainFoodImage" Width="70" Height="70"                       
+                   VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <Image x:Name="SecondaryFoodImage" Width="20" Height="20"
+                   VerticalAlignment="Top" HorizontalAlignment="Right"/>
+            </Grid>
             <TextBlock Text="{x:Bind FoodEnglishName, Mode=OneWay}" VerticalAlignment="Top" Margin="6,-5,0,0"
                        FontSize="15" FontWeight="Bold" />
         </StackPanel>

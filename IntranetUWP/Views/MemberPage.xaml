@@ -11,7 +11,7 @@
     <NavigationView PaneDisplayMode="Top" IsBackButtonVisible="Collapsed" IsSettingsVisible="False"
                     SelectionChanged="NavigationViewPanel_SelectionChanged">
         <NavigationView.MenuItems>
-            <NavigationViewItem x:Name="iDealogic">
+            <NavigationViewItem x:Name="iDealogic" IsSelected="True">
                 <Image Source="/Assets/iDealogic.png" Width="100" Height="25"/>
             </NavigationViewItem>
             <NavigationViewItem x:Name="Devinition">

@@ -126,6 +126,9 @@
     <Compile Include="Models\FoodOrder.cs" />
     <Compile Include="Models\UserDTO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UserControls\CreateFood.xaml.cs">
+      <DependentUpon>CreateFood.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\FoodCard.xaml.cs">
       <DependentUpon>FoodCard.xaml</DependentUpon>
     </Compile>
@@ -174,6 +177,16 @@
     <Content Include="Assets\DemoPurpose\Users\MenHair8.jpg" />
     <Content Include="Assets\DemoPurpose\Users\MenHair9.jpg" />
     <Content Include="Assets\Devinition.png" />
+    <Content Include="Assets\FoodAssets\Bread.png" />
+    <Content Include="Assets\FoodAssets\Chicken.png" />
+    <Content Include="Assets\FoodAssets\Egg.png" />
+    <Content Include="Assets\FoodAssets\Falafel.png" />
+    <Content Include="Assets\FoodAssets\LunchFood.png" />
+    <Content Include="Assets\FoodAssets\Meat.png" />
+    <Content Include="Assets\FoodAssets\Noodle.png" />
+    <Content Include="Assets\FoodAssets\Rice.png" />
+    <Content Include="Assets\FoodAssets\Shrimp.png" />
+    <Content Include="Assets\FoodAssets\Spagheti.png" />
     <Content Include="Assets\Green Salad.svg" />
     <Content Include="Assets\iDealogic.png" />
     <Content Include="Assets\LunchFood.svg" />
@@ -194,6 +207,10 @@
     <Page Include="MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\CreateFood.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\FoodCard.xaml">
       <SubType>Designer</SubType>
@@ -263,7 +280,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Assets\FoodAssets\" />
     <Folder Include="ViewModels\" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">

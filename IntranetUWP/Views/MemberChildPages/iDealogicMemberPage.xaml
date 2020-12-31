@@ -13,7 +13,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top" Padding="10">
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top">
             <TextBlock FontSize="30" Margin="10">
                 <Run Text="&#xE13D;" FontFamily="Segoe MDL2 Assets"/>
                 <Run Text="50"/>
@@ -24,14 +24,14 @@
             </TextBlock>
         </StackPanel>
         <Border VerticalAlignment="Top" HorizontalAlignment="Center">
-            <controls:Carousel ItemsSource="{x:Bind Users}" VerticalAlignment="Center" HorizontalAlignment="Center" 
+            <controls:Carousel ItemsSource="{x:Bind Users}" VerticalAlignment="Top" HorizontalAlignment="Center" 
                                ItemMargin="30" ItemDepth="100" ItemRotationY="10" TransitionDuration="500">
                 <controls:Carousel.EasingFunction>
                     <CubicEase EasingMode="EaseOut" />
                 </controls:Carousel.EasingFunction>
                 <controls:Carousel.ItemTemplate>
                     <DataTemplate x:DataType="data:UserDTO">
-                        <Image Width="350" Height="500" VerticalAlignment="Center" Source="{x:Bind ProfileImageUrl}" Stretch="UniformToFill" />
+                        <Image Width="250" Height="400" VerticalAlignment="Center" Source="{x:Bind ProfileImageUrl}" Stretch="UniformToFill" />
                     </DataTemplate>
                 </controls:Carousel.ItemTemplate>
             </controls:Carousel>

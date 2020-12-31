@@ -32,11 +32,14 @@
             <controls:AdaptiveGridView.ItemContainerTransitions>
                 <TransitionCollection>
                     <EntranceThemeTransition IsStaggeringEnabled="True" FromHorizontalOffset="400" FromVerticalOffset="450"/>
+                    <AddDeleteThemeTransition />
                 </TransitionCollection>
             </controls:AdaptiveGridView.ItemContainerTransitions>
+
             <controls:AdaptiveGridView.ItemTemplate>
                 <DataTemplate x:DataType="data:FoodDTO">
-                    <usercontrols:FoodCard FoodName="{x:Bind FoodName}" FoodEnglishName="{x:Bind FoodEnglishName}"/>
+                    <usercontrols:FoodCard FoodId="{x:Bind FoodId}" FoodName="{x:Bind FoodName}" FoodEnglishName="{x:Bind FoodEnglishName}" IsSelected="{x:Bind IsSelected, Mode=TwoWay}"
+                                           MainFoodIcon="{x:Bind MainIcon}" SecondaryFoodIcon="{x:Bind SecondaryIcon}" ToggleClick="FoodCard_ToggleClick"/>
                 </DataTemplate>
             </controls:AdaptiveGridView.ItemTemplate>
         </controls:AdaptiveGridView>
@@ -91,11 +94,11 @@
                 <TextBlock Text="2 days until menu close, deadline for choosing your dish is 12pm Thursday" Margin="10"
                            TextWrapping="Wrap"/>
             </CommandBar.Content>
-            <AppBarButton Icon="Add" Label="Add Food"/>
-            <AppBarButton Icon="Edit" Label="Edit" IsEnabled="False"/>
-            <AppBarButton Icon="Delete" Label="Delete food" IsEnabled="False"/>
-            <AppBarButton Icon="Delete" Label="Delete entire list" Foreground="Red"/>
-            <AppBarButton Label="Notified the team">
+            <AppBarButton x:Name="AddFood" Icon="Add" Label="Add Food" Click="AddFood_Click"/>
+            <AppBarButton x:Name="EditFood" Icon="Edit" Label="Edit" IsEnabled="False"/>
+            <AppBarButton x:Name="DeleteFood" Icon="Delete" Label="Delete food" IsEnabled="False"/>
+            <AppBarButton x:Name="DeleteAllFood" Icon="Delete" Label="Delete entire list" Foreground="Red"/>
+            <AppBarButton x:Name="NotifyTeam" Label="Notified the team">
                 <AppBarButton.Icon>
                     <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xEA8F;" />
                 </AppBarButton.Icon>

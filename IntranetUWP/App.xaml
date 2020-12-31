@@ -9,6 +9,9 @@
 
     <Application.Resources>
         <ResourceDictionary>
+            <x:Double x:Key="ContentDialogMaxWidth">1800</x:Double>
+            <x:Double x:Key="ContentDialogMaxHeight">2000</x:Double>
+
             <Style TargetType="GridViewItem" x:Key="HuetroGridViewItemRevealStyle">
                 <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
                 <Setter Property="Background" Value="Transparent" />

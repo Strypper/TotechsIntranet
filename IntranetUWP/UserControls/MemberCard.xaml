@@ -4,21 +4,29 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:IntranetUWP.UserControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:ToolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400">
 
-    <RelativePanel HorizontalAlignment="Stretch" Width="365" CornerRadius="5" Background="{ThemeResource SystemAltHighColor}" Padding="10">
-        <PersonPicture x:Name="Avatar" Margin="0,5,5,5" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignHorizontalCenterWithPanel="True"
+    <ToolkitControls:DropShadowPanel x:Name="DropShadowHolder" VerticalAlignment="Stretch" Margin="10" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
+                               BlurRadius="20"
+                               ShadowOpacity="0.5"
+                               OffsetX="0"
+                               OffsetY="10"
+                               Padding="0"
+                               Color="Black">
+        <RelativePanel HorizontalAlignment="Stretch" Width="355" Background="{ThemeResource SystemAltHighColor}" CornerRadius="5" Padding="10">
+            <PersonPicture x:Name="Avatar" Margin="0,5,5,5" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignHorizontalCenterWithPanel="True"
                        Width="70" RelativePanel.AlignVerticalCenterWithPanel="True"/>
-        <StackPanel RelativePanel.RightOf="Avatar" VerticalAlignment="Center"
+            <StackPanel RelativePanel.RightOf="Avatar" VerticalAlignment="Center"
                     RelativePanel.AlignVerticalCenterWithPanel="True">
-            <TextBlock Text="Ronald Reagan" FontSize="15" Margin="5"/>
-            <TextBlock Text="iDealogic" Margin="5"/>
-        </StackPanel>
-        <ComboBox RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True"
+                <TextBlock Text="Ronald Reagan" FontSize="15" Margin="5"/>
+                <TextBlock Text="iDealogic" Margin="5"/>
+            </StackPanel>
+            <ComboBox RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True"
                   Margin="5" PlaceholderText="Chưa chọn">
-        </ComboBox>
-    </RelativePanel>
+            </ComboBox>
+        </RelativePanel>
+    </ToolkitControls:DropShadowPanel>
 </UserControl>

@@ -24,12 +24,30 @@
                     <ColumnDefinition Width="80"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <ToggleButton Content="CHỌN" FontWeight="Bold" Click="ToggleButton_Click" IsChecked="{x:Bind IsSelected, Mode=TwoWay}"
+                <ToggleButton Content="CHOOSE" FontWeight="Bold" Click="ToggleButton_Click" IsChecked="{x:Bind IsSelected, Mode=TwoWay}"
                               VerticalAlignment="Bottom" Margin="10,0,0,10" Width="70"  FontSize="12"/>
                 <Grid Grid.Column="1" VerticalAlignment="Bottom" Margin="11">
                     <StackPanel VerticalAlignment="Bottom">
                         <TextBlock Text="40%" />
-                        <ProgressBar Height="30" CornerRadius="3" Value="40"/>
+                        <ProgressBar x:Name="PickRateBar" Height="30" CornerRadius="3" Value="40">
+                            <ProgressBar.Triggers>
+                                <EventTrigger>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="PickRateBar"
+                                                 Storyboard.TargetProperty="Value"
+                                                 EnableDependentAnimation="True"
+                                                 From="0" Duration="0:0:5"
+                                                 To="{x:Bind PickRateBar.Value}">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <CubicEase/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                            </ProgressBar.Triggers>
+                        </ProgressBar>
                     </StackPanel>
                     <PersonPicture Width="25" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,-10,0,0"/>
                 </Grid>
@@ -41,7 +59,7 @@
             <Grid Margin="20,0,0,0">
                 <Image x:Name="MainFoodImage" Width="70" Height="70"                       
                    VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                <Image x:Name="SecondaryFoodImage" Width="20" Height="20"
+                <Image x:Name="SecondaryFoodImage" Width="30" Height="30"
                    VerticalAlignment="Top" HorizontalAlignment="Right"/>
             </Grid>
             <TextBlock Text="{x:Bind FoodEnglishName, Mode=OneWay}" VerticalAlignment="Top" Margin="6,-5,0,0"

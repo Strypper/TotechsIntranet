@@ -15,7 +15,7 @@ namespace IntranetUWP.UserControls
 {
     public delegate void FoodCardEventHandler(int foodId);
 
-    public sealed partial class FoodCard : UserControl, INotifyPropertyChanged
+    public sealed partial class FoodCard : UserControl
     {
 
 
@@ -58,19 +58,12 @@ namespace IntranetUWP.UserControls
         public bool IsSelected
         {
             get { return (bool)GetValue(IsSelectedProperty); }
-            set 
-            { 
-                SetValue(IsSelectedProperty, value); 
-                if(PropertyChanged != null)
-                {
-                    PropertyChanged(this, new PropertyChangedEventArgs("IsSelected"));
-                }
-            }
+            set { SetValue(IsSelectedProperty, value);}
         }
 
         // Using a DependencyProperty as the backing store for IsSelected.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IsSelectedProperty =
-            DependencyProperty.Register("IsSelected", typeof(bool), typeof(FoodCard), null);
+            DependencyProperty.Register("IsSelected", typeof(bool), typeof(FoodCard), new PropertyMetadata(null));
 
 
         public int MainFoodIcon
@@ -98,8 +91,11 @@ namespace IntranetUWP.UserControls
             {
                 if(value != null)
                 {
-                    SetValue(SecondaryFoodIconProperty, value);
-                    SecondaryFoodImage.Source = new BitmapImage(new Uri(_secondaryFoods[value]));
+                    if(_secondaryFoods[value] != null)
+                    {
+                        SetValue(SecondaryFoodIconProperty, value);
+                        SecondaryFoodImage.Source = new BitmapImage(new Uri(_secondaryFoods[value]));
+                    }
                 }
                 else SecondaryFoodImage.Source = null;
             }
@@ -124,15 +120,11 @@ namespace IntranetUWP.UserControls
             { 7, "ms-appx:///Assets/FoodAssets/Chicken.png"},
             { 8, "ms-appx:///Assets/FoodAssets/Egg.png"},
             { 9, "ms-appx:///Assets/FoodAssets/Shrimp.png"},
-            { 10, "ms-appx:///Assets/FoodAssets/Falafel.png"}
+            { 10, "ms-appx:///Assets/FoodAssets/Falafel.png"},
+            { 11, null }
         };
 
         public event FoodCardEventHandler ToggleClick;
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
         public FoodCard()
         {
             this.InitializeComponent();
@@ -145,9 +137,12 @@ namespace IntranetUWP.UserControls
                 if (toggleSwitch.IsChecked == true)
                 {
                     ToggleClick?.Invoke(FoodId);
-                    IsSelected = true;
                 }
-                else IsSelected = false;
+                else
+                {
+                    ToggleClick?.Invoke(FoodId);
+                    System.Diagnostics.Debug.WriteLine(FoodId);
+                }
             }
         }
     }

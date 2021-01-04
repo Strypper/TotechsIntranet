@@ -11,8 +11,7 @@
     SecondaryButtonText="Cancel"
     PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
     SecondaryButtonClick="ContentDialog_SecondaryButtonClick">
-
-
+    
     <Grid>
         <StackPanel>
             <Grid Width="400" Height="400">
@@ -26,7 +25,7 @@
                 <RadioButton x:Name="BreadOption" Content="🥖 Bread" Checked="MainFood_Checked"/>
                 <RadioButton x:Name="SpaghetiOption" Content="🍝 Spagheti" Checked="MainFood_Checked"/>
                 <RadioButton x:Name="NoodleOption" Content="🍜 Noodle" Checked="MainFood_Checked"/>
-                <RadioButton x:Name="DefaultOption" Content="🍱 Default" Checked="MainFood_Checked" IsChecked="True"/>
+                <RadioButton x:Name="DefaultOption" Content="🍱 Default" Checked="MainFood_Checked"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
                 <RadioButton x:Name="Meat" Content="🥩 Meat" Checked="SecondaryFood_Checked" IsEnabled="{x:Bind _isSelectable, Mode=TwoWay}" IsChecked="{x:Bind _isChecked, Mode=TwoWay}"/>
@@ -35,8 +34,8 @@
                 <RadioButton x:Name="Shrimp" Content="🍤 Shrimp" Checked="SecondaryFood_Checked" IsEnabled="{x:Bind _isSelectable, Mode=TwoWay}" IsChecked="{x:Bind _isChecked, Mode=TwoWay}"/>
                 <RadioButton x:Name="Falafel" Content="🧆 Falafel" Checked="SecondaryFood_Checked" IsEnabled="{x:Bind _isSelectable, Mode=TwoWay}" IsChecked="{x:Bind _isChecked, Mode=TwoWay}"/>
             </StackPanel>
-            <TextBox x:Name="FoodName" Header="Food Name" CornerRadius="2"/>
-            <TextBox x:Name="VietnameseFoodName" Header="Vietnamese Name" CornerRadius="2"/>
+            <TextBox x:Name="VietnameseFoodName" Header="Vietnamese Name" PlaceholderText="Nhập tên đồ ăn" CornerRadius="2"/>
+            <TextBox x:Name="EnglishFoodName" Header="Food Name" PlaceholderText="Insert food name" CornerRadius="2"/>
         </StackPanel>
     </Grid>
 </ContentDialog>

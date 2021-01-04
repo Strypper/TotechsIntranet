@@ -10,23 +10,67 @@
     xmlns:usercontrols="using:IntranetUWP.UserControls" xmlns:data="using:IntranetUWP.Models"
     xmlns:winui="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d" Background="{ThemeResource SystemControlAcrylicWindowBrush}">
-    
-    
+
+    <Page.Resources>
+        <Storyboard x:Name="FadeIconIn">
+            <DoubleAnimation Storyboard.TargetName="FoodImageContainer" Storyboard.TargetProperty="Opacity" 
+                             From="0" To="1">
+                <DoubleAnimation.EasingFunction>
+                    <CircleEase EasingMode="EaseInOut" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+    </Page.Resources>
 
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="400"/>
         </Grid.ColumnDefinitions>
-        <controls:AdaptiveGridView x:Name="FoodGridView" animations:ReorderGridAnimation.Duration="300" HorizontalContentAlignment="Center"
-                                   DesiredWidth="355" StretchContentForSingleRow="False" OneRowModeEnabled="False" Padding="0" SelectionMode="Single">
+        <controls:AdaptiveGridView x:Name="FoodGridView" animations:ReorderGridAnimation.Duration="300" HorizontalContentAlignment="Center" ItemsSource="{x:Bind Foods, Mode=TwoWay}" LostFocus="FoodGridView_LostFocus"
+                                   DesiredWidth="355" StretchContentForSingleRow="False" OneRowModeEnabled="False" Padding="0" SelectionMode="Single" SelectionChanged="FoodGridView_SelectionChanged">
             <controls:AdaptiveGridView.Header>
                 <Grid Margin="10,0,10,15" HorizontalAlignment="Stretch">
                     <StackPanel>
-                        <TextBlock Text="Hello Strypper!" FontWeight="Bold" FontSize="50" Margin="5,5,5,0"/>
+                        <StackPanel.RenderTransform>
+                            <TranslateTransform x:Name="TranslateTitle"/>
+                        </StackPanel.RenderTransform>
+                        <StackPanel.Triggers>
+                            <EventTrigger>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="TranslateTitle" Storyboard.TargetProperty="Y" From="-200" To="0">
+                                            <DoubleAnimation.EasingFunction>
+                                                <CircleEase EasingMode="EaseInOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </StackPanel.Triggers>
+                        <TextBlock x:Name="FirstWelcomeMessage" Text="Hello Strypper!" FontWeight="Bold" FontSize="50" Margin="5,5,5,0"/>
                         <TextBlock Text="Please pick up your lunch." FontWeight="Bold" FontSize="30" Margin="5"/>
                     </StackPanel>
-                    <FontIcon FontFamily="Segoe UI Emoji" Glyph="&#x1F371;" HorizontalAlignment="Right" FontSize="100"/>
+                    <Grid x:Name="FoodImageContainer" HorizontalAlignment="Right" VerticalAlignment="Center" Padding="10">
+                        <Image x:Name="MainFoodImage" Height="150" Width="150" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                               Source="ms-appx:///Assets/FoodAssets/LunchFood.png">
+                            <Image.Triggers>
+                                <EventTrigger>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="MainFoodImage" Storyboard.TargetProperty="Opacity" 
+                                                 From="0" To="1">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <CircleEase EasingMode="EaseInOut" />
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                            </Image.Triggers>
+                        </Image>
+                        <Image x:Name="SecondaryFoodImage"  Height="60" Width="60" VerticalAlignment="Top" HorizontalAlignment="Right"/>
+                    </Grid>
                 </Grid>
             </controls:AdaptiveGridView.Header>
             <controls:AdaptiveGridView.ItemContainerTransitions>
@@ -38,10 +82,13 @@
 
             <controls:AdaptiveGridView.ItemTemplate>
                 <DataTemplate x:DataType="data:FoodDTO">
-                    <usercontrols:FoodCard FoodId="{x:Bind FoodId}" FoodName="{x:Bind FoodName}" FoodEnglishName="{x:Bind FoodEnglishName}" IsSelected="{x:Bind IsSelected, Mode=TwoWay}"
+                    <usercontrols:FoodCard FoodId="{x:Bind FoodId}" FoodName="{x:Bind FoodName}" FoodEnglishName="{x:Bind FoodEnglishName}" IsSelected="{Binding IsSelected, Mode=TwoWay}"
                                            MainFoodIcon="{x:Bind MainIcon}" SecondaryFoodIcon="{x:Bind SecondaryIcon}" ToggleClick="FoodCard_ToggleClick"/>
                 </DataTemplate>
             </controls:AdaptiveGridView.ItemTemplate>
+            <controls:AdaptiveGridView.Footer>
+                <Rectangle Height="40"/>
+            </controls:AdaptiveGridView.Footer>
         </controls:AdaptiveGridView>
         <Pivot Grid.Column="1" Grid.RowSpan="2" Margin="0,10,0,0">
             <PivotItem Padding="0">
@@ -63,7 +110,7 @@
                     </ListView.ItemContainerTransitions>
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <usercontrols:MemberCard Margin="0,10,0,0"/>
+                            <usercontrols:MemberCard/>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
@@ -82,7 +129,7 @@
                     </ListView.ItemContainerStyle>
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <usercontrols:MemberCard Margin="5"/>
+                            <usercontrols:MemberCard/>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
@@ -90,14 +137,42 @@
         </Pivot>
         <CommandBar Background="{ThemeResource SystemControlAcrylicElementBrush}" IsOpen="False" DefaultLabelPosition="Right"
                     VerticalAlignment="Bottom" Grid.Row="1" Grid.ColumnSpan="2">
+            <CommandBar.RenderTransform>
+                <TranslateTransform x:Name="CommandBarTranslation"/>
+            </CommandBar.RenderTransform>
+            <CommandBar.Triggers>
+                <EventTrigger>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="CommandBarTranslation" Storyboard.TargetProperty="Y" From="200" To="0">
+                                <DoubleAnimation.EasingFunction>
+                                    <CircleEase EasingMode="EaseInOut" />
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </CommandBar.Triggers>
             <CommandBar.Content>
                 <TextBlock Text="2 days until menu close, deadline for choosing your dish is 12pm Thursday" Margin="10"
                            TextWrapping="Wrap"/>
             </CommandBar.Content>
-            <AppBarButton x:Name="AddFood" Icon="Add" Label="Add Food" Click="AddFood_Click"/>
+            <AppBarButton x:Name="AddFood" Icon="Add" Label="Add Food" Click="AddFood_Click">
+                <AppBarButton.KeyboardAccelerators>
+                    <KeyboardAccelerator Modifiers="Control" Key="N"/>
+                </AppBarButton.KeyboardAccelerators>
+            </AppBarButton>
             <AppBarButton x:Name="EditFood" Icon="Edit" Label="Edit" IsEnabled="False"/>
-            <AppBarButton x:Name="DeleteFood" Icon="Delete" Label="Delete food" IsEnabled="False"/>
-            <AppBarButton x:Name="DeleteAllFood" Icon="Delete" Label="Delete entire list" Foreground="Red"/>
+            <AppBarButton x:Name="DeleteFood" Icon="Delete" Label="Delete food" Click="DeleteFood_Click" IsEnabled="False">
+                <AppBarButton.KeyboardAccelerators>
+                    <KeyboardAccelerator Modifiers="Control" Key="D"/>
+                </AppBarButton.KeyboardAccelerators>
+            </AppBarButton>
+            <AppBarButton x:Name="DeleteAllFood" Icon="Delete" Label="Delete entire list" Foreground="Red" Click="DeleteAllFood_Click">
+                <AppBarButton.KeyboardAccelerators>
+                    <KeyboardAccelerator Modifiers="Control,Shift" Key="D"/>
+                </AppBarButton.KeyboardAccelerators>
+            </AppBarButton>
             <AppBarButton x:Name="NotifyTeam" Label="Notified the team">
                 <AppBarButton.Icon>
                     <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xEA8F;" />

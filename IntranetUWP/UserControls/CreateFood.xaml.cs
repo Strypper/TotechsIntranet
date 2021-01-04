@@ -49,6 +49,7 @@ namespace IntranetUWP.UserControls
         public CreateFood()
         {
             this.InitializeComponent();
+            DefaultOption.IsChecked = true;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -62,7 +63,7 @@ namespace IntranetUWP.UserControls
             Random _random = new Random();
             Food.FoodId = _random.Next();
             Food.FoodName = VietnameseFoodName.Text;
-            Food.FoodEnglishName = FoodName.Text;
+            Food.FoodEnglishName = EnglishFoodName.Text;
         }
 
         private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
@@ -80,6 +81,8 @@ namespace IntranetUWP.UserControls
                     _isChecked = false;
                     OnPropertyChanged("_isSelectable");
                     OnPropertyChanged("_isChecked");
+                    EnglishFoodName.Text = "Rice";
+                    VietnameseFoodName.Text = "Cơm";
                     Food.MainIcon = 1;
                     break;
                 case "BreadOption":
@@ -89,6 +92,8 @@ namespace IntranetUWP.UserControls
                     _isChecked = false;
                     OnPropertyChanged("_isSelectable");
                     OnPropertyChanged("_isChecked");
+                    EnglishFoodName.Text = "Bread";
+                    VietnameseFoodName.Text = "Bánh mỳ";
                     Food.MainIcon = 2;
                     break;
                 case "SpaghetiOption":
@@ -98,6 +103,8 @@ namespace IntranetUWP.UserControls
                     _isChecked = false;
                     OnPropertyChanged("_isSelectable");
                     OnPropertyChanged("_isChecked");
+                    EnglishFoodName.Text = "Spagheti";
+                    VietnameseFoodName.Text = "Mỳ ý";
                     Food.MainIcon = 3;
                     break;
                 case "NoodleOption":
@@ -107,6 +114,8 @@ namespace IntranetUWP.UserControls
                     _isChecked = false;
                     OnPropertyChanged("_isSelectable");
                     OnPropertyChanged("_isChecked");
+                    EnglishFoodName.Text = "Noodle";
+                    VietnameseFoodName.Text = "";
                     Food.MainIcon = 4;
                     break;
                 case "DefaultOption":
@@ -116,6 +125,8 @@ namespace IntranetUWP.UserControls
                     _isChecked = false;
                     OnPropertyChanged("_isSelectable");
                     OnPropertyChanged("_isChecked");
+                    EnglishFoodName.Text = "";
+                    VietnameseFoodName.Text = "";
                     Food.MainIcon = 5;
                     break;
             }
@@ -129,22 +140,27 @@ namespace IntranetUWP.UserControls
                 case "Meat":
                     SecondaryFood.Source = new BitmapImage(new Uri("ms-appx:///Assets/FoodAssets/Meat.png"));
                     Food.SecondaryIcon = 6;
+                    VietnameseFoodName.Text = "Cơm thịt";
                     break;
                 case "Chicken":
                     SecondaryFood.Source = new BitmapImage(new Uri("ms-appx:///Assets/FoodAssets/Chicken.png"));
                     Food.SecondaryIcon = 7;
+                    VietnameseFoodName.Text = "Cơm gà";
                     break;
                 case "Egg":
                     SecondaryFood.Source = new BitmapImage(new Uri("ms-appx:///Assets/FoodAssets/Egg.png"));
                     Food.SecondaryIcon = 8;
+                    VietnameseFoodName.Text = "Cơm trứng";
                     break;
                 case "Shrimp":
                     SecondaryFood.Source = new BitmapImage(new Uri("ms-appx:///Assets/FoodAssets/Shrimp.png"));
                     Food.SecondaryIcon = 9;
+                    VietnameseFoodName.Text = "Cơm tôm";
                     break;
                 case "Falafel":
                     SecondaryFood.Source = new BitmapImage(new Uri("ms-appx:///Assets/FoodAssets/Falafel.png"));
                     Food.SecondaryIcon = 10;
+                    VietnameseFoodName.Text = "Cơm xíu mại";
                     break;
             }
         }

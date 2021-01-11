@@ -5,10 +5,47 @@
     xmlns:local="using:IntranetUWP.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls" 
+    xmlns:winui="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid>
-
-    </Grid>
+    <SplitView x:Name="splitViewPane" DisplayMode="CompactInline" PanePlacement="Left"
+               CompactPaneLength="48" HorizontalAlignment="Stretch">
+        <SplitView.Pane>
+            <StackPanel>
+                <controls:DockPanel HorizontalAlignment="Stretch" LastChildFill="True" VerticalAlignment="Top">
+                    <Button Content="&#xE25C;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center" HorizontalAlignment="Right" Background="Transparent" Click="HamburgerButton_Click"
+                        FontSize="20" CornerRadius="0" controls:DockPanel.Dock="Left" Margin="5"/>
+                    <TextBlock Text="Chat Hub" Margin="5" VerticalAlignment="Center" FontWeight="Bold" controls:DockPanel.Dock="Right"/>
+                </controls:DockPanel>
+                <controls:DockPanel HorizontalAlignment="Stretch" LastChildFill="True" VerticalAlignment="Top">
+                    <Button x:Name="AddChannel" Content="&#xE109;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center" HorizontalAlignment="Right" Background="Transparent"
+                        FontSize="20" CornerRadius="0" controls:DockPanel.Dock="Left" Margin="5" Click="AddChannel_Click"/>
+                    <TextBlock Text="Create Channel" Margin="5" VerticalAlignment="Center" controls:DockPanel.Dock="Right"/>
+                </controls:DockPanel>
+                <winui:TreeView x:Name="sampleTreeView" ItemsSource="{x:Bind DataSource}" HorizontalAlignment="Stretch" 
+                                CanDrag="False" AllowDrop="False" CanReorderItems="False" CanDragItems="False">
+                    <winui:TreeView.ItemContainerTransitions>
+                        <TransitionCollection>
+                            <ContentThemeTransition />
+                            <AddDeleteThemeTransition />
+                        </TransitionCollection>
+                    </winui:TreeView.ItemContainerTransitions>
+                    <winui:TreeView.ItemTemplate>
+                        <DataTemplate x:DataType="local:ExplorerItem">
+                            <winui:TreeViewItem AutomationProperties.Name="{x:Bind Name}" HorizontalAlignment="Stretch"
+                                                ItemsSource="{x:Bind Children}" IsExpanded="True">
+                                <controls:DockPanel LastChildFill="False" HorizontalAlignment="Stretch">
+                                    <TextBlock Text="{x:Bind Name}" VerticalAlignment="Center" controls:DockPanel.Dock="Left" Margin="14,0,0,0"/>
+                                    <Button Content="&#xE109;" FontFamily="Segoe MDL2 Assets" Visibility="{x:Bind IsVisisbleAddButton}"
+                                            Margin="14,0,0,0" controls:DockPanel.Dock="Right" Background="Transparent"/>
+                                </controls:DockPanel>
+                            </winui:TreeViewItem>
+                        </DataTemplate>
+                    </winui:TreeView.ItemTemplate>
+                </winui:TreeView>
+            </StackPanel>
+        </SplitView.Pane>
+    </SplitView>
 </Page>

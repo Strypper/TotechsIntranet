@@ -8,7 +8,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:usercontrols="using:IntranetUWP.UserControls" xmlns:data="using:IntranetUWP.Models"
-    xmlns:winui="using:Microsoft.UI.Xaml.Controls"
+    xmlns:winui="using:Microsoft.UI.Xaml.Controls" Loaded="Page_Loaded"
     mc:Ignorable="d" Background="{ThemeResource SystemControlAcrylicWindowBrush}">
 
     <Page.Resources>
@@ -27,7 +27,7 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="400"/>
         </Grid.ColumnDefinitions>
-        <controls:AdaptiveGridView x:Name="FoodGridView" animations:ReorderGridAnimation.Duration="300" HorizontalContentAlignment="Center" ItemsSource="{x:Bind Foods, Mode=TwoWay}" LostFocus="FoodGridView_LostFocus"
+        <controls:AdaptiveGridView x:Name="FoodGridView" animations:ReorderGridAnimation.Duration="300" HorizontalContentAlignment="Center" LostFocus="FoodGridView_LostFocus"
                                    DesiredWidth="355" StretchContentForSingleRow="False" OneRowModeEnabled="False" Padding="0" SelectionMode="Single" SelectionChanged="FoodGridView_SelectionChanged">
             <controls:AdaptiveGridView.Header>
                 <Grid Margin="10,0,10,15" HorizontalAlignment="Stretch">
@@ -82,8 +82,8 @@
 
             <controls:AdaptiveGridView.ItemTemplate>
                 <DataTemplate x:DataType="data:FoodDTO">
-                    <usercontrols:FoodCard FoodId="{x:Bind FoodId}" FoodName="{x:Bind FoodName}" FoodEnglishName="{x:Bind FoodEnglishName}" IsSelected="{Binding IsSelected, Mode=TwoWay}"
-                                           MainFoodIcon="{x:Bind MainIcon}" SecondaryFoodIcon="{x:Bind SecondaryIcon}" ToggleClick="FoodCard_ToggleClick"/>
+                    <usercontrols:FoodCard FoodId="{x:Bind id}" FoodName="{x:Bind foodName}" FoodEnglishName="{x:Bind foodEnglishName}" IsSelected="{Binding IsSelected, Mode=TwoWay}"
+                                           MainFoodIcon="{x:Bind mainIcon}" SecondaryFoodIcon="{x:Bind secondaryIcon}" ToggleClick="FoodCard_ToggleClick"/>
                 </DataTemplate>
             </controls:AdaptiveGridView.ItemTemplate>
             <controls:AdaptiveGridView.Footer>
@@ -154,7 +154,7 @@
                 </EventTrigger>
             </CommandBar.Triggers>
             <CommandBar.Content>
-                <TextBlock Text="2 days until menu close, deadline for choosing your dish is 12pm Thursday" Margin="10"
+                <TextBlock Text="Đừng xài phiên bản web, cùi lắm" Margin="10"
                            TextWrapping="Wrap"/>
             </CommandBar.Content>
             <AppBarButton x:Name="AddFood" Icon="Add" Label="Add Food" Click="AddFood_Click">

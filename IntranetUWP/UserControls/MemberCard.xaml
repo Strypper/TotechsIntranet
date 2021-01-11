@@ -21,7 +21,7 @@
                        Width="70" RelativePanel.AlignVerticalCenterWithPanel="True"/>
             <StackPanel RelativePanel.RightOf="Avatar" VerticalAlignment="Center"
                     RelativePanel.AlignVerticalCenterWithPanel="True">
-                <TextBlock Text="Ronald Reagan" FontSize="15" Margin="5"/>
+                <TextBlock Text="{x:Bind EmployeeName, Mode=OneWay}" FontSize="15" Margin="5"/>
                 <TextBlock Text="iDealogic" Margin="5"/>
             </StackPanel>
             <ComboBox RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True"

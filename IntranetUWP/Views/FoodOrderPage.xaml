@@ -76,7 +76,7 @@
             <controls:AdaptiveGridView.ItemContainerTransitions>
                 <TransitionCollection>
                     <EntranceThemeTransition IsStaggeringEnabled="True" FromHorizontalOffset="400" FromVerticalOffset="450"/>
-                    <AddDeleteThemeTransition />
+                    <AddDeleteThemeTransition/>
                 </TransitionCollection>
             </controls:AdaptiveGridView.ItemContainerTransitions>
 
@@ -95,7 +95,7 @@
                 <PivotItem.Header>
                     <Image Source="/Assets/iDealogic.png" Width="100" Height="50"/>
                 </PivotItem.Header>
-                <ListView ItemsSource="{x:Bind Users}" SelectionMode="None">
+                <ListView ItemsSource="{x:Bind vm.Users}" SelectionMode="None">
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem">
                             <Setter Property="Margin" Value="0"/>
@@ -106,20 +106,24 @@
                     <ListView.ItemContainerTransitions>
                         <TransitionCollection>
                             <EntranceThemeTransition IsStaggeringEnabled="True" FromVerticalOffset="450"/>
+                            <AddDeleteThemeTransition/>
                         </TransitionCollection>
                     </ListView.ItemContainerTransitions>
                     <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <usercontrols:MemberCard/>
+                        <DataTemplate x:DataType="data:UserDTO">
+                            <usercontrols:MemberCard UserId="{x:Bind id}" EmployeeName="{x:Bind userName}"/>
                         </DataTemplate>
                     </ListView.ItemTemplate>
+                    <ListView.Footer>
+                        <Rectangle Height="40"/>
+                    </ListView.Footer>
                 </ListView>
             </PivotItem>
             <PivotItem>
                 <PivotItem.Header>
                     <Image Source="/Assets/Devinition.png" Width="100" Height="50"/>
                 </PivotItem.Header>
-                <ListView ItemsSource="{x:Bind Users}" SelectionMode="None">
+                <ListView ItemsSource="{x:Bind vm.Users}" SelectionMode="None">
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem">
                             <Setter Property="Margin" Value="0"/>
@@ -178,6 +182,7 @@
                     <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xEA8F;" />
                 </AppBarButton.Icon>
             </AppBarButton>
+            <AppBarButton Icon="Refresh" Command="{x:Bind vm.getUserCommand}"/>
         </CommandBar>
     </Grid>
 </Page>

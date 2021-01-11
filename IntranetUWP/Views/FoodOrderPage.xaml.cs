@@ -1,5 +1,6 @@
 ﻿using IntranetUWP.Models;
 using IntranetUWP.UserControls;
+using IntranetUWP.ViewModels.PagesViewModel;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -21,10 +22,11 @@ namespace IntranetUWP.Views
     /// </summary>
     public sealed partial class FoodOrderPage : Page
     {
-        private readonly HttpClient httpClient;
+        private readonly HttpClient httpClient = new HttpClient();
         public string getFoodDataUrl = "https://intranetcloudapi.azurewebsites.net/api/Food/GetAll";
         public string createFoodDataUrl = "https://intranetcloudapi.azurewebsites.net/api/Food/Create";
         public string deleteFoodDataUrl(int id) => $"https://intranetcloudapi.azurewebsites.net/api/Food/Delete/{Food.id}";
+        public FoodOrderPageViewModel vm = new FoodOrderPageViewModel();
         public List<UserDTO> Users { get; set; } = new List<UserDTO>();
         public ObservableCollection<FoodDTO> Foods = new ObservableCollection<FoodDTO>();
         public FoodDTO Food { get; set; } = new FoodDTO();
@@ -48,12 +50,7 @@ namespace IntranetUWP.Views
         public FoodOrderPage()
         {
             this.InitializeComponent();
-            Users = DemoUserData.getData();
-            var handler = new HttpClientHandler()
-            {
-                ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
-            };
-            httpClient = new HttpClient(handler);
+            this.DataContext = vm;
         }
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)
@@ -81,7 +78,6 @@ namespace IntranetUWP.Views
             dialog.PrimaryButtonClick += Dialog_PrimaryButtonClick;
             await dialog.ShowAsync();
         }
-
         private async void Dialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
             var dialog = sender as CreateFood;
@@ -90,7 +86,6 @@ namespace IntranetUWP.Views
             var response = await httpClient.PostAsync(createFoodDataUrl , content);
             if (response.StatusCode.ToString() == "Created") Foods.Add(Food); else Console.WriteLine("Error");
         }
-
         private void FoodCard_ToggleClick(int foodId)
         {
             FoodImageContainer.Opacity = 0;

@@ -27,7 +27,6 @@ namespace IntranetUWP.Views.MemberChildPages
         public iDealogicMemberPage()
         {
             this.InitializeComponent();
-            Users = DemoUserData.getData();
         }
     }
 }

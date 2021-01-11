@@ -138,6 +138,8 @@
     <Compile Include="UserControls\MemberProfileCard.xaml.cs">
       <DependentUpon>MemberProfileCard.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\Commands\RelayCommand.cs" />
+    <Compile Include="ViewModels\PagesViewModel\FoodOrderPageViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="Views\ChatHubPage.xaml.cs">
       <DependentUpon>ChatHubPage.xaml</DependentUpon>
@@ -283,10 +285,7 @@
       <Version>12.0.3</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ViewModels\Commands\" />
-    <Folder Include="ViewModels\PagesViewModel\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

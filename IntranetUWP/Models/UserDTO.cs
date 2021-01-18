@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace IntranetUWP.Models
 {
-    public class UserDTO
+    public class UserDTO : BaseDTO
     {
-        public int id { get; set; }
         public string userName { get; set; }
         public string profileImageUrl { get; set; }
         public bool company { get; set; }

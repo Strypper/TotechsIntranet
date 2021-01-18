@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace IntranetUWP.Models
 {
-    public class FoodOrder
+    public class BaseDTO
     {
+        public int id { get; set; }
     }
 }

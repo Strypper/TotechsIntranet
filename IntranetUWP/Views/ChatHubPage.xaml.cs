@@ -1,8 +1,10 @@
-﻿using System.Collections.ObjectModel;
+﻿using Microsoft.AspNetCore.SignalR.Client;
+using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Net.Http;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using mux = Microsoft.UI.Xaml.Controls;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -14,10 +16,25 @@ namespace IntranetUWP.Views
     public sealed partial class ChatHubPage : Page
     {
         private ObservableCollection<ExplorerItem> DataSource;
+        private HubConnection connection;
         public ChatHubPage()
         {
             this.InitializeComponent();
             DataSource = GetData();
+
+            connection = new HubConnectionBuilder()
+                 .WithUrl("https://localhost:44371/chathub", options =>
+                 {
+                     options.HttpMessageHandlerFactory = (handler) =>
+                     {
+                         if (handler is HttpClientHandler clientHandler)
+                         {
+                             clientHandler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+                         }
+                         return handler;
+                     };
+                 }).Build();
+
         }
 
         private void HamburgerButton_Click(object sender, RoutedEventArgs e) => splitViewPane.IsPaneOpen = !splitViewPane.IsPaneOpen;
@@ -104,7 +121,7 @@ namespace IntranetUWP.Views
             return list;
         }
 
-        private void AddChannel_Click(object sender, RoutedEventArgs e)
+        private async void AddChannel_Click(object sender, RoutedEventArgs e)
         {
             ExplorerItem folder1 = new ExplorerItem()
             {
@@ -112,6 +129,17 @@ namespace IntranetUWP.Views
                 Type = ExplorerItem.ExplorerItemType.Folder,
             };
             DataSource.Add(folder1);
+            try
+            {
+                //await connection.InvokeAsync("IdentifyUser", 5);
+                await connection.InvokeAsync("ReceiveMessage", "Hello");
+            }
+            catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex.Message); }
+        }
+
+        private async void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            await connection.StartAsync();
         }
     }
 

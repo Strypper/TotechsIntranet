@@ -1,0 +1,48 @@
+﻿<Page
+    x:Class="IntranetUWP.Views.LoginPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:IntranetUWP.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="0.5*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <StackPanel.ChildrenTransitions>
+                <TransitionCollection>
+                    <EntranceThemeTransition IsStaggeringEnabled="True"  FromVerticalOffset="1000"/>
+                    <AddDeleteThemeTransition/>
+                </TransitionCollection>
+            </StackPanel.ChildrenTransitions>
+            <PersonPicture Visibility="{x:Bind RegisterSwitch.IsOn, Mode=OneWay}"/>
+            <ToggleSwitch x:Name="RegisterSwitch" Header="Register" Margin="5" IsOn="True"/>
+            <TextBox Header="User Name" HorizontalAlignment="Center" MinWidth="300" Margin="5"/>
+            <TextBox Header="First Name" HorizontalAlignment="Center" MinWidth="300" Margin="5"
+                     Visibility="{x:Bind RegisterSwitch.IsOn, Mode=OneWay}"/>
+            <TextBox Header="Middle Name" HorizontalAlignment="Center" MinWidth="300" Margin="5"
+                     Visibility="{x:Bind RegisterSwitch.IsOn, Mode=OneWay}"/>
+            <TextBox Header="Last Name" HorizontalAlignment="Center" MinWidth="300" Margin="5"
+                     Visibility="{x:Bind RegisterSwitch.IsOn, Mode=OneWay}"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
+                        Visibility="{x:Bind RegisterSwitch.IsOn, Mode=OneWay}">
+                <StackPanel.ChildrenTransitions>
+                    <TransitionCollection>
+                        <EntranceThemeTransition IsStaggeringEnabled="True"  FromHorizontalOffset="1000"/>
+                    </TransitionCollection>
+                </StackPanel.ChildrenTransitions>
+                <RadioButton Content="iDealogic"/>
+                <RadioButton Content="Devinition"/>
+            </StackPanel>
+            <TextBox Header="Password" HorizontalAlignment="Center" MinWidth="300" Margin="5"/>
+            <CheckBox Content="Remember password" Margin="5"/>
+            <Button x:Name="NavigateMainFrameButton" HorizontalAlignment="Center" Margin="5"
+                    Content="Register" MinWidth="300"/>
+        </StackPanel>
+    </Grid>
+</Page>

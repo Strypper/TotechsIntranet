@@ -4,9 +4,8 @@ using System.Runtime.CompilerServices;
 
 namespace IntranetUWP.Models
 {
-    public class FoodDTO : INotifyPropertyChanged
+    public class FoodDTO : BaseDTO, INotifyPropertyChanged
     {
-        public int id { get; set; }
         public string foodName { get; set; }
         public string foodEnglishName { get; set; }
         public int mainIcon { get; set; } = 5;

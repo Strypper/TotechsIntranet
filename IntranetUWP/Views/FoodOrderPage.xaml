@@ -8,7 +8,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:usercontrols="using:IntranetUWP.UserControls" xmlns:data="using:IntranetUWP.Models"
-    xmlns:winui="using:Microsoft.UI.Xaml.Controls" Loaded="Page_Loaded"
+    xmlns:winui="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d" Background="{ThemeResource SystemControlAcrylicWindowBrush}">
 
     <Page.Resources>
@@ -27,8 +27,8 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="400"/>
         </Grid.ColumnDefinitions>
-        <controls:AdaptiveGridView x:Name="FoodGridView" animations:ReorderGridAnimation.Duration="300" HorizontalContentAlignment="Center" LostFocus="FoodGridView_LostFocus"
-                                   DesiredWidth="355" StretchContentForSingleRow="False" OneRowModeEnabled="False" Padding="0" SelectionMode="Single" SelectionChanged="FoodGridView_SelectionChanged">
+        <controls:AdaptiveGridView x:Name="FoodGridView" animations:ReorderGridAnimation.Duration="300" HorizontalContentAlignment="Center" LostFocus="FoodGridView_LostFocus" SelectedItem="{x:Bind vm.SelectedFood, Mode=TwoWay}"
+                                   DesiredWidth="355" StretchContentForSingleRow="False" OneRowModeEnabled="False" Padding="0" SelectionMode="Single" SelectionChanged="FoodGridView_SelectionChanged" ItemsSource="{x:Bind vm.Foods, Mode=TwoWay}">
             <controls:AdaptiveGridView.Header>
                 <Grid Margin="10,0,10,15" HorizontalAlignment="Stretch">
                     <StackPanel>
@@ -95,7 +95,7 @@
                 <PivotItem.Header>
                     <Image Source="/Assets/iDealogic.png" Width="100" Height="50"/>
                 </PivotItem.Header>
-                <ListView ItemsSource="{x:Bind vm.Users}" SelectionMode="None">
+                <ListView ItemsSource="{x:Bind vm.UserFoods, Mode=TwoWay}" SelectionMode="None">
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem">
                             <Setter Property="Margin" Value="0"/>
@@ -110,8 +110,8 @@
                         </TransitionCollection>
                     </ListView.ItemContainerTransitions>
                     <ListView.ItemTemplate>
-                        <DataTemplate x:DataType="data:UserDTO">
-                            <usercontrols:MemberCard UserId="{x:Bind id}" EmployeeName="{x:Bind userName}"/>
+                        <DataTemplate x:DataType="data:UserFoodDTO">
+                            <usercontrols:MemberCard UserId="{x:Bind user.id}" EmployeeName="{x:Bind user.userName}" FoodList="{Binding foodList}" SelectedFood="{x:Bind food.id}"/>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                     <ListView.Footer>
@@ -161,18 +161,19 @@
                 <TextBlock Text="Đừng xài phiên bản web, cùi lắm" Margin="10"
                            TextWrapping="Wrap"/>
             </CommandBar.Content>
-            <AppBarButton x:Name="AddFood" Icon="Add" Label="Add Food" Click="AddFood_Click">
+            <AppBarButton x:Name="AddFood" Icon="Add" Label="Add Food" Command="{x:Bind vm.createFoodCommand}">
                 <AppBarButton.KeyboardAccelerators>
                     <KeyboardAccelerator Modifiers="Control" Key="N"/>
                 </AppBarButton.KeyboardAccelerators>
             </AppBarButton>
             <AppBarButton x:Name="EditFood" Icon="Edit" Label="Edit" IsEnabled="False"/>
-            <AppBarButton x:Name="DeleteFood" Icon="Delete" Label="Delete food" Click="DeleteFood_Click" IsEnabled="False">
+            <AppBarButton x:Name="DeleteFood" Icon="Delete" Label="Delete food" Command="{x:Bind vm.deleteFoodCommand}" IsEnabled="False">
                 <AppBarButton.KeyboardAccelerators>
                     <KeyboardAccelerator Modifiers="Control" Key="D"/>
                 </AppBarButton.KeyboardAccelerators>
             </AppBarButton>
-            <AppBarButton x:Name="DeleteAllFood" Icon="Delete" Label="Delete entire list" Foreground="Red" Click="DeleteAllFood_Click">
+            <AppBarButton x:Name="DeleteAllFood" Icon="Delete" Label="Delete entire list" Foreground="Red" 
+                          Command="{x:Bind vm.deleteAllFoodCommand}" IsEnabled="{x:Bind vm.DeleteAllFoodButtonState, Mode=OneWay}">
                 <AppBarButton.KeyboardAccelerators>
                     <KeyboardAccelerator Modifiers="Control,Shift" Key="D"/>
                 </AppBarButton.KeyboardAccelerators>

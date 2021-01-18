@@ -1,17 +1,11 @@
-﻿using System;
+﻿using IntranetUWP.Helpers;
+using IntranetUWP.Models;
 using System.Collections.Generic;
-using System.IO;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+using System.Net.Http;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -48,9 +42,55 @@ namespace IntranetUWP.UserControls
         public static readonly DependencyProperty EmployeeNameProperty =
             DependencyProperty.Register("EmployeeName", typeof(string), typeof(MemberCard), null);
 
+
+
+        public ObservableCollection<FoodDTO> FoodList
+        {
+            get { return (ObservableCollection<FoodDTO>)GetValue(FoodListProperty); }
+            set { SetValue(FoodListProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for FoodList.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty FoodListProperty =
+            DependencyProperty.Register("FoodList", typeof(ObservableCollection<FoodDTO>), typeof(MemberCard), null);
+
+        private IntranetHttpHelper httpHelper = new IntranetHttpHelper();
+
+        public int SelectedFood
+        {
+            get { return (int)GetValue(SelectedFoodProperty); }
+            set { SetValue(SelectedFoodProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for SelectedFood.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty SelectedFoodProperty =
+            DependencyProperty.Register("SelectedFood", typeof(int), typeof(MemberCard), null);
+
         public MemberCard()
         {
             this.InitializeComponent();
+        }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (SelectedFood != -1)
+            {
+                var selectedFood = FoodList.Where(f => f.id == SelectedFood).FirstOrDefault();
+                SelectFoodCombobox.SelectedItem = selectedFood != null ? selectedFood : null;
+            }
+            SelectFoodCombobox.SelectionChanged += SelectFoodCombobox_SelectionChanged;
+        }
+
+        private async void SelectFoodCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var food = SelectFoodCombobox.SelectedItem as FoodDTO;
+            if(food != null)
+            {
+                var createupdateUserFoodDTO = new CreateUpdateUserFoodDTO();
+                createupdateUserFoodDTO.userId = UserId;
+                createupdateUserFoodDTO.foodId = food.id;
+                await httpHelper.CreateAsync<UserFoodDTO>("UserFood/Create", createupdateUserFoodDTO);
+            }
         }
     }
 }

@@ -17,8 +17,6 @@ namespace IntranetUWP.UserControls
 
     public sealed partial class FoodCard : UserControl
     {
-
-
         public int FoodId
         {
             get { return (int)GetValue(FoodIdProperty); }

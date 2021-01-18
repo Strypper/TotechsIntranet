@@ -4,8 +4,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:IntranetUWP.UserControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:ToolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
-    mc:Ignorable="d"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ToolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls" 
+    xmlns:data="using:IntranetUWP.Models"
+    mc:Ignorable="d" Loaded="UserControl_Loaded"
     d:DesignHeight="300"
     d:DesignWidth="400">
 
@@ -24,8 +26,13 @@
                 <TextBlock Text="{x:Bind EmployeeName, Mode=OneWay}" FontSize="15" Margin="5"/>
                 <TextBlock Text="iDealogic" Margin="5"/>
             </StackPanel>
-            <ComboBox RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True"
-                  Margin="5" PlaceholderText="Chưa chọn">
+            <ComboBox x:Name="SelectFoodCombobox" RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True"
+                  Margin="5" PlaceholderText="Chưa chọn" ItemsSource="{x:Bind FoodList, Mode=OneWay}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate x:DataType="data:FoodDTO">
+                        <TextBlock Text="{x:Bind foodEnglishName, Mode=OneWay}"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
             </ComboBox>
         </RelativePanel>
     </ToolkitControls:DropShadowPanel>

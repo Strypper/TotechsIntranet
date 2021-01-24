@@ -3,6 +3,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Net.Http;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -16,25 +17,13 @@ namespace IntranetUWP.Views
     public sealed partial class ChatHubPage : Page
     {
         private ObservableCollection<ExplorerItem> DataSource;
+        private ObservableCollection<ChatMessage> ChatMessages = new ObservableCollection<ChatMessage>();
+        private ChatMessage chatMessage = new ChatMessage();
         private HubConnection connection;
         public ChatHubPage()
         {
             this.InitializeComponent();
             DataSource = GetData();
-
-            connection = new HubConnectionBuilder()
-                 .WithUrl("https://localhost:44371/chathub", options =>
-                 {
-                     options.HttpMessageHandlerFactory = (handler) =>
-                     {
-                         if (handler is HttpClientHandler clientHandler)
-                         {
-                             clientHandler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
-                         }
-                         return handler;
-                     };
-                 }).Build();
-
         }
 
         private void HamburgerButton_Click(object sender, RoutedEventArgs e) => splitViewPane.IsPaneOpen = !splitViewPane.IsPaneOpen;
@@ -132,14 +121,37 @@ namespace IntranetUWP.Views
             try
             {
                 //await connection.InvokeAsync("IdentifyUser", 5);
-                await connection.InvokeAsync("ReceiveMessage", "Hello");
+                await connection.InvokeAsync("SendMessage", MessageTextBox.Text, 5);
             }
             catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex.Message); }
         }
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
+            connection = new HubConnectionBuilder()
+                 .WithUrl("https://localhost:44371/chathub", options =>
+                 {
+                     options.HttpMessageHandlerFactory = (handler) =>
+                     {
+                         if (handler is HttpClientHandler clientHandler)
+                         {
+                             clientHandler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+                         }
+                         return handler;
+                     };
+                 }).Build();
+
             await connection.StartAsync();
+
+            connection.On<string, string>("ReceiveMessage", async (message, user) =>
+            {
+                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                {
+                    chatMessage.UserName = user;
+                    chatMessage.Message = message;
+                    ChatMessages.Add(chatMessage);
+                });
+            });
         }
     }
 
@@ -194,5 +206,10 @@ namespace IntranetUWP.Views
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+    }
+    public class ChatMessage
+    {
+        public string UserName { get; set; }
+        public string Message { get; set; }
     }
 }

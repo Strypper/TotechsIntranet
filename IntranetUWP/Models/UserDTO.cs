@@ -9,9 +9,18 @@ namespace IntranetUWP.Models
     public class UserDTO : BaseDTO
     {
         public string userName { get; set; }
-        public string profileImageUrl { get; set; }
+        public string firstName { get; set; }
+        public string middleName { get; set; }
+        public string lastName { get; set; }
+        public string profilePic { get; set; }
         public bool company { get; set; }
-        public int age { get; set; }
+        public string age { get; set; }
+    }
+
+    public class RegistingModel : UserDTO
+    {
+        public string password { get; set; }
+        public bool gender { get; set; }
     }
 
     public class DemoUserData

@@ -119,13 +119,16 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\StringToImageSourceConverter.cs" />
     <Compile Include="Helpers\IntranetHttpHelper.cs" />
     <Compile Include="Helpers\IntranetSignalRHelper.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\BaseDTO.cs" />
+    <Compile Include="Models\ChatMessageDTO.cs" />
     <Compile Include="Models\FoodDTO.cs" />
+    <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\UserDTO.cs" />
     <Compile Include="Models\UserFoodDTO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -142,6 +145,8 @@
       <DependentUpon>MemberProfileCard.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\Commands\RelayCommand.cs" />
+    <Compile Include="ViewModels\Commands\SignalRSendMessageCommandParameter.cs" />
+    <Compile Include="ViewModels\PagesViewModel\ChatHubPageViewModel.cs" />
     <Compile Include="ViewModels\PagesViewModel\FoodOrderPageViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="Views\ChatHubPage.xaml.cs">
@@ -268,18 +273,18 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client">
-      <Version>5.0.2</Version>
+      <Version>6.0.0-preview.3.21201.13</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
-      <Version>6.2.11</Version>
+      <Version>6.2.12</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit">
       <Version>7.0.0-preview4</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.Toolkit.Parsers">
+    <PackageReference Include="Microsoft.Toolkit.Uwp">
       <Version>7.0.0-preview4</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.Toolkit.Uwp">
+    <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications">
       <Version>7.0.0-preview4</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.UI">
@@ -291,14 +296,22 @@
     <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Controls">
       <Version>7.0.0-preview4</Version>
     </PackageReference>
+    <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Lottie">
+      <Version>7.0.2</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.UI.Xaml">
-      <Version>2.5.0</Version>
+      <Version>2.6.0-prerelease.210405001</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Uwp.Managed">
+      <Version>2.0.1</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
-      <Version>12.0.3</Version>
+      <Version>13.0.1</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Assets\IntranetLogin.json" />
+  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

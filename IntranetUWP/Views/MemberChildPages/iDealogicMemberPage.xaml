@@ -31,7 +31,7 @@
                 </controls:Carousel.EasingFunction>
                 <controls:Carousel.ItemTemplate>
                     <DataTemplate x:DataType="data:UserDTO">
-                        <Image Width="300" Height="430" VerticalAlignment="Center" Source="{x:Bind profileImageUrl}" Stretch="UniformToFill" />
+                        <Image Width="300" Height="430" VerticalAlignment="Center" Source="{x:Bind profilePic}" Stretch="UniformToFill" />
                     </DataTemplate>
                 </controls:Carousel.ItemTemplate>
             </controls:Carousel>

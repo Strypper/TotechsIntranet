@@ -5,10 +5,12 @@
     xmlns:local="using:IntranetUWP"
     xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:Core="using:Microsoft.Xaml.Interactions.Core" xmlns:ToolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls" 
-    xmlns:ToolkitBehaviors="using:Microsoft.Toolkit.Uwp.UI.Animations.Behaviors">
+    xmlns:ToolkitBehaviors="using:Microsoft.Toolkit.Uwp.UI.Animations.Behaviors" xmlns:converters="using:IntranetUWP.Converters">
 
     <Application.Resources>
         <ResourceDictionary>
+            <converters:StringToImageSourceConverter x:Key="StringToImageSourceConverter"/>
+
             <x:Double x:Key="ContentDialogMaxWidth">1800</x:Double>
             <x:Double x:Key="ContentDialogMaxHeight">2000</x:Double>
 

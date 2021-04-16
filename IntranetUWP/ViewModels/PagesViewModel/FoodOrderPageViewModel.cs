@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Windows.UI.Xaml.Controls;
 
 namespace IntranetUWP.ViewModels.PagesViewModel
 {
@@ -87,7 +88,7 @@ namespace IntranetUWP.ViewModels.PagesViewModel
             await createFoodDialog.ShowAsync();
         }
 
-        private async void CreateFoodDialog_PrimaryButtonClick(Windows.UI.Xaml.Controls.ContentDialog sender, Windows.UI.Xaml.Controls.ContentDialogButtonClickEventArgs args)
+        private async void CreateFoodDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
             var food = (sender as CreateFood).Food;
             var createResult = await httpHelper.CreateAsync<FoodDTO>(createFoodDataUrl , food);

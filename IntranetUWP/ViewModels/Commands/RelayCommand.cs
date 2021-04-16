@@ -23,17 +23,11 @@ namespace IntranetUWP.ViewModels.Commands
         {
             return _canExecute == null ? true : _canExecute();
         }
-        public void Execute(object parameter)
-        {
-            _execute();
-        }
+        public void Execute(object parameter) => _execute();
         public void RaiseCanExecuteChanged()
         {
             var handler = CanExecuteChanged;
-            if (handler != null)
-            {
-                handler(this, EventArgs.Empty);
-            }
+            if (handler != null) handler(this, EventArgs.Empty);
         }
     }
 }

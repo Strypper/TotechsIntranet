@@ -6,9 +6,16 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls" 
-    xmlns:winui="using:Microsoft.UI.Xaml.Controls"
-    mc:Ignorable="d" Loaded="Page_Loaded"
+    xmlns:winui="using:Microsoft.UI.Xaml.Controls" 
+    xmlns:DTO="using:IntranetUWP.Models" xmlns:media="using:Microsoft.UI.Xaml.Media" 
+    mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Page.Resources>
+        <ResourceDictionary>
+            <media:AcrylicBrush x:Key="CustomAcrylicInAppLuminosity" BackgroundSource="Backdrop"
+            TintOpacity="0" TintLuminosityOpacity="0" TintColor="SkyBlue" FallbackColor="SkyBlue" />
+        </ResourceDictionary>
+    </Page.Resources>
 
     <SplitView x:Name="splitViewPane" DisplayMode="CompactInline" PanePlacement="Left"
                CompactPaneLength="48" HorizontalAlignment="Stretch" IsPaneOpen="True">
@@ -48,21 +55,163 @@
             </StackPanel>
         </SplitView.Pane>
         <SplitView.Content>
-            <Grid>
+            <Grid Background="{ThemeResource SystemControlAcrylicWindowBrush}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
-                <ListView ItemsSource="{x:Bind ChatMessages}">
+                <Ellipse Width="400" Height="400" Fill="{ThemeResource SystemAccentColor}" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,-200,-200,0"/>
+                <Ellipse x:Name="BottomRightEllipse" Width="400" Height="400" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+                    <Ellipse.Fill>
+                        <SolidColorBrush x:Name="BottomRightEllipseColor" Color="White"/>
+                    </Ellipse.Fill>
+                    <Ellipse.RenderTransform>
+                        <TranslateTransform x:Name="TranslateEllipsePosition"/>
+                    </Ellipse.RenderTransform>
+                    <Ellipse.Triggers>
+                        <EventTrigger>
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <ColorAnimation Storyboard.TargetName="BottomRightEllipseColor"
+                                                    Storyboard.TargetProperty="Fill.Color"
+                                                    To="#ec82fe" Duration="0:0:3" AutoReverse="True" RepeatBehavior="Forever"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                        <EventTrigger>
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetName="TranslateEllipsePosition" Storyboard.TargetProperty="Y" From="0" To="200">
+                                        <DoubleAnimation.EasingFunction>
+                                            <CircleEase EasingMode="EaseInOut" />
+                                        </DoubleAnimation.EasingFunction>
+                                    </DoubleAnimation>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                        <EventTrigger>
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetName="TranslateEllipsePosition" Storyboard.TargetProperty="X" From="0" To="200">
+                                        <DoubleAnimation.EasingFunction>
+                                            <CircleEase EasingMode="EaseInOut" />
+                                        </DoubleAnimation.EasingFunction>
+                                    </DoubleAnimation>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </Ellipse.Triggers>
+                </Ellipse>
+                <Ellipse x:Name="TopLeftEllipse" Width="400" Height="400" VerticalAlignment="Top" HorizontalAlignment="Left">
+                    <Ellipse.Fill>
+                        <SolidColorBrush x:Name="TopLeftEllipseColor" Color="Gray"/>
+                    </Ellipse.Fill>
+                    <Ellipse.RenderTransform>
+                        <TranslateTransform x:Name="TopLeftEllipsePosition"/>
+                    </Ellipse.RenderTransform>
+                    <Ellipse.Triggers>
+                        <EventTrigger>
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <ColorAnimation Storyboard.TargetName="TopLeftEllipseColor"
+                                                    Storyboard.TargetProperty="Fill.Color"
+                                                    To="{ThemeResource SystemBaseLowColor}" Duration="0:0:3" AutoReverse="True" RepeatBehavior="Forever"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                        <EventTrigger>
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetName="TopLeftEllipsePosition" Storyboard.TargetProperty="Y" From="0" To="-200">
+                                        <DoubleAnimation.EasingFunction>
+                                            <CircleEase EasingMode="EaseInOut" />
+                                        </DoubleAnimation.EasingFunction>
+                                    </DoubleAnimation>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                        <EventTrigger>
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetName="TopLeftEllipsePosition" Storyboard.TargetProperty="X" From="0" To="-200">
+                                        <DoubleAnimation.EasingFunction>
+                                            <CircleEase EasingMode="EaseInOut" />
+                                        </DoubleAnimation.EasingFunction>
+                                    </DoubleAnimation>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </Ellipse.Triggers>
+                </Ellipse>
+                <Ellipse x:Name="BottomLeftEllipse" Width="800" Height="800" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="0,0,0,-400">
+                    <Ellipse.Fill>
+                        <SolidColorBrush x:Name="BottomLeftEllipseColor" Color="#8e8afb"/>
+                    </Ellipse.Fill>
+                    <Ellipse.RenderTransform>
+                        <TranslateTransform x:Name="BottomLeftEllipsePosition"/>
+                    </Ellipse.RenderTransform>
+                    <Ellipse.Triggers>
+                        <EventTrigger>
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <ColorAnimation Storyboard.TargetName="BottomLeftEllipseColor"
+                                                    Storyboard.TargetProperty="Fill.Color"
+                                                    To="{ThemeResource SystemBaseLowColor}" Duration="0:0:3" AutoReverse="True" RepeatBehavior="Forever"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                        <EventTrigger>
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetName="BottomLeftEllipsePosition" Storyboard.TargetProperty="X" From="0" To="-400">
+                                        <DoubleAnimation.EasingFunction>
+                                            <CircleEase EasingMode="EaseInOut" />
+                                        </DoubleAnimation.EasingFunction>
+                                    </DoubleAnimation>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </Ellipse.Triggers>
+                </Ellipse>
+                <ListView ItemsSource="{x:Bind vm.ChatMessages, Mode=TwoWay}" SelectionMode="Extended">
                     <ListView.Header>
-                        <TextBlock Text="IDev General Chat" FontSize="25" FontWeight="Bold" Margin="5"/>
+                        <TextBlock Text="IDev General Chat" FontSize="25" FontWeight="Bold" Margin="5">
+                            <TextBlock.RenderTransform>
+                                <TranslateTransform x:Name="TranslateTitle"/>
+                            </TextBlock.RenderTransform>
+                            <TextBlock.Triggers>
+                                <EventTrigger>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="TranslateTitle" Storyboard.TargetProperty="Y" From="-200" To="0">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <CircleEase EasingMode="EaseInOut" />
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                            </TextBlock.Triggers>
+                        </TextBlock>
                     </ListView.Header>
                     <ListView.ItemTemplate>
-                        <DataTemplate x:DataType="local:ChatMessage">
-                            <StackPanel>
-                                <TextBlock Text="{x:Bind UserName}"/>
-                                <TextBlock Text="{x:Bind Message}"/>
-                            </StackPanel>
+                        <DataTemplate x:DataType="DTO:ChatMessageDTO">
+                            <ListViewItem HorizontalAlignment="Left" HorizontalContentAlignment="Left" CornerRadius="5"
+                                          Background="{ThemeResource CustomAcrylicInAppLuminosity}" Margin="5">
+                                <StackPanel Orientation="Horizontal">
+                                    <PersonPicture VerticalAlignment="Top" Width="50" Margin="5"/>
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock Text="{x:Bind UserName}" FontWeight="Bold" TextDecorations="Underline" Margin="5,5,5,0"/>
+                                        <TextBlock Text="{x:Bind MessageContent}" TextWrapping="WrapWholeWords" 
+                                                   IsTextSelectionEnabled="True"
+                                                   MaxWidth="700" Margin="5,5,5,0"/>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock VerticalAlignment="Bottom" FontFamily="Segoe Fluent Icons" Text="&#xE823;" Margin="5"/>
+                                            <TextBlock VerticalAlignment="Bottom" Text="5 minutes ago" Margin="0,5,5,5"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </StackPanel>
+                            </ListViewItem>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
@@ -71,8 +220,16 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="0.1*"/>
                     </Grid.ColumnDefinitions>
-                    <TextBox x:Name="MessageTextBox" PlaceholderText="Text message" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5"/>
-                    <Button Grid.Column="1" Content="Send" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0,5,5,5"/>
+                    <TextBox x:Name="MessageTextBox" PlaceholderText="Text message" Text="{x:Bind vm.MessContent, Mode=TwoWay}"
+                             HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5" Background="{ThemeResource SystemControlAcrylicElementBrush}">
+                        <TextBox.KeyboardAccelerators>
+                            <KeyboardAccelerator Key="Enter" Invoked="KeyboardAccelerator_Invoked"/>
+                        </TextBox.KeyboardAccelerators>
+                    </TextBox>
+                    <Button x:Name="SendMessageButton" Grid.Column="1" Content="Send"
+                            Background="{ThemeResource SystemControlAcrylicElementBrush}"
+                            Command="{x:Bind vm.sendMessageCommand}" CommandParameter="{x:Bind vm.MessContent, Mode=OneWay}"
+                            VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0,5,5,5"/>
                 </Grid>
             </Grid>
         </SplitView.Content>

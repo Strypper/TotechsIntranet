@@ -1,11 +1,14 @@
 ﻿using IntranetUWP.Helpers;
 using IntranetUWP.Models;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.Http;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -31,7 +34,7 @@ namespace IntranetUWP.UserControls
 
         // Using a DependencyProperty as the backing store for ProfilePictureUrl.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ProfilePictureUrlProperty =
-            DependencyProperty.Register("ProfilePictureUrl", typeof(string), typeof(MemberCard), null);
+            DependencyProperty.Register("ProfilePictureUrl", typeof(string), typeof(MemberCard), new PropertyMetadata(null));
 
         public string EmployeeName
         {
@@ -40,7 +43,7 @@ namespace IntranetUWP.UserControls
         }
 
         public static readonly DependencyProperty EmployeeNameProperty =
-            DependencyProperty.Register("EmployeeName", typeof(string), typeof(MemberCard), null);
+            DependencyProperty.Register("EmployeeName", typeof(string), typeof(MemberCard), new PropertyMetadata(null));
 
 
 
@@ -52,7 +55,7 @@ namespace IntranetUWP.UserControls
 
         // Using a DependencyProperty as the backing store for FoodList.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty FoodListProperty =
-            DependencyProperty.Register("FoodList", typeof(ObservableCollection<FoodDTO>), typeof(MemberCard), null);
+            DependencyProperty.Register("FoodList", typeof(ObservableCollection<FoodDTO>), typeof(MemberCard), new PropertyMetadata(null));
 
         private IntranetHttpHelper httpHelper = new IntranetHttpHelper();
 
@@ -64,7 +67,7 @@ namespace IntranetUWP.UserControls
 
         // Using a DependencyProperty as the backing store for SelectedFood.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty SelectedFoodProperty =
-            DependencyProperty.Register("SelectedFood", typeof(int), typeof(MemberCard), null);
+            DependencyProperty.Register("SelectedFood", typeof(int), typeof(MemberCard), new PropertyMetadata(null));
 
         public MemberCard()
         {

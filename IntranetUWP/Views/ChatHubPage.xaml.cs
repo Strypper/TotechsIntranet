@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.SignalR.Client;
+﻿using IntranetUWP.Helpers;
+using IntranetUWP.Models;
+using IntranetUWP.ViewModels.PagesViewModel;
+using Microsoft.AspNetCore.SignalR.Client;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -6,6 +9,7 @@ using System.Net.Http;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -17,13 +21,14 @@ namespace IntranetUWP.Views
     public sealed partial class ChatHubPage : Page
     {
         private ObservableCollection<ExplorerItem> DataSource;
-        private ObservableCollection<ChatMessage> ChatMessages = new ObservableCollection<ChatMessage>();
-        private ChatMessage chatMessage = new ChatMessage();
-        private HubConnection connection;
+        public ChatHubPageViewModel vm { get; set; }
         public ChatHubPage()
         {
             this.InitializeComponent();
             DataSource = GetData();
+            var connection = new HubConnectionBuilder()
+                 .WithUrl("https://intranetapi.azurewebsites.net/chathub").Build();
+            vm = ChatHubPageViewModel.CreatedConnectedChatHubVM(new IntranetSignalRHelper(connection));
         }
 
         private void HamburgerButton_Click(object sender, RoutedEventArgs e) => splitViewPane.IsPaneOpen = !splitViewPane.IsPaneOpen;
@@ -109,7 +114,6 @@ namespace IntranetUWP.Views
             list.Add(folder2);
             return list;
         }
-
         private async void AddChannel_Click(object sender, RoutedEventArgs e)
         {
             ExplorerItem folder1 = new ExplorerItem()
@@ -118,40 +122,15 @@ namespace IntranetUWP.Views
                 Type = ExplorerItem.ExplorerItemType.Folder,
             };
             DataSource.Add(folder1);
+        }
+        private void KeyboardAccelerator_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+        {
             try
             {
-                //await connection.InvokeAsync("IdentifyUser", 5);
-                await connection.InvokeAsync("SendMessage", MessageTextBox.Text, 5);
+                vm.sendMessageCommand.Execute(MessageTextBox.Text);
+                MessageTextBox.Text = "";
             }
             catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex.Message); }
-        }
-
-        private async void Page_Loaded(object sender, RoutedEventArgs e)
-        {
-            connection = new HubConnectionBuilder()
-                 .WithUrl("https://localhost:44371/chathub", options =>
-                 {
-                     options.HttpMessageHandlerFactory = (handler) =>
-                     {
-                         if (handler is HttpClientHandler clientHandler)
-                         {
-                             clientHandler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
-                         }
-                         return handler;
-                     };
-                 }).Build();
-
-            await connection.StartAsync();
-
-            connection.On<string, string>("ReceiveMessage", async (message, user) =>
-            {
-                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                {
-                    chatMessage.UserName = user;
-                    chatMessage.Message = message;
-                    ChatMessages.Add(chatMessage);
-                });
-            });
         }
     }
 
@@ -206,10 +185,5 @@ namespace IntranetUWP.Views
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-    }
-    public class ChatMessage
-    {
-        public string UserName { get; set; }
-        public string Message { get; set; }
     }
 }

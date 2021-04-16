@@ -111,7 +111,9 @@
                     </ListView.ItemContainerTransitions>
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="data:UserFoodDTO">
-                            <usercontrols:MemberCard UserId="{x:Bind user.id}" EmployeeName="{x:Bind user.userName}" FoodList="{Binding foodList}" SelectedFood="{x:Bind food.id}"/>
+                            <usercontrols:MemberCard UserId="{x:Bind user.id}" EmployeeName="{x:Bind user.firstName}"
+                                                     ProfilePictureUrl="{x:Bind user.profilePic}"
+                                                     FoodList="{Binding foodList}" SelectedFood="{x:Bind food.id}"/>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                     <ListView.Footer>

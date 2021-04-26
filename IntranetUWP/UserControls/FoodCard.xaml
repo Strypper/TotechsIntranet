@@ -9,61 +9,87 @@
     xmlns:Core="using:Microsoft.Xaml.Interactions.Core" 
     xmlns:ToolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls" 
     xmlns:ToolkitBehaviors="using:Microsoft.Toolkit.Uwp.UI.Animations.Behaviors"
-    mc:Ignorable="d"
+    mc:Ignorable="d" Loaded="UserControl_Loaded"
     d:DesignHeight="300"
     d:DesignWidth="400">
 
-    <Grid Height="130" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Margin="5" Padding="0">
-        <ToolkitControls:DropShadowPanel x:Name="DropShadowHolder" VerticalAlignment="Stretch" Margin="10" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
+    <UserControl.Resources>
+        <SwipeItems x:Key="left" Mode="Reveal">
+            <SwipeItem Text="Reply All"
+                       Background="#FF3e6fa7" Foreground="White"/>
+            <SwipeItem Text="Open"
+                       Background="#FFff9501" Foreground="White"/>
+        </SwipeItems>
+        <SwipeItems x:Key="right" Mode="Execute">
+            <SwipeItem Text="Delete" Background="Red">
+                <SwipeItem.IconSource>
+                    <SymbolIconSource Symbol="Delete"/>
+                </SwipeItem.IconSource>
+            </SwipeItem>
+        </SwipeItems>
+    </UserControl.Resources>
+
+    <SwipeControl LeftItems="{StaticResource left}" RightItems="{StaticResource right}">
+        <Grid Height="130" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Margin="5" Padding="0">
+            <ToolkitControls:DropShadowPanel x:Name="DropShadowHolder" VerticalAlignment="Stretch" Margin="10" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
                                BlurRadius="20"
                                ShadowOpacity="0.5" OffsetX="1" OffsetY="20"
                                Color="Black">
-            <Grid Background="{ThemeResource SystemAltHighColor}" Height="100" CornerRadius="5" HorizontalAlignment="Stretch"
+                <Grid Background="{ThemeResource SystemAltHighColor}" Height="100" CornerRadius="5" HorizontalAlignment="Stretch"
               VerticalAlignment="Bottom" Padding="0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="80"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <ToggleButton Content="CHOOSE" FontWeight="Bold" Click="ToggleButton_Click" IsChecked="{x:Bind IsSelected, Mode=TwoWay}"
-                              VerticalAlignment="Bottom" Margin="10,0,0,10" Width="70"  FontSize="12"/>
-                <Grid Grid.Column="1" VerticalAlignment="Bottom" Margin="11">
-                    <StackPanel VerticalAlignment="Bottom">
-                        <TextBlock Text="40%" />
-                        <ProgressBar x:Name="PickRateBar" Height="30" CornerRadius="3" Value="40">
-                            <ProgressBar.Triggers>
-                                <EventTrigger>
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetName="PickRateBar"
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <ToggleButton x:Name="ChooseButton" Content="CHOOSE" FontWeight="Bold" Click="ToggleButton_Click" IsChecked="{x:Bind IsSelected, Mode=TwoWay}"
+                              VerticalAlignment="Bottom" Margin="10,0,0,10" Width="70" FontSize="12" ToolTipService.ToolTip="Choose this food"/>
+                    <Grid Grid.Column="1" VerticalAlignment="Bottom" Margin="11">
+                        <StackPanel VerticalAlignment="Bottom">
+                            <TextBlock Text="{x:Bind PickRateBar.Value, Converter={StaticResource DoubleToPercentConverter}, Mode=OneWay}" />
+                            <ProgressBar x:Name="PickRateBar" Height="30" CornerRadius="3" Value="{x:Bind Percentage, Mode=OneWay}">
+                                <ProgressBar.Triggers>
+                                    <EventTrigger>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetName="PickRateBar"
                                                  Storyboard.TargetProperty="Value"
                                                  EnableDependentAnimation="True"
                                                  From="0" Duration="0:0:5"
-                                                 To="{x:Bind PickRateBar.Value}">
-                                                <DoubleAnimation.EasingFunction>
-                                                    <CubicEase/>
-                                                </DoubleAnimation.EasingFunction>
-                                            </DoubleAnimation>
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </EventTrigger>
-                            </ProgressBar.Triggers>
-                        </ProgressBar>
-                    </StackPanel>
-                    <PersonPicture Width="25" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,-10,0,0"/>
-                </Grid>
-                <TextBlock Text="{x:Bind FoodName, Mode=OneWay}" Grid.Column="1" Margin="6,0,0,0"
+                                                 To="{x:Bind Percentage, Mode=OneWay}">
+                                                    <DoubleAnimation.EasingFunction>
+                                                        <CubicEase/>
+                                                    </DoubleAnimation.EasingFunction>
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </EventTrigger>
+                                </ProgressBar.Triggers>
+                            </ProgressBar>
+                        </StackPanel>
+                    </Grid>
+                    <TextBlock Text="{x:Bind FoodName, Mode=OneWay}" Grid.Column="1" Margin="6,0,0,0"
                        FontSize="15" />
-            </Grid>
-        </ToolkitControls:DropShadowPanel>
-        <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Left">
-            <Grid Margin="20,0,0,0">
-                <Image x:Name="MainFoodImage" Width="70" Height="70"                       
+                    <Grid VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Column="1"
+                          Margin="0,0,12,17">
+                        <ToolTipService.ToolTip>
+                            <ToolTip Content="3 people order this food"/>
+                        </ToolTipService.ToolTip>
+                        <PersonPicture Width="25" HorizontalAlignment="Right" ProfilePicture="https://i.imgur.com/IyYzK6g.jpg"/>
+                        <PersonPicture Width="25" Margin="0,0,15,0" HorizontalAlignment="Right" ProfilePicture="https://i.imgur.com/vc9FudE.jpg"/>
+                        <PersonPicture Width="25" Margin="0,0,30,0" HorizontalAlignment="Right" ProfilePicture="https://docs.microsoft.com/windows/uwp/contacts-and-calendar/images/shoulder-tap-static-payload.png"/>
+                    </Grid>
+                </Grid>
+            </ToolkitControls:DropShadowPanel>
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Left">
+                <Grid Margin="20,0,0,0">
+                    <Image x:Name="MainFoodImage" Width="70" Height="70"                       
                    VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                <Image x:Name="SecondaryFoodImage" Width="30" Height="30"
+                    <Image x:Name="SecondaryFoodImage" Width="30" Height="30"
                    VerticalAlignment="Top" HorizontalAlignment="Right"/>
-            </Grid>
-            <TextBlock Text="{x:Bind FoodEnglishName, Mode=OneWay}" VerticalAlignment="Top" Margin="6,-5,0,0"
+                </Grid>
+                <TextBlock Text="{x:Bind FoodEnglishName, Mode=OneWay}" VerticalAlignment="Top" Margin="6,-5,0,0"
                        FontSize="15" FontWeight="Bold" />
-        </StackPanel>
-    </Grid>
+            </StackPanel>
+        </Grid>
+    </SwipeControl>
 </UserControl>

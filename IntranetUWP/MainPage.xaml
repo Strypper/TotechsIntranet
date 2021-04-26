@@ -51,6 +51,21 @@
                 </winui:NavigationViewItem.Icon>
             </winui:NavigationViewItem>
         </winui:NavigationView.MenuItems>
+        <winui:NavigationView.PaneFooter>
+            <Grid Padding="10,10,0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="0.2*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal">
+                    <PersonPicture x:Name="ProfilePicture" Width="20"/>
+                    <TextBlock Text="Strypper Jason" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                </StackPanel>
+                <Button x:Name="LogoutButton" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                        FontFamily="Segoe Fluent Icons" Content="&#xE7E8;" Background="Transparent"
+                        Foreground="Red" Click="LogoutButton_Click" ToolTipService.ToolTip="Log out"/>
+            </Grid>
+        </winui:NavigationView.PaneFooter>
         <Frame x:Name="TheMainFrame"/>
     </winui:NavigationView>
 </Page>

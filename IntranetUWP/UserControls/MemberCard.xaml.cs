@@ -1,14 +1,9 @@
 ﻿using IntranetUWP.Helpers;
 using IntranetUWP.Models;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Net.Http;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -44,6 +39,18 @@ namespace IntranetUWP.UserControls
 
         public static readonly DependencyProperty EmployeeNameProperty =
             DependencyProperty.Register("EmployeeName", typeof(string), typeof(MemberCard), new PropertyMetadata(null));
+
+
+
+        public bool Company
+        {
+            get { return (bool)GetValue(CompanyProperty); }
+            set { SetValue(CompanyProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Company.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty CompanyProperty =
+            DependencyProperty.Register("Company", typeof(bool), typeof(MemberCard), new PropertyMetadata(true));
 
 
 

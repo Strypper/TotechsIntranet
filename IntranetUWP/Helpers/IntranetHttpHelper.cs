@@ -20,6 +20,14 @@ namespace IntranetUWP.Helpers
             return JsonConvert.DeserializeObject<T>(result);
         }
 
+        public async Task<T> GetByIdAsync<T>(string url, int id)
+        {
+            string finalGetByIdUrl(int entityId) => $"{url}/{entityId}";
+            var response = await GetAsync(finalGetByIdUrl(id));
+            var result = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<T>(result);
+        }
+
         public async Task<T> CreateAsync<T>(string url, object o)
         {
             var content = new StringContent(JsonConvert.SerializeObject(o), Encoding.UTF8, "application/json");

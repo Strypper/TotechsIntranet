@@ -10,6 +10,8 @@
     <Application.Resources>
         <ResourceDictionary>
             <converters:StringToImageSourceConverter x:Key="StringToImageSourceConverter"/>
+            <converters:BoolToCompanyConverter x:Key="BoolToCompanyConverter"/>
+            <converters:DoubleToPercentConverter x:Key="DoubleToPercentConverter"/>
 
             <x:Double x:Key="ContentDialogMaxWidth">1800</x:Double>
             <x:Double x:Key="ContentDialogMaxHeight">2000</x:Double>

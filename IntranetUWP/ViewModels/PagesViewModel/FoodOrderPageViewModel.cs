@@ -28,8 +28,11 @@ namespace IntranetUWP.ViewModels.PagesViewModel
         public ICommand deleteFoodCommand { get; set; }
         public ICommand deleteAllFoodCommand { get; set; }
         public ICommand getUserCommand { get; set; }
+        private ObservableCollection<UserDTO> users = new ObservableCollection<UserDTO>();
         public ObservableCollection<UserDTO> Users { get; set; }
+        private ObservableCollection<FoodDTO> foods { get; set; } = new ObservableCollection<FoodDTO>();
         public ObservableCollection<FoodDTO> Foods { get; set; }
+        private ObservableCollection<UserFoodDTO> userFoods { get; set; } = new ObservableCollection<UserFoodDTO>();
         public ObservableCollection<UserFoodDTO> UserFoods { get; set; }
         public FoodDTO SelectedFood { get; set; }
 
@@ -74,11 +77,44 @@ namespace IntranetUWP.ViewModels.PagesViewModel
             { 11, null }
         };
 
+        public IDictionary<int, int> _foodCount = new Dictionary<int, int>();
 
-        private async Task GetAllFood()
+        private async Task GetAllFood() => foods = await httpHelper.GetAsync<ObservableCollection<FoodDTO>>(getFoodsDataUrl);
+        private void BindFoodBackToUI(ObservableCollection<FoodDTO> foodList)
         {
-            var foodList = await httpHelper.GetAsync<ObservableCollection<FoodDTO>>(getFoodsDataUrl);
-            foreach ( var food in foodList) { Foods.Add(food); }
+            var numberOfUserFood = UserFoods.Count();
+            foreach (var userFood in UserFoods)
+            {
+                if (_foodCount.ContainsKey(userFood.food.id))
+                {
+                    _foodCount[userFood.food.id] += 1;
+                }
+                else
+                {
+                    _foodCount.Add(userFood.food.id, 1);
+                }
+            }
+            foreach (var food in foodList)
+            {
+                double valuePercent = 0;
+                int numberOfSelectedUser = 0;
+                if (_foodCount.ContainsKey(food.id))
+                {
+                    valuePercent = _foodCount[food.id] / (double)numberOfUserFood;
+                    numberOfSelectedUser = _foodCount[food.id];
+                    //decreaseValue = (_foodCount[food.id] - 1) / ((double)numberOfUserFood - 1) * 100;
+                }
+                Foods.Add(new FoodDTO()
+                {
+                    id = food.id,
+                    foodName = food.foodName,
+                    foodEnglishName = food.foodEnglishName,
+                    mainIcon = food.mainIcon,
+                    secondaryIcon = food.secondaryIcon,
+                    Percentage = valuePercent * 100,
+                    numberOfSelectedUser = numberOfSelectedUser
+                });
+            }
         }
 
         private async Task CreateFood()
@@ -111,8 +147,13 @@ namespace IntranetUWP.ViewModels.PagesViewModel
 
         private async Task GetAllUsers()
         {
-            var usersList = await httpHelper.GetAsync<ObservableCollection<UserDTO>>(getUsersDataUrl);
-            foreach( var user in usersList ) { Users.Add(user); } 
+            users = await httpHelper.GetAsync<ObservableCollection<UserDTO>>(getUsersDataUrl);
+            //foreach( var user in usersList ) { Users.Add(user); } 
+        }
+
+        private void BindUsersBackToUI(ObservableCollection<UserDTO> usersList)
+        {
+            foreach (var user in usersList) { Users.Add(user); }
         }
 
         private async Task GetUserFoodsData()
@@ -137,6 +178,9 @@ namespace IntranetUWP.ViewModels.PagesViewModel
                 userSelectedFood.foodList = Foods;
                 UserFoods.Add(userSelectedFood);
             };
+
+            BindFoodBackToUI(foods);
+            BindUsersBackToUI(users);
         }
 
         private void Foods_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

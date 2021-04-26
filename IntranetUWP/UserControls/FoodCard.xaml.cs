@@ -1,9 +1,7 @@
-﻿using IntranetUWP.Models;
+﻿using IntranetUWP.Helpers;
+using IntranetUWP.Models;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Numerics;
-using System.Runtime.CompilerServices;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -13,7 +11,7 @@ using Windows.UI.Xaml.Media.Imaging;
 
 namespace IntranetUWP.UserControls
 {
-    public delegate void FoodCardEventHandler(int foodId);
+    public delegate void FoodCardEventHandler(int foodId, bool isToggled);
 
     public sealed partial class FoodCard : UserControl
     {
@@ -64,6 +62,20 @@ namespace IntranetUWP.UserControls
             DependencyProperty.Register("IsSelected", typeof(bool), typeof(FoodCard), new PropertyMetadata(null));
 
 
+
+        public bool IsEnabled
+        {
+            get { return (bool)GetValue(IsEnabledProperty); }
+            set { SetValue(IsEnabledProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for IsEnabled.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsEnabledProperty =
+            DependencyProperty.Register("IsEnabled", typeof(bool), typeof(FoodCard), new PropertyMetadata(false));
+
+
+
+
         public int MainFoodIcon
         {
             get { return (int)GetValue(MainFoodIconProperty); }
@@ -77,10 +89,6 @@ namespace IntranetUWP.UserControls
         // Using a DependencyProperty as the backing store for MainFoodIcon.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty MainFoodIconProperty =
             DependencyProperty.Register("MainFoodIcon", typeof(int), typeof(FoodCard), null);
-
-
-
-
 
         public int? SecondaryFoodIcon
         {
@@ -122,26 +130,68 @@ namespace IntranetUWP.UserControls
             { 11, null }
         };
 
+
+
+        public double Percentage
+        {
+            get { return (double)GetValue(PercentageProperty); }
+            set { SetValue(PercentageProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Percentage.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty PercentageProperty =
+            DependencyProperty.Register("Percentage", typeof(double), typeof(double), new PropertyMetadata(0.0));
+
+
+
+        public double NumberOfSelectedUser
+        {
+            get { return (double)GetValue(NumberOfSelectedUserProperty); }
+            set { SetValue(NumberOfSelectedUserProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for NumberOfSelectedUser.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty NumberOfSelectedUserProperty =
+            DependencyProperty.Register("NumberOfSelectedUser", typeof(double), typeof(double), new PropertyMetadata(0.0));
+
+
         public event FoodCardEventHandler ToggleClick;
+        private IntranetHttpHelper httpHelper = new IntranetHttpHelper();
         public FoodCard()
         {
             this.InitializeComponent();
         }
 
-        private void ToggleButton_Click(object sender, RoutedEventArgs e)
+        private async void ToggleButton_Click(object sender, RoutedEventArgs e)
         {
             if (sender is ToggleButton toggleSwitch)
             {
                 if (toggleSwitch.IsChecked == true)
                 {
-                    ToggleClick?.Invoke(FoodId);
+                    ToggleClick?.Invoke(FoodId, true);
+                    var createupdateUserFoodDTO = new CreateUpdateUserFoodDTO();
+                    createupdateUserFoodDTO.userId = (int)App.localSettings.Values["UserId"];
+                    createupdateUserFoodDTO.foodId = FoodId;
+                    await httpHelper.CreateAsync<UserFoodDTO>("UserFood/Create", createupdateUserFoodDTO);
+                    App.localSettings.Values["FoodId"] = FoodId;
                 }
                 else
                 {
-                    ToggleClick?.Invoke(FoodId);
+                    var userFood = await httpHelper.GetByIdAsync<UserFoodDTO>("UserFood/GetUserSelectedFood", (int)App.localSettings.Values["UserId"]);
+                    await httpHelper.RemoveAsync("UserFood/Delete", userFood.id);
+                    ToggleClick?.Invoke(FoodId, false);
                     System.Diagnostics.Debug.WriteLine(FoodId);
                 }
             }
+        }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            if(App.localSettings.Values["FoodId"] != null)
+            {
+                ChooseButton.IsChecked = FoodId == (int)App.localSettings.Values["FoodId"] ? true : false;
+            }
+            PickRateBar.Value = Percentage;
         }
     }
 }

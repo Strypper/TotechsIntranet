@@ -10,7 +10,22 @@ namespace IntranetUWP.Models
         public string foodEnglishName { get; set; }
         public int mainIcon { get; set; } = 5;
         public int? secondaryIcon { get; set; } = 11;
-        public decimal percentage { get; set; }
+        //public double percentage { get; set; }
+        public double numberOfSelectedUser { get; set; }
+
+        private double percentage;
+
+        public double Percentage
+        {
+            get { return percentage; }
+            set 
+            { 
+                percentage = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         private bool isSelected;
         public bool IsSelected
         {

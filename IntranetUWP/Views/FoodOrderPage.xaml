@@ -8,7 +8,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:usercontrols="using:IntranetUWP.UserControls" xmlns:data="using:IntranetUWP.Models"
-    xmlns:winui="using:Microsoft.UI.Xaml.Controls"
+    xmlns:winui="using:Microsoft.UI.Xaml.Controls" Loaded="Page_Loaded"
     mc:Ignorable="d" Background="{ThemeResource SystemControlAcrylicWindowBrush}">
 
     <Page.Resources>
@@ -30,7 +30,7 @@
         <controls:AdaptiveGridView x:Name="FoodGridView" animations:ReorderGridAnimation.Duration="300" HorizontalContentAlignment="Center" LostFocus="FoodGridView_LostFocus" SelectedItem="{x:Bind vm.SelectedFood, Mode=TwoWay}"
                                    DesiredWidth="355" StretchContentForSingleRow="False" OneRowModeEnabled="False" Padding="0" SelectionMode="Single" SelectionChanged="FoodGridView_SelectionChanged" ItemsSource="{x:Bind vm.Foods, Mode=TwoWay}">
             <controls:AdaptiveGridView.Header>
-                <Grid Margin="10,0,10,15" HorizontalAlignment="Stretch">
+                <Grid Margin="10,0,10,15" HorizontalAlignment="Stretch" Padding="0">
                     <StackPanel>
                         <StackPanel.RenderTransform>
                             <TranslateTransform x:Name="TranslateTitle"/>
@@ -71,6 +71,7 @@
                         </Image>
                         <Image x:Name="SecondaryFoodImage"  Height="60" Width="60" VerticalAlignment="Top" HorizontalAlignment="Right"/>
                     </Grid>
+                    <winui:ProgressBar x:Name="WorkingBar" Visibility="Collapsed" VerticalAlignment="Bottom" IsIndeterminate="True"/>
                 </Grid>
             </controls:AdaptiveGridView.Header>
             <controls:AdaptiveGridView.ItemContainerTransitions>
@@ -82,8 +83,14 @@
 
             <controls:AdaptiveGridView.ItemTemplate>
                 <DataTemplate x:DataType="data:FoodDTO">
-                    <usercontrols:FoodCard FoodId="{x:Bind id}" FoodName="{x:Bind foodName}" FoodEnglishName="{x:Bind foodEnglishName}" IsSelected="{Binding IsSelected, Mode=TwoWay}"
-                                           MainFoodIcon="{x:Bind mainIcon}" SecondaryFoodIcon="{x:Bind secondaryIcon}" ToggleClick="FoodCard_ToggleClick"/>
+                    <usercontrols:FoodCard FoodId="{x:Bind id}" FoodName="{x:Bind foodName}"
+                                           FoodEnglishName="{x:Bind foodEnglishName}"
+                                           IsSelected="{Binding IsSelected, Mode=TwoWay}" 
+                                           NumberOfSelectedUser="{x:Bind numberOfSelectedUser}"
+                                           MainFoodIcon="{x:Bind mainIcon}" 
+                                           SecondaryFoodIcon="{x:Bind secondaryIcon}" 
+                                           Percentage="{x:Bind Percentage, Mode=TwoWay}" 
+                                           ToggleClick="FoodCard_ToggleClick"/>
                 </DataTemplate>
             </controls:AdaptiveGridView.ItemTemplate>
             <controls:AdaptiveGridView.Footer>
@@ -112,7 +119,7 @@
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="data:UserFoodDTO">
                             <usercontrols:MemberCard UserId="{x:Bind user.id}" EmployeeName="{x:Bind user.firstName}"
-                                                     ProfilePictureUrl="{x:Bind user.profilePic}"
+                                                     ProfilePictureUrl="{x:Bind user.profilePic}" Company="{x:Bind user.company}"
                                                      FoodList="{Binding foodList}" SelectedFood="{x:Bind food.id}"/>
                         </DataTemplate>
                     </ListView.ItemTemplate>
@@ -125,20 +132,14 @@
                 <PivotItem.Header>
                     <Image Source="/Assets/Devinition.png" Width="100" Height="50"/>
                 </PivotItem.Header>
-                <ListView ItemsSource="{x:Bind vm.Users}" SelectionMode="None">
-                    <ListView.ItemContainerStyle>
-                        <Style TargetType="ListViewItem">
-                            <Setter Property="Margin" Value="0"/>
-                            <Setter Property="Padding" Value="0"/>
-                            <Setter Property="HorizontalAlignment" Value="Stretch"/>
-                        </Style>
-                    </ListView.ItemContainerStyle>
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <usercontrols:MemberCard/>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
+            </PivotItem>
+            <PivotItem>
+                <PivotItem.Header>
+                    <TextBlock>
+                        <Run Text="&#xE1E0;" FontFamily="Segoe Fluent Icons"/>
+                        <Run Text="Disabled People"/>
+                    </TextBlock>
+                </PivotItem.Header>
             </PivotItem>
         </Pivot>
         <CommandBar Background="{ThemeResource SystemControlAcrylicElementBrush}" IsOpen="False" DefaultLabelPosition="Right"
@@ -174,13 +175,18 @@
                     <KeyboardAccelerator Modifiers="Control" Key="D"/>
                 </AppBarButton.KeyboardAccelerators>
             </AppBarButton>
+            <AppBarButton x:Name="PrintSheet" Icon="Print" Label="Print Food Sheet">
+                <AppBarButton.KeyboardAccelerators>
+                    <KeyboardAccelerator Modifiers="Control" Key="P"/>
+                </AppBarButton.KeyboardAccelerators>
+            </AppBarButton>
             <AppBarButton x:Name="DeleteAllFood" Icon="Delete" Label="Delete entire list" Foreground="Red" 
                           Command="{x:Bind vm.deleteAllFoodCommand}" IsEnabled="{x:Bind vm.DeleteAllFoodButtonState, Mode=OneWay}">
                 <AppBarButton.KeyboardAccelerators>
                     <KeyboardAccelerator Modifiers="Control,Shift" Key="D"/>
                 </AppBarButton.KeyboardAccelerators>
             </AppBarButton>
-            <AppBarButton x:Name="NotifyTeam" Label="Notified the team">
+            <AppBarButton x:Name="NotifyTeam" Label="Notified the team" Click="NotifyTeam_Click">
                 <AppBarButton.Icon>
                     <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xEA8F;" />
                 </AppBarButton.Icon>

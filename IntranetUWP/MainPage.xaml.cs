@@ -1,33 +1,21 @@
 ﻿using IntranetUWP.Views;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.ApplicationModel.Core;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
+using Windows.UI.Xaml.Media.Imaging;
 
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
-
-namespace IntranetUWP
-{
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
+namespace IntranetUWP 
+{ 
     public sealed partial class MainPage : Page
     {
         public MainPage()
         {
             this.InitializeComponent();
             TheMainFrame.Navigate(typeof(FoodOrderPage));
+            if(App.localSettings.Values["ProfilePic"] != null)
+            {
+                ProfilePicture.ProfilePicture = new BitmapImage(new Uri(App.localSettings.Values["ProfilePic"] as string));
+            }
         }
 
         private void NavigationViewPanel_SelectionChanged(Microsoft.UI.Xaml.Controls.NavigationView sender, Microsoft.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs args)
@@ -56,6 +44,12 @@ namespace IntranetUWP
                     TheMainFrame.Navigate(typeof(MemberPage));
                     break;
             }
+        }
+
+        private void LogoutButton_Click(object sender, RoutedEventArgs e)
+        {
+            App.localSettings.Values.Clear();
+            Frame.Navigate(typeof(LoginPage));
         }
     }
 }

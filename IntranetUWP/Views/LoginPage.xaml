@@ -18,56 +18,76 @@
             <!--LottieVisualSource with JSON UriSource-->
             <lottie:LottieVisualSource x:Name="LottieJsonSource" UriSource="ms-appx:///Assets/IntranetLogin.json"/>
         </muxc:AnimatedVisualPlayer>
-        <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
-            <StackPanel.ChildrenTransitions>
-                <TransitionCollection>
-                    <EntranceThemeTransition IsStaggeringEnabled="True"  FromVerticalOffset="1000"/>
-                    <AddDeleteThemeTransition/>
-                </TransitionCollection>
-            </StackPanel.ChildrenTransitions>
-            <TextBlock x:Name="Status" Text="Let's started" FontSize="50" FontWeight="Bold" Margin="5"/>
-            <PersonPicture Visibility="{x:Bind RegisterSwitch.IsOn, Mode=OneWay}"/>
-            <TextBox x:Name="UserName" Header="User Name" HorizontalAlignment="Center" MinWidth="400" MinHeight="60" Margin="5"
-                     FontSize="30"/>
-            <PasswordBox x:Name="Password" Header="Password" HorizontalAlignment="Center" MinWidth="400" MinHeight="60" Margin="5"
-                     FontSize="30"/>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
-                        Visibility="{x:Bind RegisterSwitch.IsOn, Mode=OneWay}">
+        <muxc:ScrollView Grid.Column="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                 <StackPanel.ChildrenTransitions>
                     <TransitionCollection>
-                        <EntranceThemeTransition IsStaggeringEnabled="True"  FromHorizontalOffset="1000"/>
-                    </TransitionCollection>
-                </StackPanel.ChildrenTransitions>
-                <ToggleButton x:Name="iDealogicToggle" Content="iDealogic" FontSize="20" Click="iDealogicToggle_Click" MinWidth="150" MinHeight="60" Margin="5" Style="{StaticResource ToggleButtonRevealStyle}"/>
-                <ToggleButton x:Name="DevinitionToggle" Content="Devinition" FontSize="20" Click="DeviToggle_Click" MinWidth="150" MinHeight="60" Margin="0,5,5,5" Style="{StaticResource ToggleButtonRevealStyle}"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
-                        Visibility="{x:Bind RegisterSwitch.IsOn, Mode=OneWay}">
-                <StackPanel.ChildrenTransitions>
-                    <TransitionCollection>
-                        <EntranceThemeTransition IsStaggeringEnabled="True"  FromHorizontalOffset="1000"/>
-                    </TransitionCollection>
-                </StackPanel.ChildrenTransitions>
-                <ToggleButton x:Name="BoyToggle" Content="Boy" FontSize="20" MinWidth="150" MinHeight="60" Margin="5" Style="{StaticResource ToggleButtonRevealStyle}"/>
-                <ToggleButton x:Name="GirlToggle" Content="Girl" FontSize="20" MinWidth="150" MinHeight="60" Margin="0,5,5,5" Style="{StaticResource ToggleButtonRevealStyle}"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <StackPanel.ChildrenTransitions>
-                    <TransitionCollection>
-                        <EntranceThemeTransition IsStaggeringEnabled="True"  FromHorizontalOffset="1000"/>
+                        <EntranceThemeTransition IsStaggeringEnabled="True"  FromVerticalOffset="1000"/>
                         <AddDeleteThemeTransition/>
                     </TransitionCollection>
                 </StackPanel.ChildrenTransitions>
-                <ToggleSwitch x:Name="RegisterSwitch" Header="Register" Margin="5" IsOn="False"/>
-                <CheckBox Content="Remember password" VerticalAlignment="Bottom" Margin="5"/>
-            </StackPanel>
-            <muxc:ProgressBar x:Name="WorkingBar" Visibility="Collapsed" IsIndeterminate="True" Margin="5"/>
-            <Button x:Name="NavigateMainFrameButton" HorizontalAlignment="Center" Margin="5" FontSize="20"
+                <TextBlock x:Name="Status" Text="Let's started" FontSize="50" FontWeight="Bold" Margin="5"/>
+                <PersonPicture Visibility="{x:Bind RegisterSwitch.IsOn, Mode=OneWay}"/>
+                <TextBox x:Name="UserName" Header="User Name" HorizontalAlignment="Center" MinWidth="400" MinHeight="60" Margin="5"
+                     FontSize="30"/>
+                <TextBox x:Name="FirstName" Header="First Name" HorizontalAlignment="Center" MinWidth="400" MinHeight="60" Margin="5"
+                     FontSize="30" Visibility="{x:Bind RegisterSwitch.IsOn, Mode=OneWay}"/>
+                <Grid HorizontalAlignment="Stretch" Visibility="{x:Bind RegisterSwitch.IsOn, Mode=OneWay}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox x:Name="MiddleName" Header="Middle Name" HorizontalAlignment="Stretch" MinHeight="60" Margin="5"
+                     FontSize="30"/>
+                    <TextBox x:Name="LastName" Grid.Column="1" Header="Last Name" HorizontalAlignment="Stretch" MinHeight="60" Margin="0,5,5,5"
+                     FontSize="30" />
+                </Grid>
+                <Slider x:Name="AgeSlider" Header="Age" FontSize="30" Minimum="18" Maximum="60" TickFrequency="1" TickPlacement="Outside" Margin="5"
+                    Visibility="{x:Bind RegisterSwitch.IsOn, Mode=OneWay}"/>
+                <PasswordBox x:Name="Password" Header="Password" HorizontalAlignment="Center" MinWidth="400" MinHeight="60" Margin="5"
+                     FontSize="30" GotFocus="Password_GotFocus"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
+                        Visibility="{x:Bind RegisterSwitch.IsOn, Mode=OneWay}">
+                    <StackPanel.ChildrenTransitions>
+                        <TransitionCollection>
+                            <EntranceThemeTransition IsStaggeringEnabled="True"  FromHorizontalOffset="1000"/>
+                        </TransitionCollection>
+                    </StackPanel.ChildrenTransitions>
+                    <ToggleButton x:Name="iDealogicToggle" Content="iDealogic" FontSize="20" Click="iDealogicToggle_Click" MinWidth="150" MinHeight="60" Margin="5" Style="{StaticResource ToggleButtonRevealStyle}"/>
+                    <ToggleButton x:Name="DevinitionToggle" Content="Devinition" FontSize="20" Click="DeviToggle_Click" MinWidth="150" MinHeight="60" Margin="0,5,5,5" Style="{StaticResource ToggleButtonRevealStyle}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
+                        Visibility="{x:Bind RegisterSwitch.IsOn, Mode=OneWay}">
+                    <StackPanel.ChildrenTransitions>
+                        <TransitionCollection>
+                            <EntranceThemeTransition IsStaggeringEnabled="True"  FromHorizontalOffset="1000"/>
+                        </TransitionCollection>
+                    </StackPanel.ChildrenTransitions>
+                    <ToggleButton x:Name="BoyToggle" Margin="5" Style="{StaticResource ToggleButtonRevealStyle}" Padding="0" BorderThickness="10">
+                        <Image Width="150" Height="200" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Stretch="UniformToFill" Source="/Assets/Boy.png"/>
+                    </ToggleButton>
+                    <ToggleButton x:Name="GirlToggle" Margin="0,5,5,5" Style="{StaticResource ToggleButtonRevealStyle}" Padding="0" BorderThickness="10">
+                        <Image Width="150" Height="200" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Stretch="UniformToFill" Source="/Assets/Girl.png"/>
+                    </ToggleButton>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel.ChildrenTransitions>
+                        <TransitionCollection>
+                            <EntranceThemeTransition IsStaggeringEnabled="True"  FromHorizontalOffset="1000"/>
+                            <AddDeleteThemeTransition/>
+                        </TransitionCollection>
+                    </StackPanel.ChildrenTransitions>
+                    <ToggleSwitch x:Name="RegisterSwitch" Header="Register" Margin="5" IsOn="False"/>
+                    <CheckBox Content="Remember password" VerticalAlignment="Bottom" Margin="5"/>
+                </StackPanel>
+                <muxc:ProgressBar x:Name="WorkingBar" Visibility="Collapsed" IsIndeterminate="True" Margin="5"/>
+                <Button x:Name="NavigateMainFrameButton" HorizontalAlignment="Center" Margin="5" FontSize="20"
                     Content="Login" MinWidth="300" MinHeight="60" Click="NavigateMainFrameButton_Click" Style="{StaticResource ButtonRevealStyle}">
-                <Button.KeyboardAccelerators>
-                    <KeyboardAccelerator Key="Enter"/>
-                </Button.KeyboardAccelerators>
-            </Button>
-        </StackPanel>
+                    <Button.KeyboardAccelerators>
+                        <KeyboardAccelerator Key="Enter"/>
+                    </Button.KeyboardAccelerators>
+                </Button>
+            </StackPanel>
+        </muxc:ScrollView>
     </Grid>
 </Page>

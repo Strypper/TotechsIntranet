@@ -19,6 +19,7 @@ namespace IntranetUWP.Views
     {
         public readonly string LoginUrl = "https://intranetapi.azurewebsites.net/api/User/Login";
         public readonly string RegisterUrl = "https://intranetapi.azurewebsites.net/api/User/Create";
+        public string GetFoodUrl(int id) => $"https://intranetapi.azurewebsites.net/api/UserFood/GetUserSelectedFood/{id}";
         HttpClient httpClient = new HttpClient();
         public LoginPage()
         {
@@ -38,7 +39,15 @@ namespace IntranetUWP.Views
                 var result = await response.Content.ReadAsStringAsync();
                 if (response.StatusCode.ToString() == "OK")
                 {
-                    WorkingBar.Visibility = Visibility.Visible;
+                    var userInfo = JsonConvert.DeserializeObject<UserDTO>(result);
+                    App.localSettings.Values["UserId"] = userInfo.id;
+                    App.localSettings.Values["UserName"] = userInfo.userName;
+                    App.localSettings.Values["Password"] = Password.Password;
+                    App.localSettings.Values["ProfilePic"] = userInfo.profilePic;
+                    var foodRequest = await httpClient.GetAsync(GetFoodUrl(userInfo.id));
+                    var foodResult = await foodRequest.Content.ReadAsStringAsync();
+                    var foodInfo = JsonConvert.DeserializeObject<UserFoodDTO>(foodResult);
+                    if(foodInfo != null) App.localSettings.Values["FoodId"] = foodInfo.food.id;
                     Frame.Navigate(typeof(MainPage));
                 }
                 else
@@ -55,14 +64,15 @@ namespace IntranetUWP.Views
                 WorkingBar.Visibility = Visibility.Visible;
                 RegistingModel signUpInfo = new RegistingModel() { userName = UserName.Text, password = Password.Password, 
                                                                    company = iDealogicToggle.IsChecked == true ? true : false,
-                                                                   gender = true, age = "26"};
+                                                                   firstName = FirstName.Text, middleName = MiddleName.Text, lastName = LastName.Text,
+                                                                   gender = BoyToggle.IsChecked == true ? true : false, age = AgeSlider.Value.ToString()};
                 var content = new StringContent(JsonConvert.SerializeObject(signUpInfo), Encoding.UTF8, "application/json");
                 var response = await httpClient.PostAsync(RegisterUrl, content);
                 var result = await response.Content.ReadAsStringAsync();
                 if (response.StatusCode.ToString() == "Created")
                 {
                     RegisterSwitch.IsOn = false;
-                    WorkingBar.Visibility = Visibility.Visible;
+                    WorkingBar.Visibility = Visibility.Collapsed;
                     Status.Text = "Alright let's log in 🤩";
                 }
                 else
@@ -85,6 +95,12 @@ namespace IntranetUWP.Views
         {
             DevinitionToggle.IsChecked = true;
             iDealogicToggle.IsChecked = false;
+        }
+
+        private void Password_GotFocus(object sender, RoutedEventArgs e)
+        {
+            Password.ClearValue(PasswordBox.ForegroundProperty);
+            WorkingBar.Visibility = Visibility.Collapsed;
         }
     }
 }

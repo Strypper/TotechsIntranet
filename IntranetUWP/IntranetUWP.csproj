@@ -120,6 +120,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\BoolToCompanyConverter.cs" />
+    <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\DoubleToPercentConverter.cs" />
     <Compile Include="Converters\StringToImageSourceConverter.cs" />
     <Compile Include="Helpers\IntranetHttpHelper.cs" />
@@ -145,6 +146,12 @@
     </Compile>
     <Compile Include="UserControls\MemberProfileCard.xaml.cs">
       <DependentUpon>MemberProfileCard.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\PastedFoodItemList.xaml.cs">
+      <DependentUpon>PastedFoodItemList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\PasteFoodDialog.xaml.cs">
+      <DependentUpon>PasteFoodDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\Commands\RelayCommand.cs" />
     <Compile Include="ViewModels\Commands\SignalRSendMessageCommandParameter.cs" />
@@ -240,6 +247,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\MemberProfileCard.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\PastedFoodItemList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\PasteFoodDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

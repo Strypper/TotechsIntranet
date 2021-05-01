@@ -28,7 +28,8 @@
             <ColumnDefinition Width="400"/>
         </Grid.ColumnDefinitions>
         <controls:AdaptiveGridView x:Name="FoodGridView" animations:ReorderGridAnimation.Duration="300" HorizontalContentAlignment="Center" LostFocus="FoodGridView_LostFocus" SelectedItem="{x:Bind vm.SelectedFood, Mode=TwoWay}"
-                                   DesiredWidth="355" StretchContentForSingleRow="False" OneRowModeEnabled="False" Padding="0" SelectionMode="Single" SelectionChanged="FoodGridView_SelectionChanged" ItemsSource="{x:Bind vm.Foods, Mode=TwoWay}">
+                                   DesiredWidth="355" StretchContentForSingleRow="False" OneRowModeEnabled="False" Padding="0" SelectionMode="Single" SelectionChanged="FoodGridView_SelectionChanged" ItemsSource="{x:Bind vm.Foods, Mode=TwoWay}"
+                                   RightTapped="FoodGridView_RightTapped">
             <controls:AdaptiveGridView.Header>
                 <Grid Margin="10,0,10,15" HorizontalAlignment="Stretch" Padding="0">
                     <StackPanel>
@@ -90,7 +91,9 @@
                                            MainFoodIcon="{x:Bind mainIcon}" 
                                            SecondaryFoodIcon="{x:Bind secondaryIcon}" 
                                            Percentage="{x:Bind Percentage, Mode=TwoWay}" 
-                                           ToggleClick="FoodCard_ToggleClick"/>
+                                           usersAvatar="{x:Bind usersAvatar}"
+                                           ToggleClick="FoodCard_ToggleClick"
+                                           DeleteSwipe="FoodCard_DeleteSwipe"/>
                 </DataTemplate>
             </controls:AdaptiveGridView.ItemTemplate>
             <controls:AdaptiveGridView.Footer>
@@ -170,14 +173,10 @@
                 </AppBarButton.KeyboardAccelerators>
             </AppBarButton>
             <AppBarButton x:Name="EditFood" Icon="Edit" Label="Edit" IsEnabled="False"/>
-            <AppBarButton x:Name="DeleteFood" Icon="Delete" Label="Delete food" Command="{x:Bind vm.deleteFoodCommand}" IsEnabled="False">
+            <AppBarButton x:Name="DeleteFood" Icon="Delete" Label="Delete food" 
+                          Command="{x:Bind vm.deleteFoodCommand}" IsEnabled="False">
                 <AppBarButton.KeyboardAccelerators>
                     <KeyboardAccelerator Modifiers="Control" Key="D"/>
-                </AppBarButton.KeyboardAccelerators>
-            </AppBarButton>
-            <AppBarButton x:Name="PrintSheet" Icon="Print" Label="Print Food Sheet">
-                <AppBarButton.KeyboardAccelerators>
-                    <KeyboardAccelerator Modifiers="Control" Key="P"/>
                 </AppBarButton.KeyboardAccelerators>
             </AppBarButton>
             <AppBarButton x:Name="DeleteAllFood" Icon="Delete" Label="Delete entire list" Foreground="Red" 
@@ -186,12 +185,27 @@
                     <KeyboardAccelerator Modifiers="Control,Shift" Key="D"/>
                 </AppBarButton.KeyboardAccelerators>
             </AppBarButton>
-            <AppBarButton x:Name="NotifyTeam" Label="Notified the team" Click="NotifyTeam_Click">
+            <AppBarButton x:Name="NotifyTeam" Label="Notified the team" Command="{x:Bind vm.notifyTeamCommand}">
                 <AppBarButton.Icon>
                     <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xEA8F;" />
                 </AppBarButton.Icon>
             </AppBarButton>
             <AppBarButton Icon="Refresh" Command="{x:Bind vm.getUserCommand}"/>
+            <CommandBar.SecondaryCommands>
+                <AppBarButton Label="Export to word document" Command="{x:Bind vm.getFoodFromExcel}">
+                    <AppBarButton.Icon>
+                        <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xF585;" />
+                    </AppBarButton.Icon>
+                    <AppBarButton.KeyboardAccelerators>
+                        <KeyboardAccelerator Modifiers="Control" Key="W"/>
+                    </AppBarButton.KeyboardAccelerators>
+                </AppBarButton>
+                <AppBarButton x:Name="PrintSheet" Icon="Print" Label="Print Food Sheet">
+                    <AppBarButton.KeyboardAccelerators>
+                        <KeyboardAccelerator Modifiers="Control" Key="P"/>
+                    </AppBarButton.KeyboardAccelerators>
+                </AppBarButton>
+            </CommandBar.SecondaryCommands>
         </CommandBar>
     </Grid>
 </Page>

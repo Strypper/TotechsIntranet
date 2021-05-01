@@ -1,0 +1,51 @@
+﻿<UserControl
+    x:Class="IntranetUWP.UserControls.PastedFoodItemList"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:IntranetUWP.UserControls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" Loaded="UserControl_Loaded"
+    d:DesignHeight="200"
+    d:DesignWidth="700">
+
+    <UserControl.Resources>
+        <FontIconSource x:Key="DeleteIcon" Glyph="&#xE107;"/>
+        <SwipeItems x:Key="right" Mode="Execute">
+            <SwipeItem Text="Delete" IconSource="{StaticResource DeleteIcon}"
+                       Background="Red"/>
+        </SwipeItems>
+    </UserControl.Resources>
+
+    <SwipeControl RightItems="{StaticResource right}" Width="650">
+        <StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                <Grid Width="75" Height="75" VerticalAlignment="Top" Margin="5">
+                    <Image x:Name="PrimaryFood" Width="65" Height="65"/>
+                    <Image x:Name="SecondaryFood" VerticalAlignment="Top" HorizontalAlignment="Right"
+                           Width="35" Height="35"/>
+                </Grid>
+                <StackPanel>
+                    <TextBox x:Name="VietNameseFoodName" Text="{x:Bind Food.foodName, Mode=OneWay}" PlaceholderText="VietNamese name" 
+                             LostFocus="VietNameseFoodName_LostFocus" MinWidth="550" Margin="5,5,5,0"/>
+                    <TextBox x:Name="EnglishFoodName" PlaceholderText="English name" MinWidth="550" 
+                             LostFocus="EnglishFoodName_LostFocus" Margin="5,5,5,0"/>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
+                <RadioButton x:Name="RiceOption" Content="🍚 Rice" Checked="MainFood_Checked"/>
+                <RadioButton x:Name="BreadOption" Content="🥖 Bread" Checked="MainFood_Checked"/>
+                <RadioButton x:Name="SpaghetiOption" Content="🍝 Spagheti" Checked="MainFood_Checked"/>
+                <RadioButton x:Name="NoodleOption" Content="🍜 Noodle" Checked="MainFood_Checked"/>
+                <RadioButton x:Name="DefaultOption" Content="🍱 Default" Checked="MainFood_Checked"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
+                <RadioButton x:Name="Meat" Content="🥩 Meat" Checked="SecondaryFood_Checked" IsEnabled="{x:Bind _isSelectable, Mode=TwoWay}" IsChecked="{x:Bind _isChecked, Mode=TwoWay}"/>
+                <RadioButton x:Name="Chicken" Content="🍗 Chicken" Checked="SecondaryFood_Checked" IsEnabled="{x:Bind _isSelectable, Mode=TwoWay}" IsChecked="{x:Bind _isChecked, Mode=TwoWay}"/>
+                <RadioButton x:Name="Egg" Content="🍳 Egg" Checked="SecondaryFood_Checked" IsEnabled="{x:Bind _isSelectable, Mode=TwoWay}" IsChecked="{x:Bind _isChecked, Mode=TwoWay}"/>
+                <RadioButton x:Name="Shrimp" Content="🍤 Shrimp" Checked="SecondaryFood_Checked" IsEnabled="{x:Bind _isSelectable, Mode=TwoWay}" IsChecked="{x:Bind _isChecked, Mode=TwoWay}"/>
+                <RadioButton x:Name="Falafel" Content="🧆 Falafel" Checked="SecondaryFood_Checked" IsEnabled="{x:Bind _isSelectable, Mode=TwoWay}" IsChecked="{x:Bind _isChecked, Mode=TwoWay}"/>
+            </StackPanel>
+        </StackPanel>
+    </SwipeControl>
+</UserControl>

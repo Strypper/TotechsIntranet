@@ -2,6 +2,8 @@
 using IntranetUWP.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Numerics;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -12,6 +14,7 @@ using Windows.UI.Xaml.Media.Imaging;
 namespace IntranetUWP.UserControls
 {
     public delegate void FoodCardEventHandler(int foodId, bool isToggled);
+    public delegate void DeleteFoodCardEventHandler(int foodId);
 
     public sealed partial class FoodCard : UserControl
     {
@@ -60,18 +63,6 @@ namespace IntranetUWP.UserControls
         // Using a DependencyProperty as the backing store for IsSelected.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IsSelectedProperty =
             DependencyProperty.Register("IsSelected", typeof(bool), typeof(FoodCard), new PropertyMetadata(null));
-
-
-
-        public bool IsEnabled
-        {
-            get { return (bool)GetValue(IsEnabledProperty); }
-            set { SetValue(IsEnabledProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for IsEnabled.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty IsEnabledProperty =
-            DependencyProperty.Register("IsEnabled", typeof(bool), typeof(FoodCard), new PropertyMetadata(false));
 
 
 
@@ -155,11 +146,55 @@ namespace IntranetUWP.UserControls
             DependencyProperty.Register("NumberOfSelectedUser", typeof(double), typeof(double), new PropertyMetadata(0.0));
 
 
-        public event FoodCardEventHandler ToggleClick;
-        private IntranetHttpHelper httpHelper = new IntranetHttpHelper();
-        public FoodCard()
+
+
+        public List<string> usersAvatar
         {
-            this.InitializeComponent();
+            get { return (List<string>)GetValue(usersAvatarProperty); }
+            set { SetValue(usersAvatarProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for usersAvatar.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty usersAvatarProperty =
+            DependencyProperty.Register("usersAvatar", typeof(List<string>), typeof(List<string>), new PropertyMetadata(0));
+
+
+
+
+        public event FoodCardEventHandler ToggleClick;
+        public event DeleteFoodCardEventHandler DeleteSwipe;
+        private IntranetHttpHelper httpHelper = new IntranetHttpHelper();
+        public FoodCard() => this.InitializeComponent();
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (App.localSettings.Values["FoodId"] != null)
+            {
+                ChooseButton.IsChecked = FoodId == (int)App.localSettings.Values["FoodId"] ? true : false;
+                OwnerUser.Visibility = FoodId == (int)App.localSettings.Values["FoodId"] ? Visibility.Visible : Visibility.Collapsed;
+                OwnerUser.ProfilePicture = new BitmapImage(new Uri(App.localSettings.Values["ProfilePic"] as string));
+            }
+            PickRateBar.Value = Percentage;
+            if (usersAvatar != null)
+            {
+                if (usersAvatar.FirstOrDefault() != null)
+                {
+                    FirstUser.ProfilePicture = new BitmapImage(new Uri(usersAvatar.FirstOrDefault()));
+                    OwnerUser.Translation = new Vector3(-15, 0, 0);
+                }
+                else FirstUser.Visibility = Visibility.Collapsed;
+                if (usersAvatar.Count > 1)
+                {
+                    SecondUser.ProfilePicture = new BitmapImage(new Uri(usersAvatar.ElementAt(1)));
+                    OwnerUser.Translation = new Vector3(-30, 0, 0);
+                }
+                else SecondUser.Visibility = Visibility.Collapsed;
+                if (usersAvatar.Count > 2)
+                {
+                    ThirdUser.ProfilePicture = new BitmapImage(new Uri(usersAvatar.ElementAt(2)));
+                    OwnerUser.Translation = new Vector3(-30, 0, 0);
+                }
+                else ThirdUser.Visibility = Visibility.Collapsed;
+            }
         }
 
         private async void ToggleButton_Click(object sender, RoutedEventArgs e)
@@ -185,13 +220,8 @@ namespace IntranetUWP.UserControls
             }
         }
 
-        private void UserControl_Loaded(object sender, RoutedEventArgs e)
-        {
-            if(App.localSettings.Values["FoodId"] != null)
-            {
-                ChooseButton.IsChecked = FoodId == (int)App.localSettings.Values["FoodId"] ? true : false;
-            }
-            PickRateBar.Value = Percentage;
-        }
+        private void SwipeEditItem_Invoked(SwipeItem sender, SwipeItemInvokedEventArgs args) { }
+
+        private void SwipeDeleteItem_Invoked(SwipeItem sender, SwipeItemInvokedEventArgs args) => DeleteSwipe?.Invoke(FoodId);
     }
 }

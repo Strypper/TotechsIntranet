@@ -10,6 +10,7 @@
     <Application.Resources>
         <ResourceDictionary>
             <converters:StringToImageSourceConverter x:Key="StringToImageSourceConverter"/>
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
             <converters:BoolToCompanyConverter x:Key="BoolToCompanyConverter"/>
             <converters:DoubleToPercentConverter x:Key="DoubleToPercentConverter"/>
 

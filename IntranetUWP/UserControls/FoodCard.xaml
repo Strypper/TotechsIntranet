@@ -14,14 +14,15 @@
     d:DesignWidth="400">
 
     <UserControl.Resources>
-        <SwipeItems x:Key="left" Mode="Reveal">
-            <SwipeItem Text="Reply All"
-                       Background="#FF3e6fa7" Foreground="White"/>
-            <SwipeItem Text="Open"
-                       Background="#FFff9501" Foreground="White"/>
+        <SwipeItems x:Key="left" Mode="Execute">
+            <SwipeItem Text="Edit" Background="Orange" Invoked="SwipeEditItem_Invoked">
+                <SwipeItem.IconSource>
+                    <SymbolIconSource Symbol="Edit"/>
+                </SwipeItem.IconSource>
+            </SwipeItem>
         </SwipeItems>
         <SwipeItems x:Key="right" Mode="Execute">
-            <SwipeItem Text="Delete" Background="Red">
+            <SwipeItem Text="Delete" Background="Red" Invoked="SwipeDeleteItem_Invoked">
                 <SwipeItem.IconSource>
                     <SymbolIconSource Symbol="Delete"/>
                 </SwipeItem.IconSource>
@@ -74,9 +75,14 @@
                         <ToolTipService.ToolTip>
                             <ToolTip Content="3 people order this food"/>
                         </ToolTipService.ToolTip>
-                        <PersonPicture Width="25" HorizontalAlignment="Right" ProfilePicture="https://i.imgur.com/IyYzK6g.jpg"/>
-                        <PersonPicture Width="25" Margin="0,0,15,0" HorizontalAlignment="Right" ProfilePicture="https://i.imgur.com/vc9FudE.jpg"/>
-                        <PersonPicture Width="25" Margin="0,0,30,0" HorizontalAlignment="Right" ProfilePicture="https://docs.microsoft.com/windows/uwp/contacts-and-calendar/images/shoulder-tap-static-payload.png"/>
+                        <PersonPicture x:Name="FirstUser" Width="25" HorizontalAlignment="Right" ProfilePicture="https://i.imgur.com/IyYzK6g.jpg"/>
+                        <PersonPicture x:Name="SecondUser" Width="25" Margin="0,0,15,0" HorizontalAlignment="Right" ProfilePicture="https://i.imgur.com/vc9FudE.jpg"/>
+                        <PersonPicture x:Name="ThirdUser" Width="25" Margin="0,0,30,0" HorizontalAlignment="Right" ProfilePicture="https://docs.microsoft.com/windows/uwp/contacts-and-calendar/images/shoulder-tap-static-payload.png"/>
+                        <PersonPicture x:Name="OwnerUser" Width="25" Visibility="{x:Bind IsSelected, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                            <PersonPicture.TranslationTransition>
+                                <Vector3Transition />
+                            </PersonPicture.TranslationTransition>
+                        </PersonPicture>
                     </Grid>
                 </Grid>
             </ToolkitControls:DropShadowPanel>

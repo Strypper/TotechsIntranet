@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -12,9 +13,9 @@ namespace IntranetUWP.Models
         public int? secondaryIcon { get; set; } = 11;
         //public double percentage { get; set; }
         public double numberOfSelectedUser { get; set; }
+        public List<string> usersAvatar { get; set; } 
 
         private double percentage;
-
         public double Percentage
         {
             get { return percentage; }
@@ -24,7 +25,6 @@ namespace IntranetUWP.Models
                 OnPropertyChanged();
             }
         }
-
 
         private bool isSelected;
         public bool IsSelected

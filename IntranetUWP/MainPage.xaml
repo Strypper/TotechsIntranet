@@ -19,8 +19,49 @@
     </Page.Resources>
 
 
-    <winui:NavigationView PaneDisplayMode="Left" IsBackButtonVisible="Collapsed" IsTitleBarAutoPaddingEnabled="True" IsSettingsVisible="True"
+    <winui:NavigationView x:Name="MainNavigationView" PaneDisplayMode="Left" IsBackButtonVisible="Collapsed" IsTitleBarAutoPaddingEnabled="True" IsSettingsVisible="True"
                           SelectionChanged="NavigationViewPanel_SelectionChanged">
+
+
+
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="WindowsState">
+                <VisualState x:Name="VS1">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="2000"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="MainNavigationView.PaneDisplayMode" Value="Left"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="VS2">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="1500"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="MainNavigationView.PaneDisplayMode" Value="Left"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="VS3">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="800"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="MainNavigationView.PaneDisplayMode" Value="Left"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="VS4">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="MainNavigationView.PaneDisplayMode" Value="LeftCompact"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
         <winui:NavigationView.PaneHeader>
             <Image Source="/Assets/iDealogic.png" Width="90" Height="30" HorizontalAlignment="Left"/>
         </winui:NavigationView.PaneHeader>

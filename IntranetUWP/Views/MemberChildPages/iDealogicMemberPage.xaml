@@ -50,7 +50,7 @@
         </Border>
 
 
-        <Grid VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Grid.Row="1">
+        <Grid VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Grid.Row="1" MaxHeight="320">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>

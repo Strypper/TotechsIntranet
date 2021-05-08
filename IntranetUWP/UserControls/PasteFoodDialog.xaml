@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:IntranetUWP.UserControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:models="using:IntranetUWP.Models"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:models="using:IntranetUWP.Models" xmlns:winui="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d"
     Title="🍱 Check your food list"
     PrimaryButtonText="Import them"
@@ -15,12 +15,23 @@
 
     <Grid>
         <ListView x:Name="FoodList">
+            <ListView.ItemContainerTransitions>
+                <TransitionCollection>
+                    <ContentThemeTransition />
+                    <AddDeleteThemeTransition />
+                    <EntranceThemeTransition IsStaggeringEnabled="True" />
+                    <RepositionThemeTransition />
+                </TransitionCollection>
+            </ListView.ItemContainerTransitions>
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="models:FoodDTO">
-                    <local:PastedFoodItemList Food="{Binding}" 
-                                              FoodEvent="PastedFoodItemList_FoodEvent"/>
+                    <local:PastedFoodItemList Food="{x:Bind}" 
+                                              FoodEvent="PastedFoodItemList_FoodEvent"
+                                              DeleteFoodEvent="PastedFoodItemList_DeleteFoodEvent"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
+        <winui:ProgressBar x:Name="WorkingBar" Visibility="Collapsed" IsIndeterminate="True" 
+                           VerticalAlignment="Top" HorizontalAlignment="Stretch"/>
     </Grid>
 </ContentDialog>

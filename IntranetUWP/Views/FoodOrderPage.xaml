@@ -22,13 +22,72 @@
         </Storyboard>
     </Page.Resources>
 
-    <Grid>
+    <Grid x:Name="MainFrame">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="400"/>
         </Grid.ColumnDefinitions>
-        <controls:AdaptiveGridView x:Name="FoodGridView" animations:ReorderGridAnimation.Duration="300" HorizontalContentAlignment="Center" LostFocus="FoodGridView_LostFocus" SelectedItem="{x:Bind vm.SelectedFood, Mode=TwoWay}"
-                                   DesiredWidth="355" StretchContentForSingleRow="False" OneRowModeEnabled="False" Padding="0" SelectionMode="Single" SelectionChanged="FoodGridView_SelectionChanged" ItemsSource="{x:Bind vm.Foods, Mode=TwoWay}"
+
+
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="WindowsState">
+                <VisualState x:Name="VS1">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="2000"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="MainFrame.ColumnDefinitions[1].Width" Value="400"/>
+                        <Setter Target="MemberPivot.Visibility" Value="Visible"/>
+                        <Setter Target="MainFoodImage.Visibility" Value="Visible"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="VS2">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="1500"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="MainFrame.ColumnDefinitions[1].Width" Value="400"/>
+                        <Setter Target="MemberPivot.Visibility" Value="Visible"/>
+                        <Setter Target="MainFoodImage.Visibility" Value="Visible"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="VS3">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="800"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="MainFrame.ColumnDefinitions[1].Width" Value="400"/>
+                        <Setter Target="MemberPivot.Visibility" Value="Visible"/>
+                        <Setter Target="MainFoodImage.Visibility" Value="Visible"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="VS4">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="MainFrame.ColumnDefinitions[1].Width" Value="0"/>
+                        <Setter Target="MemberPivot.Visibility" Value="Collapsed"/>
+                        <Setter Target="MainFoodImage.Visibility" Value="Collapsed"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+
+
+
+
+
+
+        <controls:AdaptiveGridView x:Name="FoodGridView" animations:ReorderGridAnimation.Duration="300" 
+                                   HorizontalContentAlignment="Center" LostFocus="FoodGridView_LostFocus"
+                                   SelectedItem="{x:Bind vm.SelectedFood, Mode=TwoWay}"
+                                   DesiredWidth="355" StretchContentForSingleRow="False" OneRowModeEnabled="False" 
+                                   Padding="0" SelectionMode="Single" 
+                                   SelectionChanged="FoodGridView_SelectionChanged" 
+                                   ItemsSource="{x:Bind vm.Foods, Mode=TwoWay}"
                                    RightTapped="FoodGridView_RightTapped">
             <controls:AdaptiveGridView.Header>
                 <Grid Margin="10,0,10,15" HorizontalAlignment="Stretch" Padding="0">
@@ -49,12 +108,31 @@
                                 </BeginStoryboard>
                             </EventTrigger>
                         </StackPanel.Triggers>
-                        <TextBlock x:Name="FirstWelcomeMessage" Text="Hello Strypper!" FontWeight="Bold" FontSize="50" Margin="5,5,5,0"/>
-                        <TextBlock Text="Please pick up your lunch." FontWeight="Bold" FontSize="30" Margin="5"/>
+                        <TextBlock x:Name="FirstWelcomeMessage" FontWeight="Bold" FontSize="50" Margin="5,5,5,0"/>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock x:Name="PickedFoodText" FontWeight="Bold" FontSize="30" Margin="5"
+                                       VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
+                            <TextBlock x:Name="FoodNameText" FontWeight="Bold" FontSize="30" Margin="5"
+                                       VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
+                            <Border Background="{ThemeResource SystemAccentColor}" Width="40" Height="40" HorizontalAlignment="Center" VerticalAlignment="Center" CornerRadius="20">
+                                <TextBlock x:Name="FoodIndexText" Text="0" FontSize="25" TextAlignment="Center" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            </Border>
+                        </StackPanel>
                     </StackPanel>
                     <Grid x:Name="FoodImageContainer" HorizontalAlignment="Right" VerticalAlignment="Center" Padding="10">
-                        <Image x:Name="MainFoodImage" Height="150" Width="150" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-                               Source="ms-appx:///Assets/FoodAssets/LunchFood.png">
+                        <Image x:Name="MainFoodImage" Height="150" Width="150" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                            <animations:Implicit.ShowAnimations>
+                                <animations:TranslationAnimation Duration="0:0:1" To="0, 0, 0"></animations:TranslationAnimation>
+                                <animations:OpacityAnimation Duration="0:0:1" To="1.0"></animations:OpacityAnimation>
+                            </animations:Implicit.ShowAnimations>
+
+                            <animations:Implicit.HideAnimations>
+                                <animations:ScalarAnimation Target="Opacity" Duration="0:0:1" To="0.0"></animations:ScalarAnimation>
+                                <animations:ScalarAnimation Target="Translation.Y" Duration="0:0:1" To="-200">
+                                    <animations:ScalarKeyFrame Key="0.1" Value="30"></animations:ScalarKeyFrame>
+                                    <animations:ScalarKeyFrame Key="0.5" Value="0.0"></animations:ScalarKeyFrame>
+                                </animations:ScalarAnimation>
+                            </animations:Implicit.HideAnimations>
                             <Image.Triggers>
                                 <EventTrigger>
                                     <BeginStoryboard>
@@ -72,7 +150,8 @@
                         </Image>
                         <Image x:Name="SecondaryFoodImage"  Height="60" Width="60" VerticalAlignment="Top" HorizontalAlignment="Right"/>
                     </Grid>
-                    <winui:ProgressBar x:Name="WorkingBar" Visibility="Collapsed" VerticalAlignment="Bottom" IsIndeterminate="True"/>
+                    <winui:ProgressBar x:Name="WorkingBar" Visibility="{x:Bind vm.IsBusy, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}" 
+                                       VerticalAlignment="Bottom" IsIndeterminate="True"/>
                 </Grid>
             </controls:AdaptiveGridView.Header>
             <controls:AdaptiveGridView.ItemContainerTransitions>
@@ -87,7 +166,8 @@
                     <usercontrols:FoodCard FoodId="{x:Bind id}" FoodName="{x:Bind foodName}"
                                            FoodEnglishName="{x:Bind foodEnglishName}"
                                            IsSelected="{Binding IsSelected, Mode=TwoWay}" 
-                                           NumberOfSelectedUser="{x:Bind numberOfSelectedUser}"
+                                           ItemNo="{x:Bind itemNo}"
+                                           NumberOfSelectedUser="{x:Bind NumberOfSelectedUser, Mode=TwoWay}"
                                            MainFoodIcon="{x:Bind mainIcon}" 
                                            SecondaryFoodIcon="{x:Bind secondaryIcon}" 
                                            Percentage="{x:Bind Percentage, Mode=TwoWay}" 
@@ -100,7 +180,20 @@
                 <Rectangle Height="40"/>
             </controls:AdaptiveGridView.Footer>
         </controls:AdaptiveGridView>
-        <Pivot Grid.Column="1" Grid.RowSpan="2" Margin="0,10,0,0">
+        <Pivot x:Name="MemberPivot" Grid.Column="1" Grid.RowSpan="2" Margin="0,10,0,0">
+            <animations:Implicit.ShowAnimations>
+                <animations:TranslationAnimation Duration="0:0:1" To="0, 0, 0"></animations:TranslationAnimation>
+                <animations:OpacityAnimation Duration="0:0:1" To="1.0"></animations:OpacityAnimation>
+            </animations:Implicit.ShowAnimations>
+
+            <animations:Implicit.HideAnimations>
+                <animations:ScalarAnimation Target="Opacity" Duration="0:0:1" To="0.0"></animations:ScalarAnimation>
+                <animations:ScalarAnimation Target="Translation.X" Duration="0:0:1" To="200">
+                    <animations:ScalarKeyFrame Key="0.1" Value="30"></animations:ScalarKeyFrame>
+                    <animations:ScalarKeyFrame Key="0.5" Value="0.0"></animations:ScalarKeyFrame>
+                </animations:ScalarAnimation>
+            </animations:Implicit.HideAnimations>
+
             <PivotItem Padding="0">
                 <PivotItem.Header>
                     <Image Source="/Assets/iDealogic.png" Width="100" Height="50"/>
@@ -123,7 +216,7 @@
                         <DataTemplate x:DataType="data:UserFoodDTO">
                             <usercontrols:MemberCard UserId="{x:Bind user.id}" EmployeeName="{x:Bind user.firstName}"
                                                      ProfilePictureUrl="{x:Bind user.profilePic}" Company="{x:Bind user.company}"
-                                                     FoodList="{Binding foodList}" SelectedFood="{x:Bind food.id}"/>
+                                                     FoodList="{x:Bind foodList, Mode=TwoWay}" SelectedFood="{x:Bind food.id,Mode=TwoWay}"/>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                     <ListView.Footer>
@@ -139,14 +232,14 @@
             <PivotItem>
                 <PivotItem.Header>
                     <TextBlock>
-                        <Run Text="&#xE1E0;" FontFamily="Segoe Fluent Icons"/>
+                        <Run Text="&#xE1E0;" FontFamily="Segoe MDL2 Assets"/>
                         <Run Text="Disabled People"/>
                     </TextBlock>
                 </PivotItem.Header>
             </PivotItem>
         </Pivot>
         <CommandBar Background="{ThemeResource SystemControlAcrylicElementBrush}" IsOpen="False" DefaultLabelPosition="Right"
-                    VerticalAlignment="Bottom" Grid.Row="1" Grid.ColumnSpan="2">
+                    VerticalAlignment="Bottom" Grid.Row="1" Grid.ColumnSpan="2" ClosedDisplayMode="Compact">
             <CommandBar.RenderTransform>
                 <TranslateTransform x:Name="CommandBarTranslation"/>
             </CommandBar.RenderTransform>
@@ -164,37 +257,49 @@
                 </EventTrigger>
             </CommandBar.Triggers>
             <CommandBar.Content>
-                <TextBlock Text="Đừng xài phiên bản web, cùi lắm" Margin="10"
-                           TextWrapping="Wrap"/>
+                <StackPanel Orientation="Horizontal">
+                    <FontIcon FontFamily="Segoe UI Emoji" Glyph="&#x1F371;" VerticalAlignment="Center" Margin="5,5,0,5"/>
+                    <TextBlock Text="{x:Bind vm.Foods.Count, Mode=OneWay}" VerticalAlignment="Center" Margin="0,5,5,5"/>
+                    <FontIcon FontFamily="Segoe UI Emoji" Glyph="&#x2705;" VerticalAlignment="Center" Margin="5,5,0,5"/>
+                    <TextBlock Text="{x:Bind vm.NumberOfFood, Mode=OneWay}" VerticalAlignment="Center" Margin="0,5,5,5"/>
+                    <FontIcon FontFamily="Segoe UI Emoji" Glyph="&#x1F465;" VerticalAlignment="Center" Margin="5,5,0,5"/>
+                    <TextBlock Text="6" VerticalAlignment="Center" Margin="0,5,5,5"/>
+                </StackPanel>
             </CommandBar.Content>
-            <AppBarButton x:Name="AddFood" Icon="Add" Label="Add Food" Command="{x:Bind vm.createFoodCommand}">
+            <AppBarButton x:Name="AddFood" Icon="Add" Label="Add Food" Command="{x:Bind vm.createFoodCommand}"
+                          Style="{ThemeResource AppBarButtonRevealStyle}">
                 <AppBarButton.KeyboardAccelerators>
                     <KeyboardAccelerator Modifiers="Control" Key="N"/>
                 </AppBarButton.KeyboardAccelerators>
             </AppBarButton>
-            <AppBarButton x:Name="EditFood" Icon="Edit" Label="Edit" IsEnabled="False"/>
+            <AppBarButton x:Name="EditFood" Icon="Edit" Label="Edit" IsEnabled="False"
+                          Style="{ThemeResource AppBarButtonRevealStyle}"/>
             <AppBarButton x:Name="DeleteFood" Icon="Delete" Label="Delete food" 
-                          Command="{x:Bind vm.deleteFoodCommand}" IsEnabled="False">
+                          Command="{x:Bind vm.deleteFoodCommand}" IsEnabled="False"
+                          Foreground="Red" 
+                          Style="{ThemeResource AppBarButtonRevealStyle}">
                 <AppBarButton.KeyboardAccelerators>
                     <KeyboardAccelerator Modifiers="Control" Key="D"/>
                 </AppBarButton.KeyboardAccelerators>
             </AppBarButton>
             <AppBarButton x:Name="DeleteAllFood" Icon="Delete" Label="Delete entire list" Foreground="Red" 
-                          Command="{x:Bind vm.deleteAllFoodCommand}" IsEnabled="{x:Bind vm.DeleteAllFoodButtonState, Mode=OneWay}">
+                          Command="{x:Bind vm.deleteAllFoodCommand}" IsEnabled="{x:Bind vm.DeleteAllFoodButtonState, Mode=OneWay}"
+                          Style="{ThemeResource AppBarButtonRevealStyle}">
                 <AppBarButton.KeyboardAccelerators>
                     <KeyboardAccelerator Modifiers="Control,Shift" Key="D"/>
                 </AppBarButton.KeyboardAccelerators>
             </AppBarButton>
-            <AppBarButton x:Name="NotifyTeam" Label="Notified the team" Command="{x:Bind vm.notifyTeamCommand}">
+            <AppBarButton x:Name="NotifyTeam" Label="Notified the team" Command="{x:Bind vm.notifyTeamCommand}"
+                          Style="{ThemeResource AppBarButtonRevealStyle}">
                 <AppBarButton.Icon>
                     <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xEA8F;" />
                 </AppBarButton.Icon>
             </AppBarButton>
-            <AppBarButton Icon="Refresh" Command="{x:Bind vm.getUserCommand}"/>
+            <AppBarButton Icon="Refresh" Command="{x:Bind vm.getUserCommand}" Style="{ThemeResource AppBarButtonRevealStyle}"/>
             <CommandBar.SecondaryCommands>
-                <AppBarButton Label="Export to word document" Command="{x:Bind vm.getFoodFromExcel}">
+                <AppBarButton Label="Export to word document" Command="{x:Bind vm.generateWordDocument}">
                     <AppBarButton.Icon>
-                        <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xF585;" />
+                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xF585;"/>
                     </AppBarButton.Icon>
                     <AppBarButton.KeyboardAccelerators>
                         <KeyboardAccelerator Modifiers="Control" Key="W"/>

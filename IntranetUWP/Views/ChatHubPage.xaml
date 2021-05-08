@@ -221,7 +221,8 @@
                         <ColumnDefinition Width="0.1*"/>
                     </Grid.ColumnDefinitions>
                     <TextBox x:Name="MessageTextBox" PlaceholderText="Text message" Text="{x:Bind vm.MessContent, Mode=TwoWay}"
-                             HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5" Background="{ThemeResource SystemControlAcrylicElementBrush}">
+                             HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5" 
+                             Background="{ThemeResource SystemControlAcrylicElementBrush}">
                         <TextBox.KeyboardAccelerators>
                             <KeyboardAccelerator Key="Enter" Invoked="KeyboardAccelerator_Invoked"/>
                         </TextBox.KeyboardAccelerators>

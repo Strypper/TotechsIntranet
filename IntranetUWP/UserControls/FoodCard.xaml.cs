@@ -2,6 +2,7 @@
 using IntranetUWP.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using Windows.UI.Xaml;
@@ -143,7 +144,19 @@ namespace IntranetUWP.UserControls
 
         // Using a DependencyProperty as the backing store for NumberOfSelectedUser.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty NumberOfSelectedUserProperty =
-            DependencyProperty.Register("NumberOfSelectedUser", typeof(double), typeof(double), new PropertyMetadata(0.0));
+            DependencyProperty.Register("NumberOfSelectedUser", typeof(double), typeof(double), new PropertyMetadata(0d));
+
+
+
+        public int ItemNo
+        {
+            get { return (int)GetValue(ItemNoProperty); }
+            set { SetValue(ItemNoProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for ItemNo.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ItemNoProperty =
+            DependencyProperty.Register("ItemNo", typeof(int), typeof(int), new PropertyMetadata(0));
 
 
 
@@ -167,31 +180,37 @@ namespace IntranetUWP.UserControls
         public FoodCard() => this.InitializeComponent();
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
+            PickRateBar.Value = Percentage;
+            if(App.localSettings.Values["ProfilePic"] != null)
+            {
+                OwnerUser.ProfilePicture = new BitmapImage(new Uri(App.localSettings.Values["ProfilePic"].ToString()));
+            }
             if (App.localSettings.Values["FoodId"] != null)
             {
                 ChooseButton.IsChecked = FoodId == (int)App.localSettings.Values["FoodId"] ? true : false;
                 OwnerUser.Visibility = FoodId == (int)App.localSettings.Values["FoodId"] ? Visibility.Visible : Visibility.Collapsed;
-                OwnerUser.ProfilePicture = new BitmapImage(new Uri(App.localSettings.Values["ProfilePic"] as string));
             }
-            PickRateBar.Value = Percentage;
             if (usersAvatar != null)
             {
                 if (usersAvatar.FirstOrDefault() != null)
                 {
                     FirstUser.ProfilePicture = new BitmapImage(new Uri(usersAvatar.FirstOrDefault()));
                     OwnerUser.Translation = new Vector3(-15, 0, 0);
+                    FirstUser.Visibility = Visibility.Visible;
                 }
                 else FirstUser.Visibility = Visibility.Collapsed;
                 if (usersAvatar.Count > 1)
                 {
                     SecondUser.ProfilePicture = new BitmapImage(new Uri(usersAvatar.ElementAt(1)));
                     OwnerUser.Translation = new Vector3(-30, 0, 0);
+                    SecondUser.Visibility = Visibility.Visible;
                 }
                 else SecondUser.Visibility = Visibility.Collapsed;
                 if (usersAvatar.Count > 2)
                 {
                     ThirdUser.ProfilePicture = new BitmapImage(new Uri(usersAvatar.ElementAt(2)));
                     OwnerUser.Translation = new Vector3(-30, 0, 0);
+                    ThirdUser.Visibility = Visibility.Visible;
                 }
                 else ThirdUser.Visibility = Visibility.Collapsed;
             }
@@ -208,14 +227,12 @@ namespace IntranetUWP.UserControls
                     createupdateUserFoodDTO.userId = (int)App.localSettings.Values["UserId"];
                     createupdateUserFoodDTO.foodId = FoodId;
                     await httpHelper.CreateAsync<UserFoodDTO>("UserFood/Create", createupdateUserFoodDTO);
-                    App.localSettings.Values["FoodId"] = FoodId;
                 }
                 else
                 {
                     var userFood = await httpHelper.GetByIdAsync<UserFoodDTO>("UserFood/GetUserSelectedFood", (int)App.localSettings.Values["UserId"]);
                     await httpHelper.RemoveAsync("UserFood/Delete", userFood.id);
                     ToggleClick?.Invoke(FoodId, false);
-                    System.Diagnostics.Debug.WriteLine(FoodId);
                 }
             }
         }

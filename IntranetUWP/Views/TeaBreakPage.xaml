@@ -5,10 +5,41 @@
     xmlns:local="using:IntranetUWP.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
+    mc:Ignorable="d" xmlns:winui="using:Microsoft.UI.Xaml.Controls" 
+    xmlns:data="using:IntranetUWP.Models"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid>
-
-    </Grid>
+    <winui:ScrollView>
+        <StackPanel>
+            <winui:BreadcrumbBar ItemsSource="{x:Bind vm.Foods}">
+                <winui:BreadcrumbBar.ItemTemplate>
+                    <DataTemplate x:DataType="data:FoodDTO">
+                        <TextBlock Text="{x:Bind itemNo}"/>
+                    </DataTemplate>
+                </winui:BreadcrumbBar.ItemTemplate>
+            </winui:BreadcrumbBar>
+            <winui:BreadcrumbBarItem Content="Hello"/>
+            <winui:BreadcrumbBarItem Content="The Breadcrumb"/>
+            <winui:PagerControl NumberOfPages="10" ButtonPanelAlwaysShowFirstLastPageIndex="True"/>
+            <winui:PipsPager NumberOfPages="10" NextButtonVisibility="VisibleOnPointerOver" PreviousButtonVisibility="VisibleOnPointerOver"/>
+            <winui:TabView TabItemsSource="{x:Bind vm.Foods}" Background="LightGreen">
+                <winui:TabView.TabStripHeaderTemplate>
+                    <DataTemplate x:DataType="data:FoodDTO">
+                        <TextBlock Text="{x:Bind foodName}"/>
+                    </DataTemplate>
+                </winui:TabView.TabStripHeaderTemplate>
+                <winui:TabView.TabItemTemplate>
+                    <DataTemplate x:DataType="data:FoodDTO">
+                        <TextBlock Text="{x:Bind foodEnglishName}"/>
+                    </DataTemplate>
+                </winui:TabView.TabItemTemplate>
+            </winui:TabView>
+            <winui:ToggleSplitButton Content="Bruh"/>
+            <winui:ColorPicker/>
+            <winui:InfoBar Content="Bruh bruh" IsOpen="True"/>
+            <winui:ProgressBar IsIndeterminate="True"/>
+            <winui:RatingControl/>
+            <winui:PersonPicture/>
+        </StackPanel>
+    </winui:ScrollView>
 </Page>

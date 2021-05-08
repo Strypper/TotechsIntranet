@@ -35,16 +35,16 @@
                     <FontIcon FontFamily="Segoe UI Emoji" Glyph="&#x2615;" />
                 </winui:NavigationViewItem.Icon>
             </winui:NavigationViewItem>
-            <winui:NavigationViewItem x:Name="PlayTime" Content="Play time - Tìm bạn chơi">
+            <!--<winui:NavigationViewItem x:Name="PlayTime" Content="Play time - Tìm bạn chơi">
                 <winui:NavigationViewItem.Icon>
                     <FontIcon FontFamily="Segoe UI Emoji" Glyph="&#x2694;" />
                 </winui:NavigationViewItem.Icon>
-            </winui:NavigationViewItem>
-            <winui:NavigationViewItem x:Name="ChatHub" Content="Chat hub">
+            </winui:NavigationViewItem>-->
+            <!--<winui:NavigationViewItem x:Name="ChatHub" Content="Chat hub">
                 <winui:NavigationViewItem.Icon>
                     <FontIcon FontFamily="Segoe UI Emoji" Glyph="&#x1F4AC;" />
                 </winui:NavigationViewItem.Icon>
-            </winui:NavigationViewItem>
+            </winui:NavigationViewItem>-->
             <winui:NavigationViewItem x:Name="Member" Content="Members">
                 <winui:NavigationViewItem.Icon>
                     <FontIcon FontFamily="Segoe UI Emoji" Glyph="&#x1F603;" />
@@ -62,7 +62,7 @@
                     <TextBlock Text="Strypper Jason" VerticalAlignment="Center" Margin="10,0,0,0"/>
                 </StackPanel>
                 <Button x:Name="LogoutButton" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-                        FontFamily="Segoe Fluent Icons" Content="&#xE7E8;" Background="Transparent"
+                        FontFamily="Segoe MDL2 Assets" Content="&#xE7E8;" Background="Transparent"
                         Foreground="Red" Click="LogoutButton_Click" ToolTipService.ToolTip="Log out"/>
             </Grid>
         </winui:NavigationView.PaneFooter>

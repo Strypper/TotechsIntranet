@@ -193,7 +193,7 @@ namespace IntranetUWP
                     new ToastContentBuilder()
                     .SetToastScenario(ToastScenario.Reminder)
                     .AddText("🍱 It's Thursday my friend!!!!")
-                    .AddText("There are 12 disks 🍽 this week")
+                    .AddText("There are 12 dishes 🍽 this week")
                     .AddText("Deadline: 12:00PM Thursday noon ⏰")
                     .AddHeroImage(new Uri("ms-appx:///Assets/FoodAssets/FoodToast.png"))
                     .AddComboBox("foodList", "1", ("1", "Chicken rice"),

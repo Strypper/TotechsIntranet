@@ -13,7 +13,7 @@
         <FontIconSource x:Key="DeleteIcon" Glyph="&#xE107;"/>
         <SwipeItems x:Key="right" Mode="Execute">
             <SwipeItem Text="Delete" IconSource="{StaticResource DeleteIcon}"
-                       Background="Red"/>
+                       Background="Red" Invoked="DeleteItem_Invoked"/>
         </SwipeItems>
     </UserControl.Resources>
 

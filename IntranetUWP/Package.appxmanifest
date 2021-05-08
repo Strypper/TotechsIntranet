@@ -14,9 +14,9 @@
   <mp:PhoneIdentity PhoneProductId="e9852ccd-8079-4f3a-8460-d84d2be3cdd9" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>IntranetUWP</DisplayName>
-    <PublisherDisplayName>viet.to</PublisherDisplayName>
-    <Logo>Assets\StoreLogo.png</Logo>
+    <DisplayName>Intranet</DisplayName>
+    <PublisherDisplayName>To.Hoang.Viet</PublisherDisplayName>
+    <Logo>Assets\AppLogoAssets\StoreLogo.png</Logo>
   </Properties>
 
   <Dependencies>
@@ -32,13 +32,19 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="IntranetUWP.App">
       <uap:VisualElements
-        DisplayName="IntranetUWP"
-        Square150x150Logo="Assets\Square150x150Logo.png"
-        Square44x44Logo="Assets\Square44x44Logo.png"
-        Description="IntranetUWP"
+        DisplayName="Intranet"
+        Square150x150Logo="Assets\AppLogoAssets\Square150x150Logo.png"
+        Square44x44Logo="Assets\AppLogoAssets\Square44x44Logo.png"
+        Description="Intranet internal app, use this for lunch food ordering, book room meeting, chat with other members of Intranet and browse company information"
         BackgroundColor="transparent">
-        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png"/>
-        <uap:SplashScreen Image="Assets\SplashScreen.png" />
+        <uap:DefaultTile  Square71x71Logo="Assets\AppLogoAssets\SmallTile.png" Square310x310Logo="Assets\AppLogoAssets\LargeTile.png" Wide310x150Logo="Assets\AppLogoAssets\Wide310x150Logo.png"/>
+        <uap:SplashScreen Image="Assets\AppLogoAssets\SplashScreen.png" />
+        <uap:LockScreen BadgeLogo="Assets\AppLogoAssets\BadgeLogo.png" Notification="badgeAndTileText"/>
+        <uap:InitialRotationPreference>
+          <uap:Rotation Preference="landscape"/>
+          <uap:Rotation Preference="portrait"/>
+          <uap:Rotation Preference="landscapeFlipped"/>
+          <uap:Rotation Preference="portraitFlipped"/></uap:InitialRotationPreference>
       </uap:VisualElements>
     </Application>
   </Applications>

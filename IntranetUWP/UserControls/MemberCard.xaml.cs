@@ -83,7 +83,7 @@ namespace IntranetUWP.UserControls
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            if (SelectedFood != -1)
+            if (SelectedFood != -1 && FoodList != null)
             {
                 var selectedFood = FoodList.Where(f => f.id == SelectedFood).FirstOrDefault();
                 SelectFoodCombobox.SelectedItem = selectedFood != null ? selectedFood : null;

@@ -42,10 +42,15 @@
                     <TextBlock Text="{x:Bind Company, Converter={StaticResource BoolToCompanyConverter}, Mode=OneWay}" Margin="5"/>
                 </StackPanel>
                 <ComboBox x:Name="SelectFoodCombobox" RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True"
-                  Margin="5" PlaceholderText="Chưa chọn" ItemsSource="{x:Bind FoodList, Mode=OneWay}">
+                  Margin="5" PlaceholderText="Chưa chọn" ItemsSource="{x:Bind FoodList, Mode=OneWay}" MaxWidth="120">
                     <ComboBox.ItemTemplate>
                         <DataTemplate x:DataType="data:FoodDTO">
-                            <TextBlock Text="{x:Bind foodEnglishName, Mode=OneWay}"/>
+                            <StackPanel Orientation="Horizontal">
+                                <Border Background="{ThemeResource SystemAccentColor}" Width="26" Height="26" HorizontalAlignment="Center" VerticalAlignment="Center" CornerRadius="13" Margin="0,5,0,5">
+                                    <TextBlock Text="{x:Bind itemNo, Mode=OneWay}" TextAlignment="Center" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                </Border>
+                                <TextBlock Text="{x:Bind foodEnglishName, Mode=OneWay}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5"/>
+                            </StackPanel>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>

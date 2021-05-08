@@ -1,9 +1,8 @@
 ﻿using IntranetUWP.Models;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 namespace IntranetUWP.UserControls
@@ -11,7 +10,7 @@ namespace IntranetUWP.UserControls
     public sealed partial class PasteFoodDialog : ContentDialog
     {
         private List<string> SplitedFoodList { get; set; }
-        private ObservableCollection<FoodDTO> FoodListDialog = new ObservableCollection<FoodDTO>();
+        public ObservableCollection<FoodDTO> FoodListDialog = new ObservableCollection<FoodDTO>();
         public PasteFoodDialog(string listText)
         {
             this.InitializeComponent();
@@ -25,14 +24,10 @@ namespace IntranetUWP.UserControls
 
         private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-            Debug.WriteLine(FoodListDialog);
+            WorkingBar.Visibility = Visibility.Visible;
         }
 
-        private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
-        {
-
-        }
-
+        private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args) => this.Hide();
         private void PastedFoodItemList_FoodEvent(FoodDTO food)
         {
             foreach(var f in FoodListDialog)
@@ -45,6 +40,10 @@ namespace IntranetUWP.UserControls
                     f.secondaryIcon = food.secondaryIcon;
                 }
             }
+        }
+        private void PastedFoodItemList_DeleteFoodEvent(FoodDTO food)
+        {
+            FoodListDialog.Remove(food);
         }
     }
 }

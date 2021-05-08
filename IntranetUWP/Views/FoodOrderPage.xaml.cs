@@ -2,12 +2,12 @@
 using IntranetUWP.Models;
 using IntranetUWP.ViewModels.PagesViewModel;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 
@@ -22,7 +22,8 @@ namespace IntranetUWP.Views
     {
         public FoodOrderPageViewModel vm = new FoodOrderPageViewModel();
         private IntranetHttpHelper httpHelper = new IntranetHttpHelper();
-        private int users;
+        private UserDTO personalData = new UserDTO();
+        private int usersFoodData;
 
         public FoodOrderPage()
         {
@@ -32,7 +33,32 @@ namespace IntranetUWP.Views
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
             var userFoodData = await httpHelper.GetAsync<ObservableCollection<UserFoodDTO>>(vm.getUserSelectedFoodDataUrl);
-            users = userFoodData.Count;
+            var foodData = await httpHelper.GetAsync<ObservableCollection<FoodDTO>>(vm.getFoodsDataUrl);
+            var usersData = await httpHelper.GetAsync<List<UserDTO>>(vm.getUsersDataUrl);
+            usersFoodData = userFoodData.Count;
+            personalData = usersData.Where(u => u.id == (int)App.localSettings.Values["UserId"]).FirstOrDefault();
+            //Init user local values
+            if (App.localSettings.Values["FirstName"] != null)
+            {
+                FirstWelcomeMessage.Text = "Welcome " + App.localSettings.Values["FirstName"] +"!";
+            }
+            else FirstWelcomeMessage.Text = "Welcome to Intranet ordering system";
+            if (App.localSettings.Values["FoodId"] != null && (int)App.localSettings.Values["FoodId"] != 0)
+            {
+                var mainFood = foodData.Where(f => f.id == (int)App.localSettings.Values["FoodId"]).FirstOrDefault();
+                PickedFoodText.Text = "You pick :";
+                FoodIndexText.Text = (foodData.IndexOf(mainFood) + 1).ToString();
+                FoodNameText.Text = mainFood.foodEnglishName;
+                MainFoodImage.Source = new BitmapImage(new Uri(vm._mainFoods[mainFood.mainIcon]));
+                if (mainFood.secondaryIcon != 11) SecondaryFoodImage.Source = new BitmapImage(new Uri(vm._secondaryFoods[mainFood.secondaryIcon]));
+                else SecondaryFoodImage.Source = null;
+            }
+            else 
+            { 
+                PickedFoodText.Text = "Pick these below dishes";
+                MainFoodImage.Source = new BitmapImage(new Uri("ms-appx:///Assets/FoodAssets/LunchFood.png"));
+            }
+            FadeIconIn.Begin();
         }
 
         private void FoodCard_ToggleClick(int foodId, bool isToggled)
@@ -43,28 +69,52 @@ namespace IntranetUWP.Views
                 //Case: Deselect current toggled food
                 if((int)App.localSettings.Values["FoodId"] == foodId)
                 {
-                    users--;
+                    usersFoodData--;
                     var deselectedFood = vm.Foods.Where(f => f.id == (int)App.localSettings.Values["FoodId"]).FirstOrDefault();
                     deselectedFood.IsSelected = false;
-                    deselectedFood.numberOfSelectedUser--;
-                    deselectedFood.Percentage = (deselectedFood.numberOfSelectedUser / users) * 100;
+                    deselectedFood.NumberOfSelectedUser--;
+                    deselectedFood.Percentage = (deselectedFood.NumberOfSelectedUser / usersFoodData) * 100;
                     foreach (FoodDTO f in vm.Foods)
                         if (f.id != deselectedFood.id) 
-                            f.Percentage = (f.numberOfSelectedUser / (users)) * 100; 
+                            f.Percentage = (f.NumberOfSelectedUser / (usersFoodData)) * 100; 
                     App.localSettings.Values["FoodId"] = 0;
+                    vm.NumberOfFood--;
+                    vm.UserFoods.Remove(vm.UserFoods.Where(uf => uf.user.id == personalData.id).FirstOrDefault());
+                    PickedFoodText.Text = "Please select below dishes";
+                    FoodIndexText.Text = "0";
+                    FoodNameText.Text = "";
+                    MainFoodImage.Source = new BitmapImage(new Uri("ms-appx:///Assets/FoodAssets/LunchFood.png"));
+                    SecondaryFoodImage.Source = null;
+                    FadeIconIn.Begin();
                 }
                 //Case: From one toggled food to different food
                 else
                 {
+                    vm.UserFoods.Remove(vm.UserFoods.Where(uf => uf.user.id == personalData.id).FirstOrDefault());
                     var newSelectedFood = vm.Foods.Where(f => f.id == foodId).FirstOrDefault();
                     var previousSelectedFood = vm.Foods.Where(f => f.id == (int)App.localSettings.Values["FoodId"]).FirstOrDefault();
                     newSelectedFood.IsSelected = true;
-                    newSelectedFood.numberOfSelectedUser++;
-                    newSelectedFood.Percentage = (newSelectedFood.numberOfSelectedUser / users) * 100;
+                    newSelectedFood.NumberOfSelectedUser++;
+                    newSelectedFood.Percentage = (newSelectedFood.NumberOfSelectedUser / usersFoodData) * 100;
                     App.localSettings.Values["FoodId"] = foodId;
                     previousSelectedFood.IsSelected = false;
-                    previousSelectedFood.numberOfSelectedUser--;
-                    previousSelectedFood.Percentage = (previousSelectedFood.numberOfSelectedUser / users) * 100;
+                    previousSelectedFood.NumberOfSelectedUser--;
+                    previousSelectedFood.Percentage = (previousSelectedFood.NumberOfSelectedUser / usersFoodData) * 100;
+
+                    var mainFood = vm.Foods.Where(f => f.id == foodId).FirstOrDefault();
+                    PickedFoodText.Text = "You pick :";
+                    FoodIndexText.Text = mainFood.itemNo.ToString();
+                    FoodNameText.Text = mainFood.foodEnglishName;
+                    MainFoodImage.Source = new BitmapImage(new Uri(vm._mainFoods[mainFood.mainIcon]));
+                    if (mainFood.secondaryIcon != 11) SecondaryFoodImage.Source = new BitmapImage(new Uri(vm._secondaryFoods[mainFood.secondaryIcon]));
+                    else SecondaryFoodImage.Source = null;
+                    FadeIconIn.Begin();
+                    vm.UserFoods.Insert(0, new UserFoodDTO()
+                    {
+                        user = personalData,
+                        food = vm.Foods.Where(f => f.id == foodId).FirstOrDefault(),
+                        foodList = vm.Foods
+                    });
                 }
             }
             //No local food have choosen
@@ -72,21 +122,32 @@ namespace IntranetUWP.Views
             {
                 if (isToggled == true)
                 {
-                    users++;
+                    usersFoodData++;
                     FoodImageContainer.Opacity = 0;
                     FoodGridView.SelectedItem = null;
+                    vm.UserFoods.Insert(0, new UserFoodDTO()
+                    {
+                        user = personalData,
+                        food = vm.Foods.Where(f => f.id == foodId).FirstOrDefault(),
+                        foodList = vm.Foods
+                    });
                     foreach (FoodDTO dto in vm.Foods) if (dto.id != foodId)
-                            dto.Percentage = (dto.numberOfSelectedUser / (users)) * 100;
+                            dto.Percentage = (dto.NumberOfSelectedUser / (usersFoodData)) * 100;
                         else
                         {
                             dto.IsSelected = true;
-                            dto.numberOfSelectedUser += 1;
-                            dto.Percentage = (dto.numberOfSelectedUser / (users)) * 100;
+                            dto.NumberOfSelectedUser += 1;
+                            dto.Percentage = (dto.NumberOfSelectedUser / (usersFoodData)) * 100;
                             App.localSettings.Values["FoodId"] = foodId;
+                            vm.NumberOfFood++;
                         }
-                    var mainFoodIcon = vm.Foods.Where(f => f.id == foodId).FirstOrDefault();
-                    MainFoodImage.Source = new BitmapImage(new Uri(vm._mainFoods[mainFoodIcon.mainIcon]));
-                    if (mainFoodIcon.secondaryIcon != 11) SecondaryFoodImage.Source = new BitmapImage(new Uri(vm._secondaryFoods[mainFoodIcon.secondaryIcon]));
+
+                    var mainFood = vm.Foods.Where(f => f.id == foodId).FirstOrDefault();
+                    PickedFoodText.Text = "You pick :";
+                    FoodIndexText.Text = mainFood.itemNo.ToString();
+                    FoodNameText.Text = mainFood.foodEnglishName;
+                    MainFoodImage.Source = new BitmapImage(new Uri(vm._mainFoods[mainFood.mainIcon]));
+                    if (mainFood.secondaryIcon != 11) SecondaryFoodImage.Source = new BitmapImage(new Uri(vm._secondaryFoods[mainFood.secondaryIcon]));
                     else SecondaryFoodImage.Source = null;
                     FadeIconIn.Begin();
                     WorkingBar.Visibility = Visibility.Collapsed;
@@ -116,12 +177,12 @@ namespace IntranetUWP.Views
         {
             MenuFlyout myFlyout = new MenuFlyout();
             MenuFlyoutItem copyFromClipBoard = new MenuFlyoutItem { Text = "Copy from clipboard",
-                Command = vm.getFoodFromExcel,
+                Command = vm.getFoodFromClipboard,
                 Icon = new FontIcon()
                     {
-                        FontFamily = new FontFamily("Segoe Fluent Icons"),
+                        FontFamily = new FontFamily("Segoe MDL2 Assets"),
                         Glyph = "\xF0E3"
-                    }
+                }
                 };
             
             myFlyout.Items.Add(copyFromClipBoard);

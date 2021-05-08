@@ -47,6 +47,7 @@ namespace IntranetUWP.UserControls
 
 
         public event FoodDelegate FoodEvent;
+        public event FoodDelegate DeleteFoodEvent;
         public PastedFoodItemList()
         {
             this.InitializeComponent();
@@ -164,6 +165,11 @@ namespace IntranetUWP.UserControls
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             DefaultOption.IsChecked = true;
+        }
+
+        private void DeleteItem_Invoked(SwipeItem sender, SwipeItemInvokedEventArgs args)
+        {
+            DeleteFoodEvent.Invoke(Food);
         }
     }
 }

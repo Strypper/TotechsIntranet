@@ -42,6 +42,7 @@ namespace IntranetUWP.Views
                     var userInfo = JsonConvert.DeserializeObject<UserDTO>(result);
                     App.localSettings.Values["UserId"] = userInfo.id;
                     App.localSettings.Values["UserName"] = userInfo.userName;
+                    App.localSettings.Values["FirstName"] = userInfo.firstName;
                     App.localSettings.Values["Password"] = Password.Password;
                     App.localSettings.Values["ProfilePic"] = userInfo.profilePic;
                     var foodRequest = await httpClient.GetAsync(GetFoodUrl(userInfo.id));

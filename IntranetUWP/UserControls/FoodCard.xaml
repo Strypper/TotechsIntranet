@@ -31,19 +31,16 @@
     </UserControl.Resources>
 
     <SwipeControl LeftItems="{StaticResource left}" RightItems="{StaticResource right}">
-        <Grid Height="130" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Margin="5" Padding="0">
+        <Grid Height="130" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Margin="5,5,0,0" Padding="0">
             <ToolkitControls:DropShadowPanel x:Name="DropShadowHolder" VerticalAlignment="Stretch" Margin="10" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
-                               BlurRadius="20"
-                               ShadowOpacity="0.5" OffsetX="1" OffsetY="20"
-                               Color="Black">
-                <Grid Background="{ThemeResource SystemAltHighColor}" Height="100" CornerRadius="5" HorizontalAlignment="Stretch"
-              VerticalAlignment="Bottom" Padding="0">
+                                             BlurRadius="20" ShadowOpacity="0.5" OffsetX="1" OffsetY="20" Color="Black">
+                <Grid Background="{ThemeResource SystemAltHighColor}" Height="100" CornerRadius="5" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Padding="0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="80"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <ToggleButton x:Name="ChooseButton" Content="CHOOSE" FontWeight="Bold" Click="ToggleButton_Click" IsChecked="{x:Bind IsSelected, Mode=TwoWay}"
-                              VerticalAlignment="Bottom" Margin="10,0,0,10" Width="70" FontSize="12" ToolTipService.ToolTip="Choose this food"/>
+                              VerticalAlignment="Bottom" Margin="10,0,0,10" Width="70" FontSize="12" ToolTipService.ToolTip="Choose this food" Style="{StaticResource ToggleButtonRevealStyle}"/>
                     <Grid Grid.Column="1" VerticalAlignment="Bottom" Margin="11">
                         <StackPanel VerticalAlignment="Bottom">
                             <TextBlock Text="{x:Bind PickRateBar.Value, Converter={StaticResource DoubleToPercentConverter}, Mode=OneWay}" />
@@ -68,16 +65,23 @@
                             </ProgressBar>
                         </StackPanel>
                     </Grid>
-                    <TextBlock Text="{x:Bind FoodName, Mode=OneWay}" Grid.Column="1" Margin="6,0,0,0"
-                       FontSize="15" />
+                    <TextBlock Text="{x:Bind FoodName, Mode=OneWay}" Grid.Column="1" Margin="6,0,0,0" FontSize="15" />
                     <Grid VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Column="1"
                           Margin="0,0,12,17">
                         <ToolTipService.ToolTip>
-                            <ToolTip Content="3 people order this food"/>
+                            <ToolTip>
+                                <ToolTip.Content>
+                                    <TextBlock>
+                                        <Run Text="There are"/>
+                                        <Run Text="{x:Bind NumberOfSelectedUser, Mode=OneWay}"/>
+                                        <Run Text="selected this food"/>
+                                    </TextBlock>
+                                </ToolTip.Content>
+                            </ToolTip>
                         </ToolTipService.ToolTip>
-                        <PersonPicture x:Name="FirstUser" Width="25" HorizontalAlignment="Right" ProfilePicture="https://i.imgur.com/IyYzK6g.jpg"/>
-                        <PersonPicture x:Name="SecondUser" Width="25" Margin="0,0,15,0" HorizontalAlignment="Right" ProfilePicture="https://i.imgur.com/vc9FudE.jpg"/>
-                        <PersonPicture x:Name="ThirdUser" Width="25" Margin="0,0,30,0" HorizontalAlignment="Right" ProfilePicture="https://docs.microsoft.com/windows/uwp/contacts-and-calendar/images/shoulder-tap-static-payload.png"/>
+                        <PersonPicture x:Name="FirstUser" Width="25" HorizontalAlignment="Right" Visibility="Collapsed"/>
+                        <PersonPicture x:Name="SecondUser" Width="25" Margin="0,0,15,0" HorizontalAlignment="Right" Visibility="Collapsed"/>
+                        <PersonPicture x:Name="ThirdUser" Width="25" Margin="0,0,30,0" HorizontalAlignment="Right" Visibility="Collapsed"/>
                         <PersonPicture x:Name="OwnerUser" Width="25" Visibility="{x:Bind IsSelected, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
                             <PersonPicture.TranslationTransition>
                                 <Vector3Transition />
@@ -96,6 +100,9 @@
                 <TextBlock Text="{x:Bind FoodEnglishName, Mode=OneWay}" VerticalAlignment="Top" Margin="6,-5,0,0"
                        FontSize="15" FontWeight="Bold" />
             </StackPanel>
+            <Border Background="{ThemeResource SystemAccentColor}" Width="26" Height="26" HorizontalAlignment="Right" VerticalAlignment="Top" CornerRadius="13" Margin="0,5,0,0">
+                <TextBlock Text="{x:Bind ItemNo,Mode=OneWay}" TextAlignment="Center" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            </Border>
         </Grid>
     </SwipeControl>
 </UserControl>

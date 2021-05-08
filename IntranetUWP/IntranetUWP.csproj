@@ -125,6 +125,7 @@
     <Compile Include="Converters\StringToImageSourceConverter.cs" />
     <Compile Include="Helpers\IntranetHttpHelper.cs" />
     <Compile Include="Helpers\IntranetSignalRHelper.cs" />
+    <Compile Include="Helpers\OpenXMLWordHelper.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -190,6 +191,61 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\AppAudio\clearly-602.mp3" />
+    <Content Include="Assets\AppLogoAssets\BadgeLogo.scale-100.png" />
+    <Content Include="Assets\AppLogoAssets\BadgeLogo.scale-125.png" />
+    <Content Include="Assets\AppLogoAssets\BadgeLogo.scale-150.png" />
+    <Content Include="Assets\AppLogoAssets\BadgeLogo.scale-200.png" />
+    <Content Include="Assets\AppLogoAssets\BadgeLogo.scale-400.png" />
+    <Content Include="Assets\AppLogoAssets\LargeTile.scale-100.png" />
+    <Content Include="Assets\AppLogoAssets\LargeTile.scale-125.png" />
+    <Content Include="Assets\AppLogoAssets\LargeTile.scale-150.png" />
+    <Content Include="Assets\AppLogoAssets\LargeTile.scale-200.png" />
+    <Content Include="Assets\AppLogoAssets\LargeTile.scale-400.png" />
+    <Content Include="Assets\AppLogoAssets\SmallTile.scale-100.png" />
+    <Content Include="Assets\AppLogoAssets\SmallTile.scale-125.png" />
+    <Content Include="Assets\AppLogoAssets\SmallTile.scale-150.png" />
+    <Content Include="Assets\AppLogoAssets\SmallTile.scale-200.png" />
+    <Content Include="Assets\AppLogoAssets\SmallTile.scale-400.png" />
+    <Content Include="Assets\AppLogoAssets\SplashScreen.scale-100.png" />
+    <Content Include="Assets\AppLogoAssets\SplashScreen.scale-125.png" />
+    <Content Include="Assets\AppLogoAssets\SplashScreen.scale-150.png" />
+    <Content Include="Assets\AppLogoAssets\SplashScreen.scale-200.png" />
+    <Content Include="Assets\AppLogoAssets\SplashScreen.scale-400.png" />
+    <Content Include="Assets\AppLogoAssets\Square150x150Logo.scale-100.png" />
+    <Content Include="Assets\AppLogoAssets\Square150x150Logo.scale-125.png" />
+    <Content Include="Assets\AppLogoAssets\Square150x150Logo.scale-150.png" />
+    <Content Include="Assets\AppLogoAssets\Square150x150Logo.scale-200.png" />
+    <Content Include="Assets\AppLogoAssets\Square150x150Logo.scale-400.png" />
+    <Content Include="Assets\AppLogoAssets\Square44x44Logo.altform-lightunplated_targetsize-16.png" />
+    <Content Include="Assets\AppLogoAssets\Square44x44Logo.altform-lightunplated_targetsize-24.png" />
+    <Content Include="Assets\AppLogoAssets\Square44x44Logo.altform-lightunplated_targetsize-256.png" />
+    <Content Include="Assets\AppLogoAssets\Square44x44Logo.altform-lightunplated_targetsize-32.png" />
+    <Content Include="Assets\AppLogoAssets\Square44x44Logo.altform-lightunplated_targetsize-48.png" />
+    <Content Include="Assets\AppLogoAssets\Square44x44Logo.altform-unplated_targetsize-16.png" />
+    <Content Include="Assets\AppLogoAssets\Square44x44Logo.altform-unplated_targetsize-24.png" />
+    <Content Include="Assets\AppLogoAssets\Square44x44Logo.altform-unplated_targetsize-256.png" />
+    <Content Include="Assets\AppLogoAssets\Square44x44Logo.altform-unplated_targetsize-32.png" />
+    <Content Include="Assets\AppLogoAssets\Square44x44Logo.altform-unplated_targetsize-48.png" />
+    <Content Include="Assets\AppLogoAssets\Square44x44Logo.scale-100.png" />
+    <Content Include="Assets\AppLogoAssets\Square44x44Logo.scale-125.png" />
+    <Content Include="Assets\AppLogoAssets\Square44x44Logo.scale-150.png" />
+    <Content Include="Assets\AppLogoAssets\Square44x44Logo.scale-200.png" />
+    <Content Include="Assets\AppLogoAssets\Square44x44Logo.scale-400.png" />
+    <Content Include="Assets\AppLogoAssets\Square44x44Logo.targetsize-16.png" />
+    <Content Include="Assets\AppLogoAssets\Square44x44Logo.targetsize-24.png" />
+    <Content Include="Assets\AppLogoAssets\Square44x44Logo.targetsize-256.png" />
+    <Content Include="Assets\AppLogoAssets\Square44x44Logo.targetsize-32.png" />
+    <Content Include="Assets\AppLogoAssets\Square44x44Logo.targetsize-48.png" />
+    <Content Include="Assets\AppLogoAssets\StoreLogo.scale-100.png" />
+    <Content Include="Assets\AppLogoAssets\StoreLogo.scale-125.png" />
+    <Content Include="Assets\AppLogoAssets\StoreLogo.scale-150.png" />
+    <Content Include="Assets\AppLogoAssets\StoreLogo.scale-200.png" />
+    <Content Include="Assets\AppLogoAssets\StoreLogo.scale-400.png" />
+    <Content Include="Assets\AppLogoAssets\Wide310x150Logo.scale-100.png" />
+    <Content Include="Assets\AppLogoAssets\Wide310x150Logo.scale-125.png" />
+    <Content Include="Assets\AppLogoAssets\Wide310x150Logo.scale-150.png" />
+    <Content Include="Assets\AppLogoAssets\Wide310x150Logo.scale-200.png" />
+    <Content Include="Assets\AppLogoAssets\Wide310x150Logo.scale-400.png" />
     <Content Include="Assets\Boy.png" />
     <Content Include="Assets\DemoPurpose\Users\MenHair.jpg" />
     <Content Include="Assets\DemoPurpose\Users\MenHair1.jpg" />
@@ -217,13 +273,6 @@
     <Content Include="Assets\Girl.png" />
     <Content Include="Assets\iDealogic.png" />
     <Content Include="Properties\Default.rd.xml" />
-    <Content Include="Assets\LockScreenLogo.scale-200.png" />
-    <Content Include="Assets\SplashScreen.scale-200.png" />
-    <Content Include="Assets\Square150x150Logo.scale-200.png" />
-    <Content Include="Assets\Square44x44Logo.scale-200.png" />
-    <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
-    <Content Include="Assets\StoreLogo.png" />
-    <Content Include="Assets\Wide310x150Logo.scale-200.png" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -292,6 +341,9 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="DocumentFormat.OpenXml">
+      <Version>2.12.3</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client">
       <Version>6.0.0-preview.3.21201.13</Version>
     </PackageReference>

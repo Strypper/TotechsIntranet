@@ -42,12 +42,16 @@ namespace IntranetUWP.Views
             if (App.localSettings.Values["FoodId"] != null && (int)App.localSettings.Values["FoodId"] != 0)
             {
                 var mainFood = foodData.Where(f => f.id == (int)App.localSettings.Values["FoodId"]).FirstOrDefault();
-                PickedFoodText.Text = "You pick :";
-                FoodIndexText.Text = (foodData.IndexOf(mainFood) + 1).ToString();
-                FoodNameText.Text = mainFood.foodEnglishName;
-                MainFoodImage.Source = new BitmapImage(new Uri(vm._mainFoods[mainFood.mainIcon]));
-                if (mainFood.secondaryIcon != 11) SecondaryFoodImage.Source = new BitmapImage(new Uri(vm._secondaryFoods[mainFood.secondaryIcon]));
-                else SecondaryFoodImage.Source = null;
+                if(mainFood != null)
+                {
+                    PickedFoodText.Text = "You pick :";
+                    FoodIndexText.Text = (foodData.IndexOf(mainFood) + 1).ToString();
+                    FoodNameText.Text = mainFood.foodEnglishName;
+                    MainFoodImage.Source = new BitmapImage(new Uri(vm._mainFoods[mainFood.mainIcon]));
+                    if (mainFood.secondaryIcon != 11 && mainFood.secondaryIcon != null)
+                        SecondaryFoodImage.Source = new BitmapImage(new Uri(vm._secondaryFoods[mainFood.secondaryIcon]));
+                    else SecondaryFoodImage.Source = null;
+                }
             }
             else 
             { 
@@ -102,7 +106,7 @@ namespace IntranetUWP.Views
                     FoodIndexText.Text = mainFood.itemNo.ToString();
                     FoodNameText.Text = mainFood.foodEnglishName;
                     MainFoodImage.Source = new BitmapImage(new Uri(vm._mainFoods[mainFood.mainIcon]));
-                    if (mainFood.secondaryIcon != 11) SecondaryFoodImage.Source = new BitmapImage(new Uri(vm._secondaryFoods[mainFood.secondaryIcon]));
+                    if (mainFood.secondaryIcon != 11 && mainFood.secondaryIcon != null) SecondaryFoodImage.Source = new BitmapImage(new Uri(vm._secondaryFoods[mainFood.secondaryIcon]));
                     else SecondaryFoodImage.Source = null;
                     FadeIconIn.Begin();
                     vm.UserFoods.Insert(0, new UserFoodDTO()
@@ -143,7 +147,7 @@ namespace IntranetUWP.Views
                     FoodIndexText.Text = mainFood.itemNo.ToString();
                     FoodNameText.Text = mainFood.foodEnglishName;
                     MainFoodImage.Source = new BitmapImage(new Uri(vm._mainFoods[mainFood.mainIcon]));
-                    if (mainFood.secondaryIcon != 11) SecondaryFoodImage.Source = new BitmapImage(new Uri(vm._secondaryFoods[mainFood.secondaryIcon]));
+                    if (mainFood.secondaryIcon != 11 && mainFood.secondaryIcon != null) SecondaryFoodImage.Source = new BitmapImage(new Uri(vm._secondaryFoods[mainFood.secondaryIcon]));
                     else SecondaryFoodImage.Source = null;
                     FadeIconIn.Begin();
                     WorkingBar.Visibility = Visibility.Collapsed;

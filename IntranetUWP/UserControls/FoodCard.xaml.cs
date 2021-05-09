@@ -16,6 +16,7 @@ namespace IntranetUWP.UserControls
 {
     public delegate void FoodCardEventHandler(int foodId, bool isToggled);
     public delegate void DeleteFoodCardEventHandler(int foodId);
+    public delegate void EditFoodCardEventHandler(int foodId);
 
     public sealed partial class FoodCard : UserControl
     {
@@ -134,8 +135,6 @@ namespace IntranetUWP.UserControls
         public static readonly DependencyProperty PercentageProperty =
             DependencyProperty.Register("Percentage", typeof(double), typeof(double), new PropertyMetadata(0.0));
 
-
-
         public double NumberOfSelectedUser
         {
             get { return (double)GetValue(NumberOfSelectedUserProperty); }
@@ -145,8 +144,6 @@ namespace IntranetUWP.UserControls
         // Using a DependencyProperty as the backing store for NumberOfSelectedUser.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty NumberOfSelectedUserProperty =
             DependencyProperty.Register("NumberOfSelectedUser", typeof(double), typeof(double), new PropertyMetadata(0d));
-
-
 
         public int ItemNo
         {
@@ -158,9 +155,6 @@ namespace IntranetUWP.UserControls
         public static readonly DependencyProperty ItemNoProperty =
             DependencyProperty.Register("ItemNo", typeof(int), typeof(int), new PropertyMetadata(0));
 
-
-
-
         public List<string> usersAvatar
         {
             get { return (List<string>)GetValue(usersAvatarProperty); }
@@ -171,11 +165,9 @@ namespace IntranetUWP.UserControls
         public static readonly DependencyProperty usersAvatarProperty =
             DependencyProperty.Register("usersAvatar", typeof(List<string>), typeof(List<string>), new PropertyMetadata(0));
 
-
-
-
         public event FoodCardEventHandler ToggleClick;
         public event DeleteFoodCardEventHandler DeleteSwipe;
+        public event EditFoodCardEventHandler EditSwipe;
         private IntranetHttpHelper httpHelper = new IntranetHttpHelper();
         public FoodCard() => this.InitializeComponent();
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -237,7 +229,7 @@ namespace IntranetUWP.UserControls
             }
         }
 
-        private void SwipeEditItem_Invoked(SwipeItem sender, SwipeItemInvokedEventArgs args) { }
+        private void SwipeEditItem_Invoked(SwipeItem sender, SwipeItemInvokedEventArgs args) => EditSwipe?.Invoke(FoodId);
 
         private void SwipeDeleteItem_Invoked(SwipeItem sender, SwipeItemInvokedEventArgs args) => DeleteSwipe?.Invoke(FoodId);
     }

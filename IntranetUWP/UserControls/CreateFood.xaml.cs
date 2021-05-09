@@ -17,20 +17,14 @@ namespace IntranetUWP.UserControls
         public bool IsSelectable
         {
             get => _isSelectable;
-            set
-            {
-                OnPropertyChanged();
-            }
+            set => OnPropertyChanged();
         }
 
         private bool _isChecked;
         public bool IsChecked
         {
             get => _isChecked;
-            set
-            {
-                OnPropertyChanged();
-            }
+            set => OnPropertyChanged();
         }
 
         public FoodDTO Food { get; set; } = new FoodDTO();
@@ -40,12 +34,87 @@ namespace IntranetUWP.UserControls
             this.InitializeComponent();
             DefaultOption.IsChecked = true;
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        private void ContentDialog_Loaded(object sender, RoutedEventArgs e)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            if(Food != null && Food.itemNo != 0)
+            {
+                PrimaryButtonText = "✏️ Edit this food";
+                switch (Food.mainIcon)
+                {
+                    case 1:
+                        RiceOption.IsChecked = true;
+                        PrimaryFood.Source = new BitmapImage(new Uri("ms-appx:///Assets/FoodAssets/Rice.png"));
+                        _isSelectable = true;
+                        _isChecked = false;
+                        OnPropertyChanged("_isSelectable");
+                        OnPropertyChanged("_isChecked");
+                        break;
+                    case 2:
+                        BreadOption.IsChecked = true;
+                        PrimaryFood.Source = new BitmapImage(new Uri("ms-appx:///Assets/FoodAssets/Bread.png"));
+                        SecondaryFood.Source = null;
+                        _isSelectable = false;
+                        _isChecked = false;
+                        OnPropertyChanged("_isSelectable");
+                        OnPropertyChanged("_isChecked");
+                        break;
+                    case 3:
+                        SpaghetiOption.IsChecked = true;
+                        PrimaryFood.Source = new BitmapImage(new Uri("ms-appx:///Assets/FoodAssets/Spagheti.png"));
+                        SecondaryFood.Source = null;
+                        _isSelectable = false;
+                        _isChecked = false;
+                        OnPropertyChanged("_isSelectable");
+                        OnPropertyChanged("_isChecked");
+                        break;
+                    case 4:
+                        NoodleOption.IsChecked = true;
+                        PrimaryFood.Source = new BitmapImage(new Uri("ms-appx:///Assets/FoodAssets/Noodle.png"));
+                        SecondaryFood.Source = null;
+                        _isSelectable = false;
+                        _isChecked = false;
+                        OnPropertyChanged("_isSelectable");
+                        OnPropertyChanged("_isChecked");
+                        break;
+                    case 5:
+                        DefaultOption.IsChecked = true;
+                        PrimaryFood.Source = new BitmapImage(new Uri("ms-appx:///Assets/FoodAssets/LunchFood.png"));
+                        SecondaryFood.Source = null;
+                        _isSelectable = false;
+                        _isChecked = false;
+                        OnPropertyChanged("_isSelectable");
+                        OnPropertyChanged("_isChecked");
+                        break;
+                }
+                switch (Food.secondaryIcon)
+                {
+                    case 6:
+                        Meat.IsChecked = true;
+                        SecondaryFood.Source = new BitmapImage(new Uri("ms-appx:///Assets/FoodAssets/Meat.png"));
+                        break;
+                    case 7:
+                        Chicken.IsChecked = true;
+                        SecondaryFood.Source = new BitmapImage(new Uri("ms-appx:///Assets/FoodAssets/Chicken.png"));
+                        break;
+                    case 8:
+                        Egg.IsChecked = true;
+                        SecondaryFood.Source = new BitmapImage(new Uri("ms-appx:///Assets/FoodAssets/Egg.png"));
+                        break;
+                    case 9:
+                        Shrimp.IsChecked = true;
+                        SecondaryFood.Source = new BitmapImage(new Uri("ms-appx:///Assets/FoodAssets/Shrimp.png"));
+                        break;
+                    case 10:
+                        Shrimp.IsChecked = true;
+                        SecondaryFood.Source = new BitmapImage(new Uri("ms-appx:///Assets/FoodAssets/Falafel.png"));
+                        break;
+                }
+                VietnameseFoodName.Text = Food.foodName;
+                EnglishFoodName.Text = Food.foodEnglishName;
+            }
         }
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
         private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
@@ -53,9 +122,7 @@ namespace IntranetUWP.UserControls
             Food.foodEnglishName = EnglishFoodName.Text;
         }
 
-        private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
-        {
-        }
+        private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args) {}
 
         private void MainFood_Checked(object sender, RoutedEventArgs e)
         {
@@ -82,6 +149,7 @@ namespace IntranetUWP.UserControls
                     EnglishFoodName.Text = "Bread";
                     VietnameseFoodName.Text = "Bánh mỳ";
                     Food.mainIcon = 2;
+                    Food.secondaryIcon = null;
                     break;
                 case "SpaghetiOption":
                     PrimaryFood.Source = new BitmapImage(new Uri("ms-appx:///Assets/FoodAssets/Spagheti.png"));
@@ -93,6 +161,7 @@ namespace IntranetUWP.UserControls
                     EnglishFoodName.Text = "Spagheti";
                     VietnameseFoodName.Text = "Mỳ ý";
                     Food.mainIcon = 3;
+                    Food.secondaryIcon = null;
                     break;
                 case "NoodleOption":
                     PrimaryFood.Source = new BitmapImage(new Uri("ms-appx:///Assets/FoodAssets/Noodle.png"));
@@ -104,6 +173,7 @@ namespace IntranetUWP.UserControls
                     EnglishFoodName.Text = "Noodle";
                     VietnameseFoodName.Text = "";
                     Food.mainIcon = 4;
+                    Food.secondaryIcon = null;
                     break;
                 case "DefaultOption":
                     PrimaryFood.Source = new BitmapImage(new Uri("ms-appx:///Assets/FoodAssets/LunchFood.png"));
@@ -115,6 +185,7 @@ namespace IntranetUWP.UserControls
                     EnglishFoodName.Text = "";
                     VietnameseFoodName.Text = "";
                     Food.mainIcon = 5;
+                    Food.secondaryIcon = null;
                     break;
             }
         }

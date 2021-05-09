@@ -1,23 +1,19 @@
 ﻿using IntranetUWP.Helpers;
 using IntranetUWP.Models;
+using IntranetUWP.UserControls;
 using IntranetUWP.ViewModels.PagesViewModel;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
-
 namespace IntranetUWP.Views
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
     public sealed partial class FoodOrderPage : Page
     {
         public FoodOrderPageViewModel vm = new FoodOrderPageViewModel();
@@ -169,8 +165,27 @@ namespace IntranetUWP.Views
         private async void FoodCard_DeleteSwipe(int foodId)
         {
             var food = vm.Foods.Where(f => f.id == foodId).FirstOrDefault();
-            var deleteResult = await httpHelper.RemoveAsync(vm.deleteFoodDataUrl, food.id);
-            if (deleteResult == true) vm.Foods.Remove(food); else Debug.Write("Delete operation error");
+            vm.SelectedFood = food;
+            var confirmDeletButtonStyle = new Style(typeof(Button));
+            confirmDeletButtonStyle.Setters.Add(new Setter(BackgroundProperty, Colors.Red));
+            confirmDeletButtonStyle.Setters.Add(new Setter(ForegroundProperty, Colors.White));
+            var confirmDeleteDialog = await new ContentDialog()
+            {
+                Title = "🗑 Delete this food ?",
+                Content = $"Check before you delete {food.foodEnglishName} ?",
+                PrimaryButtonText = "Yes",
+                SecondaryButtonText = "No",
+                PrimaryButtonStyle = confirmDeletButtonStyle,
+                PrimaryButtonCommand = vm.deleteFoodCommand
+            }.ShowAsync();
+        }
+
+        private async void FoodCard_EditSwipe(int foodId)
+        {
+            var food = vm.Foods.Where(f => f.id == foodId).FirstOrDefault();
+            CreateFood editFoodDialog = new CreateFood();
+            editFoodDialog.Food = food;
+            await editFoodDialog.ShowAsync();
         }
 
         private void FoodGridView_RightTapped(object sender, Windows.UI.Xaml.Input.RightTappedRoutedEventArgs e)

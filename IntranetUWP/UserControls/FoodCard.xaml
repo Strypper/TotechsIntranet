@@ -97,7 +97,7 @@
                     <Image x:Name="SecondaryFoodImage" Width="30" Height="30"
                    VerticalAlignment="Top" HorizontalAlignment="Right"/>
                 </Grid>
-                <TextBlock Text="{x:Bind FoodEnglishName, Mode=OneWay}" VerticalAlignment="Top" Margin="6,-5,0,0"
+                <TextBlock Text="{x:Bind FoodEnglishName, Mode=TwoWay}" VerticalAlignment="Top" Margin="6,-5,0,0"
                        FontSize="15" FontWeight="Bold" />
             </StackPanel>
             <Border Background="{ThemeResource SystemAccentColor}" Width="26" Height="26" HorizontalAlignment="Right" VerticalAlignment="Top" CornerRadius="13" Margin="0,5,0,0">

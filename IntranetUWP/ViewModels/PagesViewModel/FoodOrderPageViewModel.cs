@@ -17,6 +17,8 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
+using Windows.UI;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 namespace IntranetUWP.ViewModels.PagesViewModel
@@ -34,6 +36,7 @@ namespace IntranetUWP.ViewModels.PagesViewModel
         public ICommand createFoodCommand { get; set; }
         public ICommand deleteFoodCommand { get; set; }
         public ICommand deleteAllFoodCommand { get; set; }
+        public ICommand editFoodCommand { get; set; }
         public ICommand getUserCommand { get; set; }
         public ICommand getFoodFromClipboard { get; set; }
         public ICommand notifyTeamCommand { get; set; }
@@ -45,7 +48,6 @@ namespace IntranetUWP.ViewModels.PagesViewModel
         private ObservableCollection<UserFoodDTO> userFoods { get; set; } = new ObservableCollection<UserFoodDTO>();
         public ObservableCollection<UserFoodDTO> UserFoods { get; set; }
         public FoodDTO SelectedFood { get; set; }
-
         private bool deleteAllFoodButtonState = false;
 
         public bool DeleteAllFoodButtonState
@@ -96,6 +98,7 @@ namespace IntranetUWP.ViewModels.PagesViewModel
             createFoodCommand = new RelayCommand(async() => await CreateFood());
             deleteFoodCommand = new RelayCommand(async () => await RemoveFood());
             deleteAllFoodCommand = new RelayCommand(async () => await RemoveAllFood());
+            editFoodCommand = new RelayCommand(async () => await EditFood());
             getUserCommand = new RelayCommand(async () => await GetUserFoodsData());
             getFoodFromClipboard = new RelayCommand(async () => await PasteFoodFromClipboard());
             notifyTeamCommand = new RelayCommand(async () => NotifyTeam());
@@ -150,6 +153,14 @@ namespace IntranetUWP.ViewModels.PagesViewModel
             createFoodDialog.PrimaryButtonClick += CreateFoodDialog_PrimaryButtonClick;
             await createFoodDialog.ShowAsync();
         }
+        private async Task EditFood()
+        {
+            CreateFood createFoodDialog = new CreateFood();
+            createFoodDialog.Food = SelectedFood;
+            createFoodDialog.PrimaryButtonClick += EditFoodDialog_PrimaryButtonClick;
+            createFoodDialog.SecondaryButtonClick += (s, a) => SelectedFood = null;
+            await createFoodDialog.ShowAsync();
+        }
 
         private async void CreateFoodDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
@@ -164,26 +175,61 @@ namespace IntranetUWP.ViewModels.PagesViewModel
             IsBusy = false;
         }
 
+        private void EditFoodDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        {
+            IsBusy = true;
+            var editedFood = (sender as CreateFood).Food;
+            if (editedFood != null)
+            {
+                var food = Foods.Where(f => f.id == editedFood.id).FirstOrDefault();
+                editedFood.id = food.id;
+                editedFood.itemNo = food.itemNo;
+                editedFood.IsSelected = food.IsSelected;
+                editedFood.NumberOfSelectedUser = food.NumberOfSelectedUser;
+                editedFood.Percentage = food.Percentage;
+                Foods.Remove(food);
+                Foods.Insert(editedFood.itemNo - 1, editedFood);
+            }
+            IsBusy = false;
+        }
+
         private async Task RemoveFood()
         {
             IsBusy = true;
-            var food = Foods.Where(f => f == SelectedFood).FirstOrDefault();
-            var deleteResult = await httpHelper.RemoveAsync(deleteFoodDataUrl, food.id);
-            if (deleteResult == true) Foods.Remove(food); else Debug.Write("Delete operation error");
+            if(SelectedFood != null)
+            {
+                var food = Foods.Where(f => f == SelectedFood).FirstOrDefault();
+                var deleteResult = await httpHelper.RemoveAsync(deleteFoodDataUrl, food.id);
+                if (deleteResult == true) Foods.Remove(food); else Debug.Write("Delete operation error");
+            }
             IsBusy = false;
         }
 
         private async Task RemoveAllFood()
         {
-            IsBusy = true;
-            var response = await httpHelper.DeleteAsync(deleteAllFoodDataUrl);
-            if (response.StatusCode.ToString() == "NoContent")
+            var confirmDeletButtonStyle = new Windows.UI.Xaml.Style(typeof(Button));
+            confirmDeletButtonStyle.Setters.Add(new Setter(Button.BackgroundProperty, Colors.Red));
+            confirmDeletButtonStyle.Setters.Add(new Setter(Button.ForegroundProperty, Colors.White));
+            var confirmDialog = await new ContentDialog()
             {
-                Foods.ToList().All(i => Foods.Remove(i));
-                App.localSettings.Values["FoodId"] = 0;
+                Title = "🗑 Delete all dishes",
+                Content = "Be aware that the action you are about to do is delete all food data and users selections as well. Do you wish to continue ?",
+                PrimaryButtonText = "Yes",
+                SecondaryButtonText = "No",
+                PrimaryButtonStyle = confirmDeletButtonStyle
+            }.ShowAsync();
+            if (confirmDialog == ContentDialogResult.Primary)
+            {
+                IsBusy = true;
+                var response = await httpHelper.DeleteAsync(deleteAllFoodDataUrl);
+                if (response.StatusCode.ToString() == "NoContent")
+                {
+                    Foods.ToList().All(i => Foods.Remove(i));
+                    App.localSettings.Values["FoodId"] = 0;
+                }
+                else Debug.WriteLine("Delete all operation error");
+                IsBusy = false;
             }
-            else Debug.WriteLine("Delete all operation error");
-            IsBusy = false;
         }
 
         private async Task GetAllUsers()

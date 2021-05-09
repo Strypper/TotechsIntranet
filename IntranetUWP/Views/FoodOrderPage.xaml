@@ -75,12 +75,6 @@
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
 
-
-
-
-
-
-
         <controls:AdaptiveGridView x:Name="FoodGridView" animations:ReorderGridAnimation.Duration="300" 
                                    HorizontalContentAlignment="Center" LostFocus="FoodGridView_LostFocus"
                                    SelectedItem="{x:Bind vm.SelectedFood, Mode=TwoWay}"
@@ -173,6 +167,7 @@
                                            Percentage="{x:Bind Percentage, Mode=TwoWay}" 
                                            usersAvatar="{x:Bind usersAvatar}"
                                            ToggleClick="FoodCard_ToggleClick"
+                                           EditSwipe="FoodCard_EditSwipe"
                                            DeleteSwipe="FoodCard_DeleteSwipe"/>
                 </DataTemplate>
             </controls:AdaptiveGridView.ItemTemplate>
@@ -231,10 +226,10 @@
             </PivotItem>
             <PivotItem>
                 <PivotItem.Header>
-                    <TextBlock>
-                        <Run Text="&#xE1E0;" FontFamily="Segoe MDL2 Assets"/>
-                        <Run Text="Disabled People"/>
-                    </TextBlock>
+                    <StackPanel Orientation="Horizontal">
+                        <SymbolIcon Symbol="BlockContact" VerticalAlignment="Center"/>
+                        <TextBlock Text="Disabled Users" FontSize="20" Margin="5"/>
+                    </StackPanel>
                 </PivotItem.Header>
             </PivotItem>
         </Pivot>
@@ -273,6 +268,7 @@
                 </AppBarButton.KeyboardAccelerators>
             </AppBarButton>
             <AppBarButton x:Name="EditFood" Icon="Edit" Label="Edit" IsEnabled="False"
+                          Command="{x:Bind vm.editFoodCommand}"
                           Style="{ThemeResource AppBarButtonRevealStyle}"/>
             <AppBarButton x:Name="DeleteFood" Icon="Delete" Label="Delete food" 
                           Command="{x:Bind vm.deleteFoodCommand}" IsEnabled="False"

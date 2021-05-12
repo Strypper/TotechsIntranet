@@ -271,7 +271,8 @@
                           Command="{x:Bind vm.editFoodCommand}"
                           Style="{ThemeResource AppBarButtonRevealStyle}"/>
             <AppBarButton x:Name="DeleteFood" Icon="Delete" Label="Delete food" 
-                          Command="{x:Bind vm.deleteFoodCommand}" IsEnabled="False"
+                          Command="{x:Bind vm.askBeforeDeleteFoodCommand}"
+                          IsEnabled="False"
                           Foreground="Red" 
                           Style="{ThemeResource AppBarButtonRevealStyle}">
                 <AppBarButton.KeyboardAccelerators>

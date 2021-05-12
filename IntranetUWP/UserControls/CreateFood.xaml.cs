@@ -27,6 +27,9 @@ namespace IntranetUWP.UserControls
             set => OnPropertyChanged();
         }
 
+        private int MainIcon;
+        private int? SecondaryIcon;
+
         public FoodDTO Food { get; set; } = new FoodDTO();
 
         public CreateFood()
@@ -120,6 +123,8 @@ namespace IntranetUWP.UserControls
         {
             Food.foodName = VietnameseFoodName.Text;
             Food.foodEnglishName = EnglishFoodName.Text;
+            Food.mainIcon = MainIcon;
+            Food.secondaryIcon = SecondaryIcon;
         }
 
         private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args) {}
@@ -137,7 +142,7 @@ namespace IntranetUWP.UserControls
                     OnPropertyChanged("_isChecked");
                     EnglishFoodName.Text = "Rice";
                     VietnameseFoodName.Text = "Cơm";
-                    Food.mainIcon = 1;
+                    MainIcon = 1;
                     break;
                 case "BreadOption":
                     PrimaryFood.Source = new BitmapImage(new Uri("ms-appx:///Assets/FoodAssets/Bread.png"));
@@ -148,8 +153,8 @@ namespace IntranetUWP.UserControls
                     OnPropertyChanged("_isChecked");
                     EnglishFoodName.Text = "Bread";
                     VietnameseFoodName.Text = "Bánh mỳ";
-                    Food.mainIcon = 2;
-                    Food.secondaryIcon = null;
+                    MainIcon = 2;
+                    SecondaryIcon = null;
                     break;
                 case "SpaghetiOption":
                     PrimaryFood.Source = new BitmapImage(new Uri("ms-appx:///Assets/FoodAssets/Spagheti.png"));
@@ -160,8 +165,8 @@ namespace IntranetUWP.UserControls
                     OnPropertyChanged("_isChecked");
                     EnglishFoodName.Text = "Spagheti";
                     VietnameseFoodName.Text = "Mỳ ý";
-                    Food.mainIcon = 3;
-                    Food.secondaryIcon = null;
+                    MainIcon = 3;
+                    SecondaryIcon = null;
                     break;
                 case "NoodleOption":
                     PrimaryFood.Source = new BitmapImage(new Uri("ms-appx:///Assets/FoodAssets/Noodle.png"));
@@ -172,8 +177,8 @@ namespace IntranetUWP.UserControls
                     OnPropertyChanged("_isChecked");
                     EnglishFoodName.Text = "Noodle";
                     VietnameseFoodName.Text = "";
-                    Food.mainIcon = 4;
-                    Food.secondaryIcon = null;
+                    MainIcon = 4;
+                    SecondaryIcon = null;
                     break;
                 case "DefaultOption":
                     PrimaryFood.Source = new BitmapImage(new Uri("ms-appx:///Assets/FoodAssets/LunchFood.png"));
@@ -184,8 +189,8 @@ namespace IntranetUWP.UserControls
                     OnPropertyChanged("_isChecked");
                     EnglishFoodName.Text = "";
                     VietnameseFoodName.Text = "";
-                    Food.mainIcon = 5;
-                    Food.secondaryIcon = null;
+                    MainIcon = 5;
+                    SecondaryIcon = null;
                     break;
             }
         }
@@ -197,27 +202,27 @@ namespace IntranetUWP.UserControls
             {
                 case "Meat":
                     SecondaryFood.Source = new BitmapImage(new Uri("ms-appx:///Assets/FoodAssets/Meat.png"));
-                    Food.secondaryIcon = 6;
+                    SecondaryIcon = 6;
                     VietnameseFoodName.Text = "Cơm thịt";
                     break;
                 case "Chicken":
                     SecondaryFood.Source = new BitmapImage(new Uri("ms-appx:///Assets/FoodAssets/Chicken.png"));
-                    Food.secondaryIcon = 7;
+                    SecondaryIcon = 7;
                     VietnameseFoodName.Text = "Cơm gà";
                     break;
                 case "Egg":
                     SecondaryFood.Source = new BitmapImage(new Uri("ms-appx:///Assets/FoodAssets/Egg.png"));
-                    Food.secondaryIcon = 8;
+                    SecondaryIcon = 8;
                     VietnameseFoodName.Text = "Cơm trứng";
                     break;
                 case "Shrimp":
                     SecondaryFood.Source = new BitmapImage(new Uri("ms-appx:///Assets/FoodAssets/Shrimp.png"));
-                    Food.secondaryIcon = 9;
+                    SecondaryIcon = 9;
                     VietnameseFoodName.Text = "Cơm tôm";
                     break;
                 case "Falafel":
                     SecondaryFood.Source = new BitmapImage(new Uri("ms-appx:///Assets/FoodAssets/Falafel.png"));
-                    Food.secondaryIcon = 10;
+                    SecondaryIcon = 10;
                     VietnameseFoodName.Text = "Cơm xíu mại";
                     break;
             }

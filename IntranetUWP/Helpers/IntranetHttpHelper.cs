@@ -36,6 +36,13 @@ namespace IntranetUWP.Helpers
             return JsonConvert.DeserializeObject<T>(result);
         }
 
+        public async Task<bool> UpdateAsync(string url, object o)
+        {
+            var content = new StringContent(JsonConvert.SerializeObject(o), Encoding.UTF8, "application/json");
+            var response = await this.PutAsync(url, content);
+            return response.StatusCode.ToString() == "NoContent" ? true : false;
+        }
+
         public async Task<bool> RemoveAsync(string url, int id)
         {
             string finalDeleteUrl(int entityId) => $"{url}/{entityId}";

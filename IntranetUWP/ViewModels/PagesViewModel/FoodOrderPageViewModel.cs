@@ -20,6 +20,7 @@ using Windows.Storage;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Style = Windows.UI.Xaml.Style;
 
 namespace IntranetUWP.ViewModels.PagesViewModel
 {
@@ -27,6 +28,7 @@ namespace IntranetUWP.ViewModels.PagesViewModel
     {
         public string getFoodsDataUrl = "Food/GetAll";
         public string createFoodDataUrl = "Food/Create";
+        public string updateFoodDataUrl = "Food/Update";
         public string deleteFoodDataUrl = "Food/Delete";
         public string deleteAllFoodDataUrl = "Food/DeleteAll";
         public string getUsersDataUrl = "User/GetAll";
@@ -34,7 +36,7 @@ namespace IntranetUWP.ViewModels.PagesViewModel
         private IntranetHttpHelper httpHelper = new IntranetHttpHelper();
         public ICommand getAllFoodCommand { get; set; }
         public ICommand createFoodCommand { get; set; }
-        public ICommand deleteFoodCommand { get; set; }
+        public ICommand askBeforeDeleteFoodCommand { get; set; }
         public ICommand deleteAllFoodCommand { get; set; }
         public ICommand editFoodCommand { get; set; }
         public ICommand getUserCommand { get; set; }
@@ -88,6 +90,7 @@ namespace IntranetUWP.ViewModels.PagesViewModel
 
         public FoodOrderPageViewModel()
         {
+            IsBusy = true;
             Users = new ObservableCollection<UserDTO>();
             Foods = new ObservableCollection<FoodDTO>();
             Foods.CollectionChanged += Foods_CollectionChanged;
@@ -96,7 +99,7 @@ namespace IntranetUWP.ViewModels.PagesViewModel
             GetUserFoodsData();
             getAllFoodCommand = new RelayCommand(async() => await GetAllFood());
             createFoodCommand = new RelayCommand(async() => await CreateFood());
-            deleteFoodCommand = new RelayCommand(async () => await RemoveFood());
+            askBeforeDeleteFoodCommand = new RelayCommand(async () => await AskBeforeRemove());
             deleteAllFoodCommand = new RelayCommand(async () => await RemoveAllFood());
             editFoodCommand = new RelayCommand(async () => await EditFood());
             getUserCommand = new RelayCommand(async () => await GetUserFoodsData());
@@ -175,7 +178,7 @@ namespace IntranetUWP.ViewModels.PagesViewModel
             IsBusy = false;
         }
 
-        private void EditFoodDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        public async void EditFoodDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
             IsBusy = true;
             var editedFood = (sender as CreateFood).Food;
@@ -187,22 +190,43 @@ namespace IntranetUWP.ViewModels.PagesViewModel
                 editedFood.IsSelected = food.IsSelected;
                 editedFood.NumberOfSelectedUser = food.NumberOfSelectedUser;
                 editedFood.Percentage = food.Percentage;
-                Foods.Remove(food);
-                Foods.Insert(editedFood.itemNo - 1, editedFood);
+
+                var updateResult = await httpHelper.UpdateAsync(updateFoodDataUrl, editedFood);
+
+                if(updateResult == true)
+                {
+                    Foods.Remove(food);
+                    Foods.Insert(editedFood.itemNo - 1, editedFood);
+                }
             }
             IsBusy = false;
         }
 
-        private async Task RemoveFood()
+        private async Task AskBeforeRemove()
         {
-            IsBusy = true;
-            if(SelectedFood != null)
+            var removeFood = SelectedFood;
+            var confirmDeletButtonStyle = new Style(typeof(Button));
+            confirmDeletButtonStyle.Setters.Add(new Setter(Button.BackgroundProperty, Colors.Red));
+            confirmDeletButtonStyle.Setters.Add(new Setter(Button.ForegroundProperty, Colors.White));
+            var confirmDeleteDialog = await new ContentDialog()
             {
-                var food = Foods.Where(f => f == SelectedFood).FirstOrDefault();
-                var deleteResult = await httpHelper.RemoveAsync(deleteFoodDataUrl, food.id);
-                if (deleteResult == true) Foods.Remove(food); else Debug.Write("Delete operation error");
-            }
-            IsBusy = false;
+                Title = "🗑 Delete this food ?",
+                Content = $"Check before you delete {removeFood.foodEnglishName} ?",
+                PrimaryButtonText = "Yes",
+                SecondaryButtonText = "No",
+                PrimaryButtonStyle = confirmDeletButtonStyle,
+                PrimaryButtonCommand = new RelayCommand(async () =>
+                {
+                    IsBusy = true;
+                    if (removeFood != null)
+                    {
+                        var food = Foods.Where(f => f == removeFood).FirstOrDefault();
+                        var deleteResult = await httpHelper.RemoveAsync(deleteFoodDataUrl, food.id);
+                        if (deleteResult == true) Foods.Remove(food); else Debug.Write("Delete operation error");
+                    }
+                    IsBusy = false;
+                })
+            }.ShowAsync();
         }
 
         private async Task RemoveAllFood()
@@ -279,6 +303,7 @@ namespace IntranetUWP.ViewModels.PagesViewModel
 
             BindUsersBackToUI(users);
             BindFoodBackToUI(foods, userSelectedFoods);
+            IsBusy = false;
         }
 
         private async Task PasteFoodFromClipboard()

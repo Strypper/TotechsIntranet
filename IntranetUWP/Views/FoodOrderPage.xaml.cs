@@ -170,18 +170,7 @@ namespace IntranetUWP.Views
         {
             var food = vm.Foods.Where(f => f.id == foodId).FirstOrDefault();
             vm.SelectedFood = food;
-            var confirmDeletButtonStyle = new Style(typeof(Button));
-            confirmDeletButtonStyle.Setters.Add(new Setter(BackgroundProperty, Colors.Red));
-            confirmDeletButtonStyle.Setters.Add(new Setter(ForegroundProperty, Colors.White));
-            var confirmDeleteDialog = await new ContentDialog()
-            {
-                Title = "🗑 Delete this food ?",
-                Content = $"Check before you delete {food.foodEnglishName} ?",
-                PrimaryButtonText = "Yes",
-                SecondaryButtonText = "No",
-                PrimaryButtonStyle = confirmDeletButtonStyle,
-                PrimaryButtonCommand = vm.deleteFoodCommand
-            }.ShowAsync();
+            vm.askBeforeDeleteFoodCommand.Execute(null);
         }
 
         private async void FoodCard_EditSwipe(int foodId)
@@ -189,6 +178,7 @@ namespace IntranetUWP.Views
             var food = vm.Foods.Where(f => f.id == foodId).FirstOrDefault();
             CreateFood editFoodDialog = new CreateFood();
             editFoodDialog.Food = food;
+            editFoodDialog.PrimaryButtonClick += vm.EditFoodDialog_PrimaryButtonClick;
             await editFoodDialog.ShowAsync();
         }
 

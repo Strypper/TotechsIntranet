@@ -23,8 +23,8 @@ namespace IntranetUWP.ViewModels.Commands
         {
              var chatMessage = new ChatMessageDTO() { 
                 MessageContent = parameter as String, 
-                UserName = "Strypper" 
-            };
+                UserName = App.localSettings.Values["UserName"] as String
+             };
             await ViewModel.SendMessage(chatMessage);
         }
     }

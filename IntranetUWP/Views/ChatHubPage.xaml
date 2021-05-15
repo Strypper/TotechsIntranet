@@ -199,7 +199,7 @@
                             <ListViewItem HorizontalAlignment="Left" HorizontalContentAlignment="Left" CornerRadius="5"
                                           Background="{ThemeResource CustomAcrylicInAppLuminosity}" Margin="5">
                                 <StackPanel Orientation="Horizontal">
-                                    <PersonPicture VerticalAlignment="Top" Width="50" Margin="5"/>
+                                    <PersonPicture ProfilePicture="{x:Bind ProfilePic, Converter={StaticResource StringToImageSourceConverter}}" VerticalAlignment="Top" Width="50" Margin="5"/>
                                     <StackPanel VerticalAlignment="Center">
                                         <TextBlock Text="{x:Bind UserName}" FontWeight="Bold" TextDecorations="Underline" Margin="5,5,5,0"/>
                                         <TextBlock Text="{x:Bind MessageContent}" TextWrapping="WrapWholeWords" 
@@ -207,7 +207,7 @@
                                                    MaxWidth="700" Margin="5,5,5,0"/>
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock VerticalAlignment="Bottom" FontFamily="Segoe Fluent Icons" Text="&#xE823;" Margin="5"/>
-                                            <TextBlock VerticalAlignment="Bottom" Text="5 minutes ago" Margin="0,5,5,5"/>
+                                            <TextBlock VerticalAlignment="Bottom" Text="{x:Bind SentTime}" Margin="0,5,5,5"/>
                                         </StackPanel>
                                     </StackPanel>
                                 </StackPanel>

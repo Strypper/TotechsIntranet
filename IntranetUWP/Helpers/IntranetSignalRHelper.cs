@@ -15,9 +15,15 @@ namespace IntranetUWP.Helpers
         public IntranetSignalRHelper(HubConnection hubConnection)
         {
             _hubConnection = hubConnection;
-            _hubConnection.On<string, string>("ReceiveMessage", async (message, user) =>
+            _hubConnection.On<string, UserDTO>("ReceiveMessage", async (message, user) =>
             {
-                ChatMessageDTO chatmessage = new ChatMessageDTO() { UserName = user, MessageContent = message };
+                ChatMessageDTO chatmessage = new ChatMessageDTO() 
+                    { 
+                        UserName = user.firstName + (user.lastName != null ? user.lastName : ""), 
+                        ProfilePic = user.profilePic, 
+                        MessageContent = message,
+                        SentTime = DateTime.Now
+                    };
                 GeneralChatMessageReceived?.Invoke(chatmessage);
             });
         }

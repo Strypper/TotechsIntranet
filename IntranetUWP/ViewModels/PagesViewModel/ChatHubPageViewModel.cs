@@ -25,9 +25,13 @@ namespace IntranetUWP.ViewModels.PagesViewModel
             ChatHubPageViewModel vm = new ChatHubPageViewModel(service);
             service.ConnectAsync().ContinueWith(task =>
             {
-                if(task.Exception != null)
+                if (task.Exception != null)
                 {
                     System.Diagnostics.Debug.WriteLine("Unable to connect");
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine("Connection success");
                 }
             });
             return vm;
@@ -42,7 +46,7 @@ namespace IntranetUWP.ViewModels.PagesViewModel
 
         public async Task SendMessage(ChatMessageDTO messContent)
         {
-            await signalRHelper.SendMessageAsync(messContent.MessageContent, 5);
+            await signalRHelper.SendMessageAsync(messContent.MessageContent, (int)App.localSettings.Values["UserId"]);
             MessContent = "";
         }
 

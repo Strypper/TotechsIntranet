@@ -45,7 +45,7 @@
                 </VisualState>
                 <VisualState x:Name="VS3">
                     <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="800"/>
+                        <AdaptiveTrigger MinWindowWidth="1300"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="MainNavigationView.PaneDisplayMode" Value="Left"/>
@@ -81,11 +81,11 @@
                     <FontIcon FontFamily="Segoe UI Emoji" Glyph="&#x2694;" />
                 </winui:NavigationViewItem.Icon>
             </winui:NavigationViewItem>-->
-            <!--<winui:NavigationViewItem x:Name="ChatHub" Content="Chat hub">
+            <winui:NavigationViewItem x:Name="ChatHub" Content="Chat hub">
                 <winui:NavigationViewItem.Icon>
                     <FontIcon FontFamily="Segoe UI Emoji" Glyph="&#x1F4AC;" />
                 </winui:NavigationViewItem.Icon>
-            </winui:NavigationViewItem>-->
+            </winui:NavigationViewItem>
             <winui:NavigationViewItem x:Name="Member" Content="Members">
                 <winui:NavigationViewItem.Icon>
                     <FontIcon FontFamily="Segoe UI Emoji" Glyph="&#x1F603;" />

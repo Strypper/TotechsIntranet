@@ -40,6 +40,7 @@
                         <Setter Target="MainFrame.ColumnDefinitions[1].Width" Value="400"/>
                         <Setter Target="MemberPivot.Visibility" Value="Visible"/>
                         <Setter Target="MainFoodImage.Visibility" Value="Visible"/>
+                        <Setter Target="SecondaryFoodImage.Visibility" Value="Visible"/>
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="VS2">
@@ -50,16 +51,18 @@
                         <Setter Target="MainFrame.ColumnDefinitions[1].Width" Value="400"/>
                         <Setter Target="MemberPivot.Visibility" Value="Visible"/>
                         <Setter Target="MainFoodImage.Visibility" Value="Visible"/>
+                        <Setter Target="SecondaryFoodImage.Visibility" Value="Visible"/>
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="VS3">
                     <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="800"/>
+                        <AdaptiveTrigger MinWindowWidth="1300"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="MainFrame.ColumnDefinitions[1].Width" Value="400"/>
                         <Setter Target="MemberPivot.Visibility" Value="Visible"/>
                         <Setter Target="MainFoodImage.Visibility" Value="Visible"/>
+                        <Setter Target="SecondaryFoodImage.Visibility" Value="Visible"/>
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="VS4">
@@ -70,6 +73,7 @@
                         <Setter Target="MainFrame.ColumnDefinitions[1].Width" Value="0"/>
                         <Setter Target="MemberPivot.Visibility" Value="Collapsed"/>
                         <Setter Target="MainFoodImage.Visibility" Value="Collapsed"/>
+                        <Setter Target="SecondaryFoodImage.Visibility" Value="Collapsed"/>
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>

@@ -143,6 +143,11 @@ namespace IntranetUWP.Views
             }
             catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex.Message); }
         }
+
+        private void ChatList_LostFocus(object sender, RoutedEventArgs e)
+        {
+            ChatList.SelectedItem = null;
+        }
     }
 
     public class ExplorerItem : INotifyPropertyChanged

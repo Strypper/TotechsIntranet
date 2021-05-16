@@ -174,7 +174,8 @@
                         </EventTrigger>
                     </Ellipse.Triggers>
                 </Ellipse>
-                <ListView ItemsSource="{x:Bind vm.ChatMessages, Mode=TwoWay}" SelectionMode="Extended">
+                <ListView x:Name="ChatList" ItemsSource="{x:Bind vm.ChatMessages, Mode=TwoWay}" SelectionMode="Extended"
+                          LostFocus="ChatList_LostFocus">
                     <ListView.ItemsPanel>
                         <ItemsPanelTemplate>
                             <ItemsStackPanel ItemsUpdatingScrollMode="KeepLastItemInView"
@@ -204,8 +205,8 @@
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="DTO:ChatMessageDTO">
                             <ListViewItem HorizontalAlignment="{x:Bind IsFromSelf, Converter={StaticResource BoolToFrameworkAlignmentConverter}}"
-                                          HorizontalContentAlignment="Left"  Margin="5">
-                                <StackPanel Orientation="Horizontal" CornerRadius="5"
+                                          HorizontalContentAlignment="Left" Margin="5">
+                                <StackPanel Orientation="Horizontal" Margin="0,10,0,10" CornerRadius="5"
                                           Background="{ThemeResource CustomAcrylicInAppLuminosity}">
                                     <PersonPicture ProfilePicture="{x:Bind ProfilePic, Converter={StaticResource StringToImageSourceConverter}}" 
                                                    VerticalAlignment="Top" Width="50" Margin="5"

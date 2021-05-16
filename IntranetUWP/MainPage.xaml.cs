@@ -16,6 +16,10 @@ namespace IntranetUWP
             {
                 ProfilePicture.ProfilePicture = new BitmapImage(new Uri(App.localSettings.Values["ProfilePic"] as string));
             }
+            if (App.localSettings.Values["FirstName"] != null)
+            {
+                PersonalName.Text = App.localSettings.Values["FirstName"] as String + (App.localSettings.Values["LastName"] != null ? (" " +  App.localSettings.Values["LastName"] as String) : " ");
+            }
         }
 
         private void NavigationViewPanel_SelectionChanged(Microsoft.UI.Xaml.Controls.NavigationView sender, Microsoft.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs args)

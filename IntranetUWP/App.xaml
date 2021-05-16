@@ -5,12 +5,16 @@
     xmlns:local="using:IntranetUWP"
     xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:Core="using:Microsoft.Xaml.Interactions.Core" xmlns:ToolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls" 
-    xmlns:ToolkitBehaviors="using:Microsoft.Toolkit.Uwp.UI.Animations.Behaviors" xmlns:converters="using:IntranetUWP.Converters">
+    xmlns:ToolkitBehaviors="using:Microsoft.Toolkit.Uwp.UI.Animations.Behaviors" xmlns:converters="using:IntranetUWP.Converters"
+    xmlns:toolkitconverters="using:Microsoft.Toolkit.Uwp.UI.Converters">
 
     <Application.Resources>
         <ResourceDictionary>
+            <toolkitconverters:BoolToObjectConverter x:Key="ReverseBoolToVisibilityConverter" TrueValue="Collapsed" FalseValue="Visible"/>
+            
             <converters:StringToImageSourceConverter x:Key="StringToImageSourceConverter"/>
             <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+            <converters:BoolToFrameworkAlignmentConverter x:Key="BoolToFrameworkAlignmentConverter"/>
             <converters:BoolToCompanyConverter x:Key="BoolToCompanyConverter"/>
             <converters:DoubleToPercentConverter x:Key="DoubleToPercentConverter"/>
 

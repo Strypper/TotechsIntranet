@@ -19,9 +19,10 @@ namespace IntranetUWP.Helpers
             {
                 ChatMessageDTO chatmessage = new ChatMessageDTO() 
                     { 
-                        UserName = user.firstName + (user.lastName != null ? user.lastName : ""), 
+                        UserName = user.firstName + (user.lastName != null ? (" " + user.lastName) : ""), 
                         ProfilePic = user.profilePic, 
                         MessageContent = message,
+                        IsFromSelf = (int)App.localSettings.Values["UserId"] == user.id ? true : false,
                         SentTime = DateTime.Now
                     };
                 GeneralChatMessageReceived?.Invoke(chatmessage);

@@ -43,6 +43,7 @@ namespace IntranetUWP.Views
                     App.localSettings.Values["UserId"] = userInfo.id;
                     App.localSettings.Values["UserName"] = userInfo.userName;
                     App.localSettings.Values["FirstName"] = userInfo.firstName;
+                    App.localSettings.Values["LastName"] = userInfo.lastName;
                     App.localSettings.Values["Password"] = Password.Password;
                     App.localSettings.Values["ProfilePic"] = userInfo.profilePic;
                     var foodRequest = await httpClient.GetAsync(GetFoodUrl(userInfo.id));

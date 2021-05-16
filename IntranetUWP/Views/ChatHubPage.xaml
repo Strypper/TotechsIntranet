@@ -7,7 +7,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls" 
     xmlns:winui="using:Microsoft.UI.Xaml.Controls" 
-    xmlns:DTO="using:IntranetUWP.Models" xmlns:media="using:Microsoft.UI.Xaml.Media" 
+    xmlns:DTO="using:IntranetUWP.Models" xmlns:media="using:Microsoft.UI.Xaml.Media"
+    NavigationCacheMode="Enabled"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Page.Resources>
@@ -174,6 +175,12 @@
                     </Ellipse.Triggers>
                 </Ellipse>
                 <ListView ItemsSource="{x:Bind vm.ChatMessages, Mode=TwoWay}" SelectionMode="Extended">
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <ItemsStackPanel ItemsUpdatingScrollMode="KeepLastItemInView"
+                              VerticalAlignment="Bottom"/>
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
                     <ListView.Header>
                         <TextBlock Text="IDev General Chat" FontSize="25" FontWeight="Bold" Margin="5">
                             <TextBlock.RenderTransform>
@@ -196,20 +203,28 @@
                     </ListView.Header>
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="DTO:ChatMessageDTO">
-                            <ListViewItem HorizontalAlignment="Left" HorizontalContentAlignment="Left" CornerRadius="5"
-                                          Background="{ThemeResource CustomAcrylicInAppLuminosity}" Margin="5">
-                                <StackPanel Orientation="Horizontal">
-                                    <PersonPicture ProfilePicture="{x:Bind ProfilePic, Converter={StaticResource StringToImageSourceConverter}}" VerticalAlignment="Top" Width="50" Margin="5"/>
+                            <ListViewItem HorizontalAlignment="{x:Bind IsFromSelf, Converter={StaticResource BoolToFrameworkAlignmentConverter}}"
+                                          HorizontalContentAlignment="Left"  Margin="5">
+                                <StackPanel Orientation="Horizontal" CornerRadius="5"
+                                          Background="{ThemeResource CustomAcrylicInAppLuminosity}">
+                                    <PersonPicture ProfilePicture="{x:Bind ProfilePic, Converter={StaticResource StringToImageSourceConverter}}" 
+                                                   VerticalAlignment="Top" Width="50" Margin="5"
+                                                   Visibility="{x:Bind IsFromSelf, Converter={StaticResource ReverseBoolToVisibilityConverter}}"/>
                                     <StackPanel VerticalAlignment="Center">
-                                        <TextBlock Text="{x:Bind UserName}" FontWeight="Bold" TextDecorations="Underline" Margin="5,5,5,0"/>
+                                        <TextBlock Text="{x:Bind UserName}" FontWeight="Bold" TextDecorations="Underline" Margin="5,5,5,0"
+                                                       HorizontalAlignment="{x:Bind IsFromSelf, Converter={StaticResource BoolToFrameworkAlignmentConverter}}"/>
                                         <TextBlock Text="{x:Bind MessageContent}" TextWrapping="WrapWholeWords" 
-                                                   IsTextSelectionEnabled="True"
-                                                   MaxWidth="700" Margin="5,5,5,0"/>
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock VerticalAlignment="Bottom" FontFamily="Segoe Fluent Icons" Text="&#xE823;" Margin="5"/>
+                                                       IsTextSelectionEnabled="True"
+                                                       MaxWidth="700" Margin="15,5,15,0"
+                                                       HorizontalAlignment="{x:Bind IsFromSelf, Converter={StaticResource BoolToFrameworkAlignmentConverter}}"/>
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="{x:Bind IsFromSelf, Converter={StaticResource BoolToFrameworkAlignmentConverter}}">
+                                            <SymbolIcon Symbol="Clock" VerticalAlignment="Bottom" Margin="5"/>
                                             <TextBlock VerticalAlignment="Bottom" Text="{x:Bind SentTime}" Margin="0,5,5,5"/>
                                         </StackPanel>
                                     </StackPanel>
+                                    <PersonPicture ProfilePicture="{x:Bind ProfilePic, Converter={StaticResource StringToImageSourceConverter}}" 
+                                                   VerticalAlignment="Top" Width="50" Margin="5" 
+                                                   Visibility="{x:Bind IsFromSelf, Converter={StaticResource BoolToVisibilityConverter}}"/>
                                 </StackPanel>
                             </ListViewItem>
                         </DataTemplate>

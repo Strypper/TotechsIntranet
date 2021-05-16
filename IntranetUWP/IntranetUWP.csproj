@@ -120,6 +120,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\BoolToCompanyConverter.cs" />
+    <Compile Include="Converters\BoolToFrameworkAlignmentConverter.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\DoubleToPercentConverter.cs" />
     <Compile Include="Converters\StringToImageSourceConverter.cs" />

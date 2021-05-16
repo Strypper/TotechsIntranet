@@ -100,7 +100,7 @@
                 </Grid.ColumnDefinitions>
                 <StackPanel Orientation="Horizontal">
                     <PersonPicture x:Name="ProfilePicture" Width="20"/>
-                    <TextBlock Text="Strypper Jason" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                    <TextBlock x:Name="PersonalName" VerticalAlignment="Center" Margin="10,0,0,0"/>
                 </StackPanel>
                 <Button x:Name="LogoutButton" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                         FontFamily="Segoe MDL2 Assets" Content="&#xE7E8;" Background="Transparent"

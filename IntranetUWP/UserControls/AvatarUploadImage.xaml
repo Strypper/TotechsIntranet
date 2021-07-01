@@ -1,0 +1,37 @@
+﻿<UserControl
+    x:Class="IntranetUWP.UserControls.AvatarUploadImage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:IntranetUWP.UserControls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" Loaded="UserControl_Loaded"
+    d:DesignHeight="150"
+    d:DesignWidth="150">
+
+    <Border Width="150" Height="150" CornerRadius="75"
+            PointerEntered="Avatar_PointerEntered" PointerExited="Avatar_PointerExited">
+        <Grid>
+            <PersonPicture x:Name="Avatar" 
+                           ProfilePicture="{x:Bind AvatarImage, Mode=OneWay}"
+                           Width="150" Height="150"/>
+            <Ellipse x:Name="Glass" Width="150" Height="150"/>
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Button x:Name="ActiveCamButton" Background="Transparent" Scale="1.5,1.5,0" CenterPoint="20,20,0"
+                        Width="40" Height="40" Padding="0" Margin="0,0,20,0" Click="ActiveCamButton_Click">
+                    <Button.ScaleTransition>
+                        <Vector3Transition />
+                    </Button.ScaleTransition>
+                    <SymbolIcon Symbol="Camera" Foreground="White"/>
+                </Button>
+                <Button x:Name="OpenFolderButton" Background="Transparent" Scale="1.5,1.5,0" CenterPoint="20,20,0"
+                        Width="40" Height="40" Padding="0" Click="OpenFolderButton_Click">
+                    <Button.ScaleTransition>
+                        <Vector3Transition />
+                    </Button.ScaleTransition>
+                    <SymbolIcon Symbol="Folder" Foreground="White"/>
+                </Button>
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>

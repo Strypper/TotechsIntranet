@@ -4,9 +4,12 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:IntranetUWP.Views.MemberChildPages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls" xmlns:data="using:IntranetUWP.Models"
-    mc:Ignorable="d"
-    Background="{ThemeResource SystemControlAcrylicWindowBrush}">
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls" 
+    xmlns:winui="using:Microsoft.UI.Xaml.Controls"
+    xmlns:data="using:IntranetUWP.Models" xmlns:helpers="using:IntranetUWP.Helpers"
+    mc:Ignorable="d" Loaded="Page_Loaded"
+    winui:BackdropMaterial.ApplyToRootOrPageBackground="True">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -16,7 +19,7 @@
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top">
             <TextBlock FontSize="30" Margin="10">
                 <Run Text="&#xE13D;" FontFamily="Segoe MDL2 Assets"/>
-                <Run Text="50"/>
+                <Run Text="{x:Bind vm.Users.Count, Mode=OneWay}"/>
             </TextBlock>
             <TextBlock FontSize="30" Margin="10">
                 <Run Text="&#xE902;" FontFamily="Segoe MDL2 Assets"/>
@@ -24,8 +27,16 @@
             </TextBlock>
         </StackPanel>
         <Border VerticalAlignment="Center" HorizontalAlignment="Center">
-            <controls:Carousel ItemsSource="{x:Bind Users}" VerticalAlignment="Center" HorizontalAlignment="Center" 
-                               ItemMargin="30" ItemDepth="100" ItemRotationY="0" TransitionDuration="500">
+            <controls:Carousel x:Name="UsersCarousel" 
+                               ItemsSource="{x:Bind vm.Users}" 
+                               VerticalAlignment="Center" 
+                               HorizontalAlignment="Center" 
+                               SelectedItem="{x:Bind vm.SelectedUser,Mode=TwoWay}"
+                               ItemMargin="30" 
+                               ItemDepth="100" 
+                               ItemRotationY="0" 
+                               TransitionDuration="500" 
+                               SelectionChanged="UsersCarousel_SelectionChanged">
                 <controls:Carousel.EasingFunction>
                     <CubicEase EasingMode="EaseOut" />
                 </controls:Carousel.EasingFunction>
@@ -39,10 +50,11 @@
                                   VerticalAlignment="Center"
                                   HorizontalAlignment="Center"
                                   IsMasked="True">
-                            <Border CornerRadius="5">
+                            <Grid CornerRadius="5">
                                 <Image Width="300" Height="430" VerticalAlignment="Center" 
-                                       Source="{x:Bind profilePic, Converter={StaticResource StringToImageSourceConverter}}" Stretch="UniformToFill" />
-                            </Border>
+                                       Source="{x:Bind profilePic, Converter={StaticResource StringToImageSourceConverter}}"
+                                       Stretch="UniformToFill" />
+                            </Grid>
                         </controls:DropShadowPanel>
                     </DataTemplate>
                 </controls:Carousel.ItemTemplate>
@@ -107,7 +119,43 @@
                 <TextBlock HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"
                            Text="Hey friend! the name is Strypper, great to be here. I'm a software engineer bring the beautiful of fluent design language to our modern technology. My main core sit in the dotNET echosystem. Feel free to ask me for help, because that's what I'm here for, to bring our organization to another level" 
                            Margin="5" FontSize="15"/>
+
+                <Button x:Name="DetailButton" Click="NavigateToMemberDetail_Click" 
+                        Background="{ThemeResource SystemAccentColor}"
+                        HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="5"
+                        Width="45" Height="45" CornerRadius="25">
+                    <SymbolIcon Symbol="Contact"/>
+                </Button>
             </StackPanel>
         </Grid>
+
+        <Button Grid.Row="0" 
+                VerticalAlignment="Top" 
+                HorizontalAlignment="Right" 
+                Margin="5"
+                Command="{x:Bind vm.createNewUserCommand}">
+            <Button.Background>
+                <helpers:AnimatedGradientBrush/>
+            </Button.Background>
+            <StackPanel Orientation="Horizontal">
+                <SymbolIcon Symbol="Add" 
+                            Margin="5"/>
+                <TextBlock Text="Add new member"
+                           VerticalAlignment="Center"/>
+            </StackPanel>
+        </Button>
+        <StackPanel x:Name="DisableAndDeleteBar" Orientation="Horizontal">
+            <Button Grid.Row="0" Content="&#xE25B;" FontFamily="Segoe MDL2 Assets" 
+                    VerticalAlignment="Top" HorizontalAlignment="Right" Margin="5"
+                    FontSize="20"/>
+            <Button Grid.Row="0" 
+                    VerticalAlignment="Top" 
+                    HorizontalAlignment="Right" 
+                    Margin="5"
+                    Background="Red"
+                    Command="{x:Bind vm.askBeforeDeleteUserCommand}">
+                <SymbolIcon Symbol="Delete" />
+            </Button>
+        </StackPanel>
     </Grid>
 </Page>

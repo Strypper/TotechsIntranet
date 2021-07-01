@@ -12,8 +12,6 @@ namespace IntranetUWP.Models
         public string foodEnglishName { get; set; }
         public int mainIcon { get; set; } = 5;
         public int? secondaryIcon { get; set; } = 11;
-        //public double percentage { get; set; }
-        //public double numberOfSelectedUser { get; set; }
         private double numberOfSelectedUser;
         public double NumberOfSelectedUser
         {
@@ -37,6 +35,19 @@ namespace IntranetUWP.Models
                 OnPropertyChanged();
             }
         }
+
+        private bool isUnavailable;
+
+        public bool IsUnavailable
+        {
+            get => isUnavailable; 
+            set 
+            {
+                isUnavailable = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         private bool isSelected;
         public bool IsSelected

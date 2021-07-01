@@ -8,6 +8,7 @@ using System.Numerics;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media.Imaging;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
@@ -54,8 +55,6 @@ namespace IntranetUWP.UserControls
         public static readonly DependencyProperty FoodEnglishNameProperty =
             DependencyProperty.Register("FoodEnglishName", typeof(string), typeof(FoodCard), null);
 
-
-
         public bool IsSelected
         {
             get { return (bool)GetValue(IsSelectedProperty); }
@@ -66,7 +65,15 @@ namespace IntranetUWP.UserControls
         public static readonly DependencyProperty IsSelectedProperty =
             DependencyProperty.Register("IsSelected", typeof(bool), typeof(FoodCard), new PropertyMetadata(null));
 
+        public bool IsUnavailable
+        {
+            get { return (bool)GetValue(IsUnavailableProperty); }
+            set { SetValue(IsUnavailableProperty, value); }
+        }
 
+        // Using a DependencyProperty as the backing store for IsUnavailable.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsUnavailableProperty =
+            DependencyProperty.Register("IsUnavailable", typeof(bool), typeof(FoodCard), new PropertyMetadata(null));
 
 
         public int MainFoodIcon
@@ -128,10 +135,8 @@ namespace IntranetUWP.UserControls
         public double Percentage
         {
             get { return (double)GetValue(PercentageProperty); }
-            set { SetValue(PercentageProperty, value); }
+            set { SetValue(PercentageProperty, Double.IsNaN(value) ? 0.0 : value); }
         }
-
-        // Using a DependencyProperty as the backing store for Percentage.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty PercentageProperty =
             DependencyProperty.Register("Percentage", typeof(double), typeof(double), new PropertyMetadata(0.0));
 
@@ -140,8 +145,6 @@ namespace IntranetUWP.UserControls
             get { return (double)GetValue(NumberOfSelectedUserProperty); }
             set { SetValue(NumberOfSelectedUserProperty, value); }
         }
-
-        // Using a DependencyProperty as the backing store for NumberOfSelectedUser.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty NumberOfSelectedUserProperty =
             DependencyProperty.Register("NumberOfSelectedUser", typeof(double), typeof(double), new PropertyMetadata(0d));
 
@@ -150,8 +153,6 @@ namespace IntranetUWP.UserControls
             get { return (int)GetValue(ItemNoProperty); }
             set { SetValue(ItemNoProperty, value); }
         }
-
-        // Using a DependencyProperty as the backing store for ItemNo.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ItemNoProperty =
             DependencyProperty.Register("ItemNo", typeof(int), typeof(int), new PropertyMetadata(0));
 
@@ -160,8 +161,6 @@ namespace IntranetUWP.UserControls
             get { return (List<string>)GetValue(usersAvatarProperty); }
             set { SetValue(usersAvatarProperty, value); }
         }
-
-        // Using a DependencyProperty as the backing store for usersAvatar.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty usersAvatarProperty =
             DependencyProperty.Register("usersAvatar", typeof(List<string>), typeof(List<string>), new PropertyMetadata(0));
 
@@ -169,20 +168,24 @@ namespace IntranetUWP.UserControls
         public event DeleteFoodCardEventHandler DeleteSwipe;
         public event EditFoodCardEventHandler EditSwipe;
         private IntranetHttpHelper httpHelper = new IntranetHttpHelper();
-        public FoodCard() => this.InitializeComponent();
+        public FoodCard() 
+            => this.InitializeComponent();
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             PickRateBar.Value = Percentage;
-            if(App.localSettings.Values["ProfilePic"] != null)
+            UnavaibleIcon.Visibility = IsUnavailable == true ? Visibility.Visible : Visibility.Collapsed;
+            MainFoodImage.Opacity = IsUnavailable == true ? 0.3f : 1.0f;
+            ChooseButton.IsEnabled = IsUnavailable == true ? false : true;
+            if (App.localSettings.Values["ProfilePic"] != null)
             {
                 OwnerUser.ProfilePicture = new BitmapImage(new Uri(App.localSettings.Values["ProfilePic"].ToString()));
             }
-            if (App.localSettings.Values["FoodId"] != null)
+            if (App.localSettings.Values["FoodId"] != null && IsUnavailable == false)
             {
                 ChooseButton.IsChecked = FoodId == (int)App.localSettings.Values["FoodId"] ? true : false;
                 OwnerUser.Visibility = FoodId == (int)App.localSettings.Values["FoodId"] ? Visibility.Visible : Visibility.Collapsed;
             }
-            if (usersAvatar != null)
+            if (usersAvatar != null && IsUnavailable == false)
             {
                 if (usersAvatar.FirstOrDefault() != null)
                 {
@@ -191,23 +194,28 @@ namespace IntranetUWP.UserControls
                     FirstUser.Visibility = Visibility.Visible;
                 }
                 else FirstUser.Visibility = Visibility.Collapsed;
-                if (usersAvatar.Count > 1)
+                if (usersAvatar.Count > 1 && IsUnavailable == false)
                 {
-                    SecondUser.ProfilePicture = new BitmapImage(new Uri(usersAvatar.ElementAt(1)));
+                    if (usersAvatar.ElementAt(1) != null)
+                    {
+                        SecondUser.ProfilePicture = new BitmapImage(new Uri(usersAvatar.ElementAt(1)));
+                    }
                     OwnerUser.Translation = new Vector3(-30, 0, 0);
                     SecondUser.Visibility = Visibility.Visible;
                 }
                 else SecondUser.Visibility = Visibility.Collapsed;
-                if (usersAvatar.Count > 2)
+                if (usersAvatar.Count > 2 && IsUnavailable == false)
                 {
-                    ThirdUser.ProfilePicture = new BitmapImage(new Uri(usersAvatar.ElementAt(2)));
+                    if (usersAvatar.ElementAt(2) != null)
+                    {
+                        ThirdUser.ProfilePicture = new BitmapImage(new Uri(usersAvatar.ElementAt(2)));
+                    }
                     OwnerUser.Translation = new Vector3(-30, 0, 0);
                     ThirdUser.Visibility = Visibility.Visible;
                 }
                 else ThirdUser.Visibility = Visibility.Collapsed;
             }
         }
-
         private async void ToggleButton_Click(object sender, RoutedEventArgs e)
         {
             if (sender is ToggleButton toggleSwitch)
@@ -223,14 +231,27 @@ namespace IntranetUWP.UserControls
                 else
                 {
                     var userFood = await httpHelper.GetByIdAsync<UserFoodDTO>("UserFood/GetUserSelectedFood", (int)App.localSettings.Values["UserId"]);
-                    await httpHelper.RemoveAsync("UserFood/Delete", userFood.id);
+                    if(userFood != null)
+                    {
+                        await httpHelper.RemoveAsync("UserFood/Delete", userFood.id);
+                    }
                     ToggleClick?.Invoke(FoodId, false);
                 }
             }
         }
+        private void SwipeEditItem_Invoked(SwipeItem sender, SwipeItemInvokedEventArgs args) 
+            => EditSwipe?.Invoke(FoodId);
+        private void SwipeDeleteItem_Invoked(SwipeItem sender, SwipeItemInvokedEventArgs args) 
+            => DeleteSwipe?.Invoke(FoodId);
+        private void FoodCardRightTapped(object sender, RightTappedRoutedEventArgs e) 
+            => FlyoutBase.ShowAttachedFlyout(sender as FrameworkElement);
+        private void Edit_Click(object sender, RoutedEventArgs e) 
+            => EditSwipe?.Invoke(FoodId);
+        private void Unavaible_Click(object sender, RoutedEventArgs e)
+        {
 
-        private void SwipeEditItem_Invoked(SwipeItem sender, SwipeItemInvokedEventArgs args) => EditSwipe?.Invoke(FoodId);
-
-        private void SwipeDeleteItem_Invoked(SwipeItem sender, SwipeItemInvokedEventArgs args) => DeleteSwipe?.Invoke(FoodId);
+        }
+        private void Remove_Click(object sender, RoutedEventArgs e) 
+            => DeleteSwipe?.Invoke(FoodId);
     }
 }

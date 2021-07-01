@@ -5,7 +5,9 @@ using IntranetUWP.Helpers;
 using IntranetUWP.Models;
 using IntranetUWP.UserControls;
 using IntranetUWP.ViewModels.Commands;
+using Microsoft.Toolkit.Uwp.Helpers;
 using Microsoft.Toolkit.Uwp.Notifications;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,9 +15,12 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.ApplicationModel.DataTransfer;
+using Windows.Graphics.Printing;
 using Windows.Storage;
 using Windows.UI;
 using Windows.UI.Xaml;
@@ -28,11 +33,13 @@ namespace IntranetUWP.ViewModels.PagesViewModel
     {
         public string getFoodsDataUrl = "Food/GetAll";
         public string createFoodDataUrl = "Food/Create";
+        public string createFoodListUrl = "Food/CreateMultipleFood";
         public string updateFoodDataUrl = "Food/Update";
         public string deleteFoodDataUrl = "Food/Delete";
         public string deleteAllFoodDataUrl = "Food/DeleteAll";
         public string getUsersDataUrl = "User/GetAll";
         public string getUserSelectedFoodDataUrl = "UserFood/GetAll";
+        public string deleteUserFoodDataUrl = "UserFood/Delete";
         private IntranetHttpHelper httpHelper = new IntranetHttpHelper();
         public ICommand getAllFoodCommand { get; set; }
         public ICommand createFoodCommand { get; set; }
@@ -45,27 +52,26 @@ namespace IntranetUWP.ViewModels.PagesViewModel
         public ICommand generateWordDocument { get; set; }
         private ObservableCollection<UserDTO> users = new ObservableCollection<UserDTO>();
         public ObservableCollection<UserDTO> Users { get; set; }
+        public ObservableCollection<UserDTO> NonSelectedUser { get; set; }
         private ObservableCollection<FoodDTO> foods { get; set; } = new ObservableCollection<FoodDTO>();
         public ObservableCollection<FoodDTO> Foods { get; set; }
-        private ObservableCollection<UserFoodDTO> userFoods { get; set; } = new ObservableCollection<UserFoodDTO>();
         public ObservableCollection<UserFoodDTO> UserFoods { get; set; }
+        public ObservableCollection<UserFoodDTO> iDealogicUsersFood { get; set; }
+        public ObservableCollection<UserFoodDTO> DevinitionUsersFood { get; set; }
         public FoodDTO SelectedFood { get; set; }
         private bool deleteAllFoodButtonState = false;
-
         public bool DeleteAllFoodButtonState
         {
             get { return deleteAllFoodButtonState; }
             set { deleteAllFoodButtonState = value; OnPropertyChanged("DeleteAllFoodButtonState"); }
         }
-
         private int numberOfFood;
-
         public int NumberOfFood
         {
             get { return numberOfFood; }
             set { numberOfFood = value; OnPropertyChanged("NumberOfFood"); }
         }
-        
+
 
         public readonly IDictionary<int, string> _mainFoods = new Dictionary<int, string>
         {
@@ -84,7 +90,6 @@ namespace IntranetUWP.ViewModels.PagesViewModel
             { 10, "ms-appx:///Assets/FoodAssets/Falafel.png"},
             { 11, null }
         };
-
         public IDictionary<int, int> _foodCount = new Dictionary<int, int>();
 
 
@@ -92,13 +97,16 @@ namespace IntranetUWP.ViewModels.PagesViewModel
         {
             IsBusy = true;
             Users = new ObservableCollection<UserDTO>();
+            NonSelectedUser = new ObservableCollection<UserDTO>();
             Foods = new ObservableCollection<FoodDTO>();
             Foods.CollectionChanged += Foods_CollectionChanged;
             UserFoods = new ObservableCollection<UserFoodDTO>();
+            iDealogicUsersFood = new ObservableCollection<UserFoodDTO>();
+            DevinitionUsersFood = new ObservableCollection<UserFoodDTO>();
             //This need to be init in a static method
             GetUserFoodsData();
-            getAllFoodCommand = new RelayCommand(async() => await GetAllFood());
-            createFoodCommand = new RelayCommand(async() => await CreateFood());
+            getAllFoodCommand = new RelayCommand(async () => await GetAllFood());
+            createFoodCommand = new RelayCommand(async () => await CreateFood());
             askBeforeDeleteFoodCommand = new RelayCommand(async () => await AskBeforeRemove());
             deleteAllFoodCommand = new RelayCommand(async () => await RemoveAllFood());
             editFoodCommand = new RelayCommand(async () => await EditFood());
@@ -107,49 +115,8 @@ namespace IntranetUWP.ViewModels.PagesViewModel
             notifyTeamCommand = new RelayCommand(async () => NotifyTeam());
             generateWordDocument = new RelayCommand(async () => await GenerateWordDocument());
         }
-
-        private async Task GetAllFood() => foods = await httpHelper.GetAsync<ObservableCollection<FoodDTO>>(getFoodsDataUrl);
-        private void BindFoodBackToUI(ObservableCollection<FoodDTO> foodList, ObservableCollection<UserFoodDTO> userFoods)
-        {
-            IsBusy = true;
-            var numberOfUserFood = UserFoods.Count();
-            foreach (var userFood in UserFoods)
-            {
-                if (_foodCount.ContainsKey(userFood.food.id))
-                {
-                    _foodCount[userFood.food.id] += 1;
-                }
-                else
-                {
-                    _foodCount.Add(userFood.food.id, 1);
-                }
-            }
-            foreach (var food in foodList)
-            {
-                double valuePercent = 0;
-                int numberOfSelectedUser = 0;
-                if (_foodCount.ContainsKey(food.id))
-                {
-                    valuePercent = _foodCount[food.id] / (double)numberOfUserFood;
-                    numberOfSelectedUser = _foodCount[food.id];
-                }
-                Foods.Add(new FoodDTO()
-                {
-                    id = food.id,
-                    itemNo = Foods.Count() + 1,
-                    foodName = food.foodName,
-                    foodEnglishName = food.foodEnglishName,
-                    mainIcon = food.mainIcon,
-                    secondaryIcon = food.secondaryIcon,
-                    Percentage = valuePercent * 100,
-                    NumberOfSelectedUser = numberOfSelectedUser,
-                    usersAvatar = userFoods.Where(f => f.food.id == food.id).Select(uf => uf.user.profilePic)
-                                           .Where(i => i != App.localSettings.Values["ProfilePic"] as string).ToList<string>()
-                });
-            }
-            IsBusy = false;
-        }
-
+        private async Task GetAllFood() 
+            => foods = await httpHelper.GetAsync<ObservableCollection<FoodDTO>>(getFoodsDataUrl);
         private async Task CreateFood()
         {
             CreateFood createFoodDialog = new CreateFood();
@@ -164,44 +131,6 @@ namespace IntranetUWP.ViewModels.PagesViewModel
             createFoodDialog.SecondaryButtonClick += (s, a) => SelectedFood = null;
             await createFoodDialog.ShowAsync();
         }
-
-        private async void CreateFoodDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
-        {
-            IsBusy = true;
-            var food = (sender as CreateFood).Food;
-            var createResult = await httpHelper.CreateAsync<FoodDTO>(createFoodDataUrl , food);
-            if (createResult != null) 
-            {
-                createResult.itemNo = Foods.Count() + 1;
-                Foods.Add(createResult);
-            } else Debug.WriteLine("Create operation error");
-            IsBusy = false;
-        }
-
-        public async void EditFoodDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
-        {
-            IsBusy = true;
-            var editedFood = (sender as CreateFood).Food;
-            if (editedFood != null)
-            {
-                var food = Foods.Where(f => f.id == editedFood.id).FirstOrDefault();
-                editedFood.id = food.id;
-                editedFood.itemNo = food.itemNo;
-                editedFood.IsSelected = food.IsSelected;
-                editedFood.NumberOfSelectedUser = food.NumberOfSelectedUser;
-                editedFood.Percentage = food.Percentage;
-
-                var updateResult = await httpHelper.UpdateAsync(updateFoodDataUrl, editedFood);
-
-                if(updateResult == true)
-                {
-                    Foods.Remove(food);
-                    Foods.Insert(editedFood.itemNo - 1, editedFood);
-                }
-            }
-            IsBusy = false;
-        }
-
         private async Task AskBeforeRemove()
         {
             var removeFood = SelectedFood;
@@ -228,10 +157,9 @@ namespace IntranetUWP.ViewModels.PagesViewModel
                 })
             }.ShowAsync();
         }
-
         private async Task RemoveAllFood()
         {
-            var confirmDeletButtonStyle = new Windows.UI.Xaml.Style(typeof(Button));
+            var confirmDeletButtonStyle = new Style(typeof(Button));
             confirmDeletButtonStyle.Setters.Add(new Setter(Button.BackgroundProperty, Colors.Red));
             confirmDeletButtonStyle.Setters.Add(new Setter(Button.ForegroundProperty, Colors.White));
             var confirmDialog = await new ContentDialog()
@@ -255,28 +183,151 @@ namespace IntranetUWP.ViewModels.PagesViewModel
                 IsBusy = false;
             }
         }
+        private async void CreateFoodDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        {
+            IsBusy = true;
+            var food = (sender as CreateFood).Food;
+            var createResult = await httpHelper.CreateAsync<FoodDTO>(createFoodDataUrl, food);
+            if (createResult != null)
+            {
+                createResult.itemNo = Foods.Count() + 1;
+                Foods.Add(createResult);
+            }
+            else Debug.WriteLine("Create operation error");
+            IsBusy = false;
+        }
+        public async void EditFoodDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        {
+            IsBusy = true;
+            var editedFood = (sender as CreateFood).Food;
+            if (editedFood != null)
+            {
+                var food = Foods.Where(f => f.id == editedFood.id).FirstOrDefault();
+                editedFood.id = food.id;
+                editedFood.itemNo = food.itemNo;
+                editedFood.IsSelected = food.IsUnavailable != true ? food.IsSelected : false;
+                editedFood.NumberOfSelectedUser = food.IsUnavailable != true ? food.NumberOfSelectedUser : 0;
+                editedFood.Percentage = food.IsUnavailable != true ? food.Percentage : 0;
+                editedFood.IsUnavailable = food.IsUnavailable;
+                var updateResult = await httpHelper.UpdateAsync(updateFoodDataUrl, editedFood);
 
+                if (food.IsUnavailable == true)
+                {
+                    foreach (var userFood in UserFoods.Where(uf => uf.food.id == food.id).ToArray())
+                    {
+                        UserFoods.Remove(userFood);
+                    }
+                    //Trigger back the calculation
+
+                    foreach (var remainFood in Foods.Where(f => f.IsUnavailable == false))
+                    {
+                        remainFood.Percentage = (remainFood.NumberOfSelectedUser / UserFoods.Count) * 100;
+                    }
+
+                    if (food.id == (int)App.localSettings.Values["FoodId"])
+                    {
+                        App.localSettings.Values["FoodId"] = 0;
+                    }
+                }
+
+                if (updateResult == true)
+                {
+                    Foods.Remove(food);
+                    Foods.Insert(editedFood.itemNo - 1, editedFood);
+                }
+            }
+            IsBusy = false;
+        }
         private async Task GetAllUsers()
             => users = await httpHelper.GetAsync<ObservableCollection<UserDTO>>(getUsersDataUrl);
-
         private void NotifyTeam() => new ToastContentBuilder()
                 .SetToastScenario(ToastScenario.Reminder)
                 .AddArgument("action", "viewFoodPage")
                 .AddText("🍱 Lunch food is now ready !!!!")
-                .AddText($"There are {Foods.Count} dishes 🍽 this week")
+                .AddText($"There are {Foods.Where(f => f.IsUnavailable == false).Count()} dishes 🍽 this week")
                 .AddText("Deadline: 12:00PM Thursday noon ⏰")
                 .AddHeroImage(new Uri("ms-appx:///Assets/FoodAssets/FoodToast.png"))
-                .AddComboBox("foodList", "Top 5 food", Foods.OrderByDescending(f => f.Percentage).FirstOrDefault().id.ToString(),
-                                                       Foods.OrderByDescending(f => f.Percentage).Select(f => (f.id.ToString(), f.foodEnglishName)).Take(5).ToArray())
+                .AddComboBox("foodList", "Top 5 food", Foods.OrderByDescending(f => f.Percentage).Where(f => f.IsUnavailable == false)
+                                                            .FirstOrDefault().id.ToString(),
+                                                       Foods.OrderByDescending(f => f.Percentage).Where(f => f.IsUnavailable == false)
+                                                            .Select(f => (f.id.ToString(), f.foodEnglishName)).Take(5).ToArray())
                 .AddButton(new ToastButton().SetContent("Order this food").AddArgument("chosenFood", "foodList"))
                 .AddAudio(new ToastAudio() { Src = new Uri("ms-appx:///Assets/AppAudio/clearly-602.mp3") })
                 .Show();
-
         private void BindUsersBackToUI(ObservableCollection<UserDTO> usersList)
         {
             foreach (var user in usersList) { Users.Add(user); }
         }
+        private void BindFoodBackToUI(ObservableCollection<FoodDTO> foodList, ObservableCollection<UserFoodDTO> userFoods)
+        {
+            IsBusy = true;
+            var numberOfUserFood = UserFoods.Count();
+            //Add food to the dictionary _foodCount
+            foreach (var userFood in UserFoods)
+            {
+                if (userFood.food.IsUnavailable == false)
+                {   
+                    //Increase number of food when it's the same one
+                    if (_foodCount.ContainsKey(userFood.food.id))
+                    {
+                        _foodCount[userFood.food.id] += 1;
+                    }
+                    //If not yet exist in the dictionary add it 
+                    else
+                    {
+                        _foodCount.Add(userFood.food.id, 1);
+                    }
+                }
+            }
 
+            var selectedUsers = UserFoods.Select(uf => uf.user);
+            var nonSelectedUser = Users.Where(u => selectedUsers.All(su => su.id != u.id)).ToList();
+            if (nonSelectedUser.Count > 0)
+            {
+                foreach (var user in nonSelectedUser)
+                {
+                    NonSelectedUser.Add(user);
+                }
+            }
+
+            foreach (var food in foodList)
+            {
+                double valuePercent = 0;
+                int numberOfSelectedUser = 0;
+                if (_foodCount.ContainsKey(food.id))
+                {
+                    valuePercent = _foodCount[food.id] / (double)numberOfUserFood;
+                    numberOfSelectedUser = _foodCount[food.id];
+                }
+                Foods.Add(new FoodDTO()
+                {
+                    id = food.id,
+                    itemNo = Foods.Count() + 1,
+                    foodName = food.foodName,
+                    foodEnglishName = food.foodEnglishName,
+                    mainIcon = food.mainIcon,
+                    secondaryIcon = food.secondaryIcon,
+                    Percentage = valuePercent * 100,
+                    NumberOfSelectedUser = numberOfSelectedUser,
+                    IsUnavailable = food.IsUnavailable,
+                    usersAvatar = userFoods.Where(f => f.food.id == food.id)
+                                           .Select(uf => uf.user.profilePic)
+                                           .Where(i => i != App.localSettings.Values["ProfilePic"] as string)
+                                           .ToList<string>()
+                });
+                //Refactor this bruhhhh
+                //By default the server not return ItemNo so this is register all of them back
+                if (UserFoods.Any(uf => uf.food.id == food.id))
+                {
+                    foreach (var uf in UserFoods.Where(uf => uf.food.id == food.id))
+                    {
+                        uf.food.itemNo = Foods.Count();
+                    }
+                }
+            }
+
+            IsBusy = false;
+        }
         private async Task GetUserFoodsData()
         {
             if (UserFoods.Count > 0) { Users.Clear(); UserFoods.Clear(); Foods.Clear(); await Task.Delay(1000); IsBusy = false; }
@@ -286,9 +337,9 @@ namespace IntranetUWP.ViewModels.PagesViewModel
             await GetAllUsers();
             await GetAllFood();
 
-            foreach ( var user in Users)
+            foreach (var user in Users)
             {
-                if(userSelectedFoods.Any(u => u.user.id == user.id) == false)
+                if (userSelectedFoods.Any(u => u.user.id == user.id) == false)
                 {
                     FoodDTO food = new FoodDTO() { id = -1 };
                     userSelectedFoods.Add(new UserFoodDTO() { user = user, food = food, foodList = Foods });
@@ -298,19 +349,25 @@ namespace IntranetUWP.ViewModels.PagesViewModel
             foreach (var userSelectedFood in userSelectedFoods)
             {
                 userSelectedFood.foodList = Foods;
+                //Legacy code need change
                 UserFoods.Add(userSelectedFood);
+
+                if (userSelectedFood.user.company == true)
+                {
+                    iDealogicUsersFood.Add(userSelectedFood);
+                }
+                else DevinitionUsersFood.Add(userSelectedFood); 
             };
+
+
 
             BindUsersBackToUI(users);
             BindFoodBackToUI(foods, userSelectedFoods);
             IsBusy = false;
         }
-
         private async Task PasteFoodFromClipboard()
         {
-            IsBusy = true;
             var dataPackageView = Clipboard.GetContent();
-            IsBusy = false;
             if (dataPackageView.Contains(StandardDataFormats.Text))
             {
                 try
@@ -320,9 +377,13 @@ namespace IntranetUWP.ViewModels.PagesViewModel
                     var result = await pasteFoodDialog.ShowAsync();
                     if (result == ContentDialogResult.Primary)
                     {
-                        foreach (FoodDTO importFood in pasteFoodDialog.FoodListDialog)
+                        var createResult = await httpHelper.CreateAsync<ObservableCollection<FoodDTO>>(createFoodListUrl, pasteFoodDialog.FoodListDialog);
+                        if(createResult != null)
                         {
-                            Foods.Add(importFood);
+                            foreach (FoodDTO importFood in createResult)
+                            {
+                                Foods.Add(importFood);
+                            }
                         }
                     }
                     else pasteFoodDialog.Hide();
@@ -337,7 +398,6 @@ namespace IntranetUWP.ViewModels.PagesViewModel
                 Debug.WriteLine(" + Environment.NewLine + ");
             }
         }
-
         private async Task GenerateWordDocument()
         {
             var savePicker = new Windows.Storage.Pickers.FileSavePicker();
@@ -345,7 +405,7 @@ namespace IntranetUWP.ViewModels.PagesViewModel
             savePicker.FileTypeChoices.Add("DOCX", new List<string>() { ".docx" });
             savePicker.SuggestedFileName = "FoodOrderSheet";
             StorageFile file = await savePicker.PickSaveFileAsync();
-            if(file != null)
+            if (file != null)
             {
                 using (var stream = await file.OpenStreamForWriteAsync())
                 {
@@ -356,12 +416,12 @@ namespace IntranetUWP.ViewModels.PagesViewModel
                         Paragraph companyOrderingHeader = new Paragraph(new Run(new Text("Danh sách ăn trưa iDealogic và Devinition")) { RunProperties = new RunProperties() { Bold = new Bold() } });
                         OpenXMLWordHelper openXMLWordHelper = new OpenXMLWordHelper();
                         Table tbl = openXMLWordHelper.createWordTable();
-                        TableRow headerRow = openXMLWordHelper.createTableWordRow(new string[] { "STT" , "Tên món", "Số lượng" }, true, false);
+                        TableRow headerRow = openXMLWordHelper.createTableWordRow(new string[] { "STT", "Tên món", "Số lượng" }, true, false);
                         tbl.AppendChild(headerRow);
                         foreach (KeyValuePair<int, int> entry in _foodCount.OrderBy(x => x.Key))
                         {
-                            TableRow foodRow = openXMLWordHelper.createTableWordRow(new string[] { Foods.Where(f => f.id == entry.Key).Select(food => food.itemNo).FirstOrDefault().ToString(), 
-                                                                                                   Foods.Where(f => f.id == entry.Key).Select(food => food.foodName).FirstOrDefault(), 
+                            TableRow foodRow = openXMLWordHelper.createTableWordRow(new string[] { Foods.Where(f => f.id == entry.Key).Select(food => food.itemNo).FirstOrDefault().ToString(),
+                                                                                                   Foods.Where(f => f.id == entry.Key).Select(food => food.foodName).FirstOrDefault(),
                                                                                                    entry.Value.ToString() }, false, false);
                             tbl.AppendChild(foodRow);
                         }
@@ -374,7 +434,6 @@ namespace IntranetUWP.ViewModels.PagesViewModel
                 }
             }
         }
-
         private void Foods_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
             => DeleteAllFoodButtonState = Foods.Count > 0 ? true : false;
     }

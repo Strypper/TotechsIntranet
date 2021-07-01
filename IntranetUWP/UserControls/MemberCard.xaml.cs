@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -11,6 +12,8 @@ namespace IntranetUWP.UserControls
 {
     public sealed partial class MemberCard : UserControl
     {
+        public delegate void ClearSelectionMemberCardEventHandler(int userId);
+        public delegate void DisableMemberCardEventHandler(int userId);
         public int UserId
         {
             get { return (int)GetValue(UserIdProperty); }
@@ -76,6 +79,11 @@ namespace IntranetUWP.UserControls
         public static readonly DependencyProperty SelectedFoodProperty =
             DependencyProperty.Register("SelectedFood", typeof(int), typeof(MemberCard), new PropertyMetadata(null));
 
+
+        //EventHandler
+        public event ClearSelectionMemberCardEventHandler ClearSelection;
+        public event DisableMemberCardEventHandler DisableUser;
+        
         public MemberCard()
         {
             this.InitializeComponent();
@@ -102,5 +110,10 @@ namespace IntranetUWP.UserControls
                 await httpHelper.CreateAsync<UserFoodDTO>("UserFood/Create", createupdateUserFoodDTO);
             }
         }
+        private void SwipeControl_RightTapped(object sender, Windows.UI.Xaml.Input.RightTappedRoutedEventArgs e) => FlyoutBase.ShowAttachedFlyout(sender as FrameworkElement);
+        private void ClearSelection_Click(object sender, RoutedEventArgs e) => ClearSelection?.Invoke(UserId);
+        private void DisableUser_Click(object sender, RoutedEventArgs e) => DisableUser?.Invoke(UserId);
+        private void RemoveSelectionSwipe_Invoked(SwipeItem sender, SwipeItemInvokedEventArgs args) => ClearSelection?.Invoke(UserId);
+        private void DisableUserSwipe_Invoked(SwipeItem sender, SwipeItemInvokedEventArgs args) => DisableUser?.Invoke(UserId);
     }
 }

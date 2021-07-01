@@ -18,7 +18,10 @@ namespace IntranetUWP
             }
             if (App.localSettings.Values["FirstName"] != null)
             {
-                PersonalName.Text = App.localSettings.Values["FirstName"] as String + (App.localSettings.Values["LastName"] != null ? (" " +  App.localSettings.Values["LastName"] as String) : " ");
+                PersonalName.Text = App.localSettings.Values["FirstName"] as String 
+                                 + (App.localSettings.Values["LastName"] != null 
+                                 ? (" " +  App.localSettings.Values["LastName"] as String) 
+                                 : " ");
             }
         }
 
@@ -46,6 +49,12 @@ namespace IntranetUWP
                     break;
                 case "Member":
                     TheMainFrame.Navigate(typeof(MemberPage));
+                    break;
+                case "SettingsItem":
+                    TheMainFrame.Navigate(typeof(SettingsPage));
+                    break;
+                default:
+                    TheMainFrame.Navigate(typeof(FoodOrderPage));
                     break;
             }
         }

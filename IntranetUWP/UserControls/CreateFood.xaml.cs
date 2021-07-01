@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media.Imaging;
 
 // The Content Dialog item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
@@ -114,6 +115,7 @@ namespace IntranetUWP.UserControls
                 }
                 VietnameseFoodName.Text = Food.foodName;
                 EnglishFoodName.Text = Food.foodEnglishName;
+                UnavaibleButton.IsChecked = Food.IsUnavailable;
             }
         }
         public event PropertyChangedEventHandler PropertyChanged;
@@ -225,6 +227,24 @@ namespace IntranetUWP.UserControls
                     SecondaryIcon = 10;
                     VietnameseFoodName.Text = "Cơm xíu mại";
                     break;
+            }
+        }
+
+        private void UnavaibleButton_Click(object sender, RoutedEventArgs e)
+        {
+            var tb = sender as ToggleButton;
+            if (tb != null)
+            {
+                if(tb.IsChecked == false)
+                {
+                    tb.IsChecked = false;
+                    Food.IsUnavailable = false;
+                }
+                else
+                {
+                    tb.IsChecked = true;
+                    Food.IsUnavailable = true;
+                }
             }
         }
     }

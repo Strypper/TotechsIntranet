@@ -9,20 +9,27 @@
     xmlns:Core="using:Microsoft.Xaml.Interactions.Core" 
     xmlns:ToolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls" 
     xmlns:ToolkitBehaviors="using:Microsoft.Toolkit.Uwp.UI.Animations.Behaviors"
+    xmlns:muxc="using:Windows.UI.Xaml.Controls"
     mc:Ignorable="d" Loaded="UserControl_Loaded"
     d:DesignHeight="300"
     d:DesignWidth="400">
 
     <UserControl.Resources>
-        <SwipeItems x:Key="left" Mode="Execute">
-            <SwipeItem Text="Edit" Background="Orange" Invoked="SwipeEditItem_Invoked">
+        <SwipeItems x:Key="left" 
+                    Mode="Execute">
+            <SwipeItem Text="Edit" 
+                       Background="Orange" 
+                       Invoked="SwipeEditItem_Invoked">
                 <SwipeItem.IconSource>
                     <SymbolIconSource Symbol="Edit"/>
                 </SwipeItem.IconSource>
             </SwipeItem>
         </SwipeItems>
-        <SwipeItems x:Key="right" Mode="Execute">
-            <SwipeItem Text="Delete" Background="Red" Invoked="SwipeDeleteItem_Invoked">
+        <SwipeItems x:Key="right" 
+                    Mode="Execute">
+            <SwipeItem Text="Delete" 
+                       Background="Red" 
+                       Invoked="SwipeDeleteItem_Invoked">
                 <SwipeItem.IconSource>
                     <SymbolIconSource Symbol="Delete"/>
                 </SwipeItem.IconSource>
@@ -30,21 +37,53 @@
         </SwipeItems>
     </UserControl.Resources>
 
-    <SwipeControl LeftItems="{StaticResource left}" RightItems="{StaticResource right}">
-        <Grid Height="130" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Margin="5,5,0,0" Padding="0">
-            <ToolkitControls:DropShadowPanel x:Name="DropShadowHolder" VerticalAlignment="Stretch" Margin="10" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
-                                             BlurRadius="20" ShadowOpacity="0.5" OffsetX="1" OffsetY="20" Color="Black">
-                <Grid Background="{ThemeResource SystemAltHighColor}" Height="100" CornerRadius="5" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Padding="0">
+    <SwipeControl LeftItems="{StaticResource left}" 
+                  RightItems="{StaticResource right}"
+                  RightTapped="FoodCardRightTapped">
+        <Grid Height="130" 
+              VerticalAlignment="Bottom" 
+              HorizontalAlignment="Stretch" 
+              Margin="5,5,0,0" 
+              Padding="0">
+            <ToolkitControls:DropShadowPanel x:Name="DropShadowHolder" 
+                                             VerticalAlignment="Stretch" 
+                                             HorizontalContentAlignment="Stretch" 
+                                             VerticalContentAlignment="Stretch"
+                                             BlurRadius="20" 
+                                             ShadowOpacity="0.5" 
+                                             OffsetX="1" 
+                                             OffsetY="20"
+                                             Color="Black" 
+                                             Margin="10">
+                <Grid Background="{ThemeResource SystemAltHighColor}" 
+                      Height="100" 
+                      CornerRadius="5" 
+                      HorizontalAlignment="Stretch" 
+                      VerticalAlignment="Bottom" 
+                      Padding="0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="80"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <ToggleButton x:Name="ChooseButton" Content="CHOOSE" FontWeight="Bold" Click="ToggleButton_Click" IsChecked="{x:Bind IsSelected, Mode=TwoWay}"
-                              VerticalAlignment="Bottom" Margin="10,0,0,10" Width="70" FontSize="12" ToolTipService.ToolTip="Choose this food" Style="{StaticResource ToggleButtonRevealStyle}"/>
-                    <Grid Grid.Column="1" VerticalAlignment="Bottom" Margin="11">
+                    <ToggleButton x:Name="ChooseButton" 
+                                  Content="CHOOSE" 
+                                  FontWeight="Bold" 
+                                  Click="ToggleButton_Click" 
+                                  IsChecked="{x:Bind IsSelected, Mode=TwoWay}"
+                                  VerticalAlignment="Bottom" 
+                                  Margin="10,0,0,10" Width="70" 
+                                  FontSize="11" 
+                                  ToolTipService.ToolTip="Choose this food" 
+                                  Style="{StaticResource ToggleButtonRevealStyle}"/>
+                    <Grid Grid.Column="1" 
+                          VerticalAlignment="Bottom" 
+                          Margin="11">
                         <StackPanel VerticalAlignment="Bottom">
                             <TextBlock Text="{x:Bind PickRateBar.Value, Converter={StaticResource DoubleToPercentConverter}, Mode=OneWay}" />
-                            <ProgressBar x:Name="PickRateBar" Height="30" CornerRadius="3" Value="{x:Bind Percentage, Mode=OneWay}">
+                            <ProgressBar x:Name="PickRateBar" 
+                                         Height="30" 
+                                         CornerRadius="3" 
+                                         Value="{x:Bind Percentage, Mode=OneWay}">
                                 <ProgressBar.Triggers>
                                     <EventTrigger>
                                         <BeginStoryboard>
@@ -65,8 +104,13 @@
                             </ProgressBar>
                         </StackPanel>
                     </Grid>
-                    <TextBlock Text="{x:Bind FoodName, Mode=OneWay}" Grid.Column="1" Margin="6,0,0,0" FontSize="15" />
-                    <Grid VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Column="1"
+                    <TextBlock Text="{x:Bind FoodName, Mode=OneWay}" 
+                               Grid.Column="1" 
+                               Margin="6,0,0,0" 
+                               FontSize="15" />
+                    <Grid VerticalAlignment="Center"
+                          HorizontalAlignment="Right" 
+                          Grid.Column="1"
                           Margin="0,0,12,17">
                         <ToolTipService.ToolTip>
                             <ToolTip>
@@ -90,19 +134,68 @@
                     </Grid>
                 </Grid>
             </ToolkitControls:DropShadowPanel>
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Left">
+            <StackPanel Orientation="Horizontal" 
+                        VerticalAlignment="Top" 
+                        HorizontalAlignment="Left">
                 <Grid Margin="20,0,0,0">
-                    <Image x:Name="MainFoodImage" Width="70" Height="70"                       
-                   VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                    <Image x:Name="SecondaryFoodImage" Width="30" Height="30"
-                   VerticalAlignment="Top" HorizontalAlignment="Right"/>
+                    <Image x:Name="MainFoodImage" 
+                           Width="70" 
+                           Height="70"                     
+                           VerticalAlignment="Center" 
+                           HorizontalAlignment="Center"/>
+                    <Image x:Name="SecondaryFoodImage" 
+                           Width="30" 
+                           Height="30"
+                           VerticalAlignment="Top" 
+                           HorizontalAlignment="Right"/>
+                    <FontIcon x:Name="UnavaibleIcon" 
+                              FontFamily="{ThemeResource SymbolThemeFontFamily}" 
+                              Glyph="&#xE25B;" 
+                              FontSize="50"
+                              Foreground="Red" 
+                              VerticalAlignment="Center" 
+                              HorizontalAlignment="Center"/>
                 </Grid>
                 <TextBlock Text="{x:Bind FoodEnglishName, Mode=TwoWay}" VerticalAlignment="Top" Margin="6,-5,0,0"
                        FontSize="15" FontWeight="Bold" />
             </StackPanel>
-            <Border Background="{ThemeResource SystemAccentColor}" Width="26" Height="26" HorizontalAlignment="Right" VerticalAlignment="Top" CornerRadius="13" Margin="0,5,0,0">
-                <TextBlock Text="{x:Bind ItemNo,Mode=OneWay}" TextAlignment="Center" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            <Border Background="{ThemeResource SystemAccentColor}" 
+                    Width="26" 
+                    Height="26" 
+                    HorizontalAlignment="Right" 
+                    VerticalAlignment="Top" 
+                    CornerRadius="13" 
+                    Margin="0,5,0,0">
+                <TextBlock Text="{x:Bind ItemNo,Mode=OneWay}" 
+                           TextAlignment="Center" 
+                           FontWeight="Bold" 
+                           VerticalAlignment="Center" 
+                           HorizontalAlignment="Center"/>
             </Border>
         </Grid>
+        <FlyoutBase.AttachedFlyout>
+            <muxc:MenuFlyout>
+                <muxc:MenuFlyout.Items>
+                    <muxc:MenuFlyoutItem x:Name="Edit" 
+                                         Text="Edit" 
+                                         Icon="Edit" 
+                                         Click="Edit_Click"/>
+                    <muxc:MenuFlyoutItem x:Name="Unavaible" 
+                                         Text="Unavaible" 
+                                         Click="Unavaible_Click" 
+                                         IsEnabled="False">
+                        <muxc:MenuFlyoutItem.Icon>
+                            <muxc:FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" 
+                                           Glyph="&#xE25B;" />
+                        </muxc:MenuFlyoutItem.Icon>
+                    </muxc:MenuFlyoutItem>
+                    <muxc:MenuFlyoutItem x:Name="Remove" 
+                                         Text="Remove" 
+                                         Icon="Delete" 
+                                         Foreground="Red"
+                                         Click="Remove_Click"/>
+                </muxc:MenuFlyout.Items>
+            </muxc:MenuFlyout>
+        </FlyoutBase.AttachedFlyout>
     </SwipeControl>
 </UserControl>

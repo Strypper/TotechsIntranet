@@ -1,0 +1,32 @@
+﻿<Page
+    x:Class="IntranetUWP.Views.MemberChildPages.MemberDetailPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:IntranetUWP.Views.MemberChildPages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Page.Resources>
+        <SwipeItems x:Key="left" Mode="Execute">
+            <SwipeItem Text="Back" Background="Gray" Invoked="SwipeItem_Invoked">
+                <SwipeItem.IconSource>
+                    <SymbolIconSource Symbol="Back"/>
+                </SwipeItem.IconSource>
+            </SwipeItem>
+        </SwipeItems>
+        <SwipeItems x:Key="right" Mode="Execute">
+            <SwipeItem Text="Delete" Background="Red">
+                <SwipeItem.IconSource>
+                    <SymbolIconSource Symbol="Delete"/>
+                </SwipeItem.IconSource>
+            </SwipeItem>
+        </SwipeItems>
+    </Page.Resources>
+
+    <SwipeControl LeftItems="{StaticResource left}" RightItems="{StaticResource right}">
+        <Grid>
+            <Image x:Name="Avatar"/>
+        </Grid>
+    </SwipeControl>
+</Page>

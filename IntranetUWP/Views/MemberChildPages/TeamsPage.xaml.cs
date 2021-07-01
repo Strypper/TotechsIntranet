@@ -1,5 +1,7 @@
-﻿using System;
+﻿using IntranetUWP.Models;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -20,11 +22,15 @@ namespace IntranetUWP.Views.MemberChildPages
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class DevinitionMemberPage : Page
+    public sealed partial class TeamsPage : Page
     {
-        public DevinitionMemberPage()
+        public ObservableCollection<TeamsDTO> Teams { get; set; }
+        public TeamsPage()
         {
             this.InitializeComponent();
+
+            Teams = DemoTeamsData.getData();
+            TeamsGridView.ItemsSource = Teams;
         }
     }
 }

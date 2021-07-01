@@ -8,7 +8,9 @@
     mc:Ignorable="d">
 
 
-    <NavigationView PaneDisplayMode="Top" IsBackButtonVisible="Collapsed" IsSettingsVisible="False"
+    <NavigationView PaneDisplayMode="Top"
+                    IsBackButtonVisible="Collapsed" 
+                    IsSettingsVisible="False"
                     SelectionChanged="NavigationViewPanel_SelectionChanged">
         <NavigationView.MenuItems>
             <NavigationViewItem x:Name="iDealogic" IsSelected="True">
@@ -16,6 +18,13 @@
             </NavigationViewItem>
             <NavigationViewItem x:Name="Devinition">
                 <Image Source="/Assets/Devinition.png" Width="100" Height="25"/>
+            </NavigationViewItem>
+            <NavigationViewItem x:Name="TeamPage" 
+                                Content="Teams">
+                <NavigationViewItem.Icon>
+                    <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" 
+                              Glyph="&#xE902;" />
+                </NavigationViewItem.Icon>
             </NavigationViewItem>
         </NavigationView.MenuItems>
         <Frame x:Name="MemberMainFrame"/>

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace IntranetUWP.Models
 {
@@ -15,6 +11,7 @@ namespace IntranetUWP.Models
         public string profilePic { get; set; }
         public bool company { get; set; }
         public string age { get; set; }
+        public string role { get; set; }
     }
 
     public class RegistingModel : UserDTO

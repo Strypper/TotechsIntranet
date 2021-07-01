@@ -7,19 +7,114 @@
     xmlns:animations="using:Microsoft.Toolkit.Uwp.UI.Animations" 
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-    xmlns:usercontrols="using:IntranetUWP.UserControls" xmlns:data="using:IntranetUWP.Models"
-    xmlns:winui="using:Microsoft.UI.Xaml.Controls" Loaded="Page_Loaded"
-    mc:Ignorable="d" Background="{ThemeResource SystemControlAcrylicWindowBrush}">
+    xmlns:usercontrols="using:IntranetUWP.UserControls" 
+    xmlns:data="using:IntranetUWP.Models"
+    xmlns:winui="using:Microsoft.UI.Xaml.Controls"
+    xmlns:lottie="using:Microsoft.Toolkit.Uwp.UI.Lottie"
+    xmlns:helpers="using:IntranetUWP.Helpers" 
+    Loaded="Page_Loaded"
+    mc:Ignorable="d" 
+    winui:BackdropMaterial.ApplyToRootOrPageBackground="True">
 
     <Page.Resources>
         <Storyboard x:Name="FadeIconIn">
-            <DoubleAnimation Storyboard.TargetName="FoodImageContainer" Storyboard.TargetProperty="Opacity" 
+            <DoubleAnimation Storyboard.TargetName="FoodImageContainer"
+                             Storyboard.TargetProperty="Opacity" 
                              From="0" To="1">
                 <DoubleAnimation.EasingFunction>
                     <CircleEase EasingMode="EaseInOut" />
                 </DoubleAnimation.EasingFunction>
             </DoubleAnimation>
         </Storyboard>
+        <DataTemplate x:Key="FoodList" 
+                      x:DataType="local:ExtendedFoodDTO">
+            <StackPanel Orientation="Horizontal" 
+                        VerticalAlignment="Center">
+                <Grid Margin="5">
+                    <Image x:Name="MainFoodImage" 
+                           Source="{
+                                     x:Bind MainFoodUrl, 
+                                     Converter={StaticResource StringToImageSourceConverter}
+                                   }"
+                           Width="35" 
+                           Height="35"                     
+                           VerticalAlignment="Center" 
+                           HorizontalAlignment="Center"/>
+                    <Image x:Name="SecondaryFoodImage"
+                           Source="{
+                                     x:Bind SecondaryFoodUrl, 
+                                     Converter={StaticResource StringToImageSourceConverter}
+                                    }"
+                           Width="15" 
+                           Height="15"
+                           VerticalAlignment="Top" 
+                           HorizontalAlignment="Right"/>
+                </Grid>
+                <TextBlock TextAlignment="Left"
+                           VerticalAlignment="Center"
+                           MinWidth="200"
+                           Margin="5">
+                    <Run Text="{x:Bind foodName}"/>
+                    <Run Text=" - "/>
+                    <Run Text="{x:Bind foodEnglishName}"/>
+                </TextBlock>
+                <TextBlock x:Name="NumberOfSelectedUser"
+                           Text="{x:Bind NumberOfSelectedUser}"
+                           TextAlignment="Center"
+                           MinWidth="50"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Center"/>
+                <Border Background="{ThemeResource SystemAccentColor}" 
+                        Width="26" 
+                        Height="26" 
+                        HorizontalAlignment="Right" 
+                        VerticalAlignment="Center" 
+                        CornerRadius="13">
+                    <TextBlock Text="{x:Bind itemNo}" 
+                               TextAlignment="Center"
+                               VerticalAlignment="Center" 
+                               HorizontalAlignment="Center"/>
+                </Border>
+
+            </StackPanel>
+        </DataTemplate>
+        <DataTemplate x:Key="EmployeeList" 
+                      x:DataType="data:UserFoodDTO">
+            <StackPanel Orientation="Horizontal" 
+                        VerticalAlignment="Center">
+                <PersonPicture ProfilePicture="{x:Bind user.profilePic}"
+                               Width="30"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Left"/>
+                <TextBlock TextAlignment="Center"
+                           VerticalAlignment="Center"
+                           MinWidth="335">
+                    <Run Text="{x:Bind user.lastName}"/>
+                    <Run Text="{x:Bind user.middleName}"/>
+                    <Run Text="{x:Bind user.firstName}"/>
+                </TextBlock>
+                <TextBlock TextAlignment="Left"
+                           VerticalAlignment="Center"
+                           MinWidth="335">
+                    <Run Text="{x:Bind food.foodName}"/>
+                    <Run Text=" - "/>
+                    <Run Text="{x:Bind food.foodEnglishName}"/>
+                </TextBlock>
+                <Border Background="{ThemeResource SystemAccentColor}" 
+                    Width="26" 
+                    Height="26" 
+                    HorizontalAlignment="Center" 
+                    VerticalAlignment="Center" 
+                    CornerRadius="13" 
+                    Margin="0,5,0,0">
+                    <TextBlock Text="{x:Bind food.itemNo}"
+                           TextAlignment="Center"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center"
+                           MinWidth="50"/>
+                </Border>
+            </StackPanel>
+        </DataTemplate>
     </Page.Resources>
 
     <Grid x:Name="MainFrame">
@@ -27,9 +122,6 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="400"/>
         </Grid.ColumnDefinitions>
-
-
-
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="WindowsState">
                 <VisualState x:Name="VS1">
@@ -78,17 +170,52 @@
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
+        <Grid x:Name="container" HorizontalAlignment="Center"/>
+        <StackPanel VerticalAlignment="Center" 
+                    HorizontalAlignment="Center"
+                    Visibility="{x:Bind vm.Foods.Count, 
+                                Converter={StaticResource CountToVisibilityConverter},
+                                Mode=OneWay}">
+            <animations:Implicit.ShowAnimations>
+                <animations:OpacityAnimation Duration="0:0:1" To="1.0"/>
+            </animations:Implicit.ShowAnimations>
 
-        <controls:AdaptiveGridView x:Name="FoodGridView" animations:ReorderGridAnimation.Duration="300" 
-                                   HorizontalContentAlignment="Center" LostFocus="FoodGridView_LostFocus"
+            <animations:Implicit.HideAnimations>
+                <animations:ScalarAnimation Target="Opacity" 
+                                            Duration="0:0:1" To="0.0"/>
+            </animations:Implicit.HideAnimations>
+
+            <winui:AnimatedVisualPlayer x:Name="EmptyFoodListLottie" 
+                                   VerticalAlignment="Center" 
+                                   HorizontalAlignment="Center"
+                                   Width="150"
+                                   Height="150">
+                <lottie:LottieVisualSource x:Name="LottieJsonSource" 
+                                           UriSource="ms-appx:///Assets/lunchbox.json"/>
+            </winui:AnimatedVisualPlayer>
+            <TextBlock Text="NO FOOD HAVE ADDED YET"
+                       TextAlignment="Center"
+                       HorizontalAlignment="Center"
+                       FontWeight="ExtraBold"/>
+        </StackPanel>
+
+        <controls:AdaptiveGridView x:Name="FoodGridView" 
+                                   animations:ReorderGridAnimation.Duration="300" 
+                                   HorizontalContentAlignment="Center" 
+                                   LostFocus="FoodGridView_LostFocus"
                                    SelectedItem="{x:Bind vm.SelectedFood, Mode=TwoWay}"
-                                   DesiredWidth="355" StretchContentForSingleRow="False" OneRowModeEnabled="False" 
-                                   Padding="0" SelectionMode="Single" 
+                                   DesiredWidth="355" 
+                                   StretchContentForSingleRow="False" 
+                                   OneRowModeEnabled="False" 
+                                   Padding="0" 
+                                   SelectionMode="Single"
                                    SelectionChanged="FoodGridView_SelectionChanged" 
                                    ItemsSource="{x:Bind vm.Foods, Mode=TwoWay}"
                                    RightTapped="FoodGridView_RightTapped">
             <controls:AdaptiveGridView.Header>
-                <Grid Margin="10,0,10,15" HorizontalAlignment="Stretch" Padding="0">
+                <Grid Margin="10,0,10,15"
+                      HorizontalAlignment="Stretch" 
+                      Padding="0">
                     <StackPanel>
                         <StackPanel.RenderTransform>
                             <TranslateTransform x:Name="TranslateTitle"/>
@@ -97,7 +224,9 @@
                             <EventTrigger>
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <DoubleAnimation Storyboard.TargetName="TranslateTitle" Storyboard.TargetProperty="Y" From="-200" To="0">
+                                        <DoubleAnimation Storyboard.TargetName="TranslateTitle" 
+                                                         Storyboard.TargetProperty="Y" 
+                                                         From="-200" To="0">
                                             <DoubleAnimation.EasingFunction>
                                                 <CircleEase EasingMode="EaseInOut" />
                                             </DoubleAnimation.EasingFunction>
@@ -106,37 +235,66 @@
                                 </BeginStoryboard>
                             </EventTrigger>
                         </StackPanel.Triggers>
-                        <TextBlock x:Name="FirstWelcomeMessage" FontWeight="Bold" FontSize="50" Margin="5,5,5,0"/>
+                        <TextBlock x:Name="FirstWelcomeMessage" 
+                                   FontWeight="Bold" 
+                                   FontSize="50" 
+                                   Margin="5,5,5,0"/>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock x:Name="PickedFoodText" FontWeight="Bold" FontSize="30" Margin="5"
-                                       VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
-                            <TextBlock x:Name="FoodNameText" FontWeight="Bold" FontSize="30" Margin="5"
-                                       VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
-                            <Border Background="{ThemeResource SystemAccentColor}" Width="40" Height="40" HorizontalAlignment="Center" VerticalAlignment="Center" CornerRadius="20">
-                                <TextBlock x:Name="FoodIndexText" Text="0" FontSize="25" TextAlignment="Center" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            <TextBlock x:Name="PickedFoodText" 
+                                       FontWeight="Bold" 
+                                       FontSize="30" Margin="5"
+                                       VerticalAlignment="Bottom" 
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock x:Name="FoodNameText" 
+                                       FontWeight="Bold" 
+                                       FontSize="30" Margin="5"
+                                       VerticalAlignment="Bottom" 
+                                       HorizontalAlignment="Center"/>
+                            <Border Background="{ThemeResource SystemAccentColor}" 
+                                    Width="40" Height="40" 
+                                    HorizontalAlignment="Center" 
+                                    VerticalAlignment="Center" 
+                                    CornerRadius="20">
+                                <TextBlock x:Name="FoodIndexText" 
+                                           Text="0" FontSize="25" 
+                                           TextAlignment="Center" 
+                                           FontWeight="Bold" 
+                                           VerticalAlignment="Center" 
+                                           HorizontalAlignment="Center"/>
                             </Border>
                         </StackPanel>
                     </StackPanel>
-                    <Grid x:Name="FoodImageContainer" HorizontalAlignment="Right" VerticalAlignment="Center" Padding="10">
-                        <Image x:Name="MainFoodImage" Height="150" Width="150" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                    <Grid x:Name="FoodImageContainer" 
+                          HorizontalAlignment="Right" 
+                          VerticalAlignment="Center" 
+                          Padding="10">
+                        <Image x:Name="MainFoodImage" 
+                               Height="150" Width="150" 
+                               VerticalAlignment="Stretch" 
+                               HorizontalAlignment="Stretch">
                             <animations:Implicit.ShowAnimations>
-                                <animations:TranslationAnimation Duration="0:0:1" To="0, 0, 0"></animations:TranslationAnimation>
-                                <animations:OpacityAnimation Duration="0:0:1" To="1.0"></animations:OpacityAnimation>
+                                <animations:TranslationAnimation Duration="0:0:1" To="0, 0, 0"/>
+                                <animations:OpacityAnimation Duration="0:0:1" To="1.0"/>
                             </animations:Implicit.ShowAnimations>
 
                             <animations:Implicit.HideAnimations>
-                                <animations:ScalarAnimation Target="Opacity" Duration="0:0:1" To="0.0"></animations:ScalarAnimation>
-                                <animations:ScalarAnimation Target="Translation.Y" Duration="0:0:1" To="-200">
-                                    <animations:ScalarKeyFrame Key="0.1" Value="30"></animations:ScalarKeyFrame>
-                                    <animations:ScalarKeyFrame Key="0.5" Value="0.0"></animations:ScalarKeyFrame>
+                                <animations:ScalarAnimation Target="Opacity" 
+                                                            Duration="0:0:1" 
+                                                            To="0.0"/>
+                                <animations:ScalarAnimation Target="Translation.Y" 
+                                                            Duration="0:0:1" 
+                                                            To="-200">
+                                    <animations:ScalarKeyFrame Key="0.1" Value="30"/>
+                                    <animations:ScalarKeyFrame Key="0.5" Value="0.0"/>
                                 </animations:ScalarAnimation>
                             </animations:Implicit.HideAnimations>
                             <Image.Triggers>
                                 <EventTrigger>
                                     <BeginStoryboard>
                                         <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetName="MainFoodImage" Storyboard.TargetProperty="Opacity" 
-                                                 From="0" To="1">
+                                            <DoubleAnimation Storyboard.TargetName="MainFoodImage" 
+                                                             Storyboard.TargetProperty="Opacity" 
+                                                             From="0" To="1">
                                                 <DoubleAnimation.EasingFunction>
                                                     <CircleEase EasingMode="EaseInOut" />
                                                 </DoubleAnimation.EasingFunction>
@@ -146,15 +304,26 @@
                                 </EventTrigger>
                             </Image.Triggers>
                         </Image>
-                        <Image x:Name="SecondaryFoodImage"  Height="60" Width="60" VerticalAlignment="Top" HorizontalAlignment="Right"/>
+                        <Image x:Name="SecondaryFoodImage" 
+                               Height="60" Width="60" 
+                               VerticalAlignment="Top" 
+                               HorizontalAlignment="Right"/>
                     </Grid>
-                    <winui:ProgressBar x:Name="WorkingBar" Visibility="{x:Bind vm.IsBusy, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}" 
-                                       VerticalAlignment="Bottom" IsIndeterminate="True"/>
+                    <winui:ProgressBar x:Name="WorkingBar" 
+                                       Visibility="{
+                                                    x:Bind vm.IsBusy, 
+                                                    Converter={StaticResource BoolToVisibilityConverter}, 
+                                                    Mode=OneWay
+                                                   }" 
+                                       VerticalAlignment="Bottom" 
+                                       IsIndeterminate="True"/>
                 </Grid>
             </controls:AdaptiveGridView.Header>
             <controls:AdaptiveGridView.ItemContainerTransitions>
                 <TransitionCollection>
-                    <EntranceThemeTransition IsStaggeringEnabled="True" FromHorizontalOffset="400" FromVerticalOffset="450"/>
+                    <EntranceThemeTransition IsStaggeringEnabled="True" 
+                                             FromHorizontalOffset="400" 
+                                             FromVerticalOffset="450"/>
                     <AddDeleteThemeTransition/>
                 </TransitionCollection>
             </controls:AdaptiveGridView.ItemContainerTransitions>
@@ -170,6 +339,7 @@
                                            SecondaryFoodIcon="{x:Bind secondaryIcon}" 
                                            Percentage="{x:Bind Percentage, Mode=TwoWay}" 
                                            usersAvatar="{x:Bind usersAvatar}"
+                                           IsUnavailable="{x:Bind IsUnavailable, Mode=TwoWay}"
                                            ToggleClick="FoodCard_ToggleClick"
                                            EditSwipe="FoodCard_EditSwipe"
                                            DeleteSwipe="FoodCard_DeleteSwipe"/>
@@ -179,14 +349,17 @@
                 <Rectangle Height="40"/>
             </controls:AdaptiveGridView.Footer>
         </controls:AdaptiveGridView>
-        <Pivot x:Name="MemberPivot" Grid.Column="1" Grid.RowSpan="2" Margin="0,10,0,0">
+        <Pivot x:Name="MemberPivot" 
+               Grid.Column="1" 
+               Grid.RowSpan="2"
+               Margin="0,10,0,0">
             <animations:Implicit.ShowAnimations>
-                <animations:TranslationAnimation Duration="0:0:1" To="0, 0, 0"></animations:TranslationAnimation>
-                <animations:OpacityAnimation Duration="0:0:1" To="1.0"></animations:OpacityAnimation>
+                <animations:TranslationAnimation Duration="0:0:1" To="0, 0, 0"/>
+                <animations:OpacityAnimation Duration="0:0:1" To="1.0"/>
             </animations:Implicit.ShowAnimations>
 
             <animations:Implicit.HideAnimations>
-                <animations:ScalarAnimation Target="Opacity" Duration="0:0:1" To="0.0"></animations:ScalarAnimation>
+                <animations:ScalarAnimation Target="Opacity" Duration="0:0:1" To="0.0"/>
                 <animations:ScalarAnimation Target="Translation.X" Duration="0:0:1" To="200">
                     <animations:ScalarKeyFrame Key="0.1" Value="30"></animations:ScalarKeyFrame>
                     <animations:ScalarKeyFrame Key="0.5" Value="0.0"></animations:ScalarKeyFrame>
@@ -195,9 +368,11 @@
 
             <PivotItem Padding="0">
                 <PivotItem.Header>
-                    <Image Source="/Assets/iDealogic.png" Width="100" Height="50"/>
+                    <Image Source="/Assets/iDealogic.png" 
+                           Width="100" Height="50"/>
                 </PivotItem.Header>
-                <ListView ItemsSource="{x:Bind vm.UserFoods, Mode=TwoWay}" SelectionMode="None">
+                <ListView ItemsSource="{x:Bind vm.iDealogicUsersFood, Mode=TwoWay}" 
+                          SelectionMode="Single">
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem">
                             <Setter Property="Margin" Value="0"/>
@@ -207,15 +382,21 @@
                     </ListView.ItemContainerStyle>
                     <ListView.ItemContainerTransitions>
                         <TransitionCollection>
-                            <EntranceThemeTransition IsStaggeringEnabled="True" FromVerticalOffset="450"/>
+                            <EntranceThemeTransition IsStaggeringEnabled="True" 
+                                                     FromVerticalOffset="450"/>
                             <AddDeleteThemeTransition/>
                         </TransitionCollection>
                     </ListView.ItemContainerTransitions>
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="data:UserFoodDTO">
-                            <usercontrols:MemberCard UserId="{x:Bind user.id}" EmployeeName="{x:Bind user.firstName}"
-                                                     ProfilePictureUrl="{x:Bind user.profilePic}" Company="{x:Bind user.company}"
-                                                     FoodList="{x:Bind foodList, Mode=TwoWay}" SelectedFood="{x:Bind food.id,Mode=TwoWay}"/>
+                            <usercontrols:MemberCard UserId="{x:Bind user.id}" 
+                                                     EmployeeName="{x:Bind user.firstName}"
+                                                     ProfilePictureUrl="{x:Bind user.profilePic}" 
+                                                     Company="{x:Bind user.company}"
+                                                     FoodList="{x:Bind foodList, Mode=TwoWay}"
+                                                     SelectedFood="{x:Bind food.id,Mode=TwoWay}"
+                                                     ClearSelection="MemberCard_ClearSelection"
+                                                     DisableUser="MemberCard_DisableUser"/>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                     <ListView.Footer>
@@ -225,20 +406,64 @@
             </PivotItem>
             <PivotItem>
                 <PivotItem.Header>
-                    <Image Source="/Assets/Devinition.png" Width="100" Height="50"/>
+                    <Image Source="/Assets/Devinition.png" 
+                           Width="100" Height="50"/>
                 </PivotItem.Header>
+                <ListView ItemsSource="{x:Bind vm.DevinitionUsersFood, Mode=TwoWay}" 
+                          SelectionMode="Single">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="Margin" 
+                                    Value="0"/>
+                            <Setter Property="Padding" 
+                                    Value="0"/>
+                            <Setter Property="HorizontalAlignment" 
+                                    Value="Stretch"/>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.ItemContainerTransitions>
+                        <TransitionCollection>
+                            <EntranceThemeTransition IsStaggeringEnabled="True"
+                                                     FromVerticalOffset="450"/>
+                            <AddDeleteThemeTransition/>
+                        </TransitionCollection>
+                    </ListView.ItemContainerTransitions>
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="data:UserFoodDTO">
+                            <usercontrols:MemberCard UserId="{x:Bind user.id}" 
+                                                     EmployeeName="{x:Bind user.firstName}"
+                                                     ProfilePictureUrl="{x:Bind user.profilePic}" 
+                                                     Company="{x:Bind user.company}"
+                                                     FoodList="{x:Bind foodList, Mode=TwoWay}"
+                                                     SelectedFood="{x:Bind food.id,Mode=TwoWay}"
+                                                     ClearSelection="MemberCard_ClearSelection"
+                                                     DisableUser="MemberCard_DisableUser"/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                    <ListView.Footer>
+                        <Rectangle Height="40"/>
+                    </ListView.Footer>
+                </ListView>
             </PivotItem>
             <PivotItem>
                 <PivotItem.Header>
                     <StackPanel Orientation="Horizontal">
-                        <SymbolIcon Symbol="BlockContact" VerticalAlignment="Center"/>
-                        <TextBlock Text="Disabled Users" FontSize="20" Margin="5"/>
+                        <SymbolIcon Symbol="BlockContact"
+                                    VerticalAlignment="Center"/>
+                        <TextBlock Text="Disabled Users" 
+                                   FontSize="20" 
+                                   Margin="5"/>
                     </StackPanel>
                 </PivotItem.Header>
             </PivotItem>
         </Pivot>
-        <CommandBar Background="{ThemeResource SystemControlAcrylicElementBrush}" IsOpen="False" DefaultLabelPosition="Right"
-                    VerticalAlignment="Bottom" Grid.Row="1" Grid.ColumnSpan="2" ClosedDisplayMode="Compact">
+        <CommandBar Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
+                    IsOpen="False" 
+                    DefaultLabelPosition="Right"
+                    VerticalAlignment="Bottom" 
+                    Grid.Row="1" 
+                    Grid.ColumnSpan="2" 
+                    ClosedDisplayMode="Compact">
             <CommandBar.RenderTransform>
                 <TranslateTransform x:Name="CommandBarTranslation"/>
             </CommandBar.RenderTransform>
@@ -246,7 +471,9 @@
                 <EventTrigger>
                     <BeginStoryboard>
                         <Storyboard>
-                            <DoubleAnimation Storyboard.TargetName="CommandBarTranslation" Storyboard.TargetProperty="Y" From="200" To="0">
+                            <DoubleAnimation Storyboard.TargetName="CommandBarTranslation" 
+                                             Storyboard.TargetProperty="Y" 
+                                             From="200" To="0">
                                 <DoubleAnimation.EasingFunction>
                                     <CircleEase EasingMode="EaseInOut" />
                                 </DoubleAnimation.EasingFunction>
@@ -257,16 +484,80 @@
             </CommandBar.Triggers>
             <CommandBar.Content>
                 <StackPanel Orientation="Horizontal">
-                    <FontIcon FontFamily="Segoe UI Emoji" Glyph="&#x1F371;" VerticalAlignment="Center" Margin="5,5,0,5"/>
-                    <TextBlock Text="{x:Bind vm.Foods.Count, Mode=OneWay}" VerticalAlignment="Center" Margin="0,5,5,5"/>
-                    <FontIcon FontFamily="Segoe UI Emoji" Glyph="&#x2705;" VerticalAlignment="Center" Margin="5,5,0,5"/>
-                    <TextBlock Text="{x:Bind vm.NumberOfFood, Mode=OneWay}" VerticalAlignment="Center" Margin="0,5,5,5"/>
-                    <FontIcon FontFamily="Segoe UI Emoji" Glyph="&#x1F465;" VerticalAlignment="Center" Margin="5,5,0,5"/>
-                    <TextBlock Text="6" VerticalAlignment="Center" Margin="0,5,5,5"/>
+                    <FontIcon FontFamily="Segoe UI Emoji" 
+                              Glyph="&#x1F371;" 
+                              VerticalAlignment="Center" 
+                              Margin="5,5,0,5"/>
+                    <TextBlock Text="{x:Bind vm.Foods.Count, Mode=OneWay}"
+                               VerticalAlignment="Center" 
+                               Margin="0,5,5,5"/>
+                    <FontIcon FontFamily="Segoe UI Emoji" Glyph="&#x2705;" 
+                              VerticalAlignment="Center" 
+                              Margin="5,5,0,5"/>
+                    <TextBlock Text="{x:Bind vm.NumberOfFood, Mode=OneWay}" 
+                               VerticalAlignment="Center" 
+                               Margin="0,5,5,5"/>
+                    <Button Background="Transparent" 
+                            Padding="0" 
+                            Margin="0,5,0,5">
+                        <Button.Flyout>
+                            <Flyout>
+                                <ListView ItemsSource="{x:Bind vm.NonSelectedUser, Mode=TwoWay}">
+                                    <ListView.ItemContainerStyle>
+                                        <Style TargetType="ListViewItem">
+                                            <Setter Property="Margin" 
+                                                    Value="0"/>
+                                            <Setter Property="Padding" 
+                                                    Value="0"/>
+                                            <Setter Property="HorizontalAlignment" 
+                                                    Value="Stretch"/>
+                                        </Style>
+                                    </ListView.ItemContainerStyle>
+                                    <ListView.ItemContainerTransitions>
+                                        <TransitionCollection>
+                                            <EntranceThemeTransition IsStaggeringEnabled="True" 
+                                                                     FromVerticalOffset="450"/>
+                                            <AddDeleteThemeTransition/>
+                                        </TransitionCollection>
+                                    </ListView.ItemContainerTransitions>
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate x:DataType="data:UserDTO">
+                                            <StackPanel Orientation="Horizontal">
+                                                <PersonPicture Width="30" Height="30" 
+                                                               Margin="5,5,0,5"
+                                                    VerticalAlignment="Center"
+                                                    DisplayName="{x:Bind firstName}"
+                                                    ProfilePicture="{
+                                                                     x:Bind profilePic, 
+                                                                     Converter={StaticResource StringToImageSourceConverter}
+                                                                    }"/>
+                                                <TextBlock VerticalAlignment="Center" Margin="5">
+                                                    <Run Text="{x:Bind firstName, Mode=OneWay}" />
+                                                    <Run Text="{x:Bind lastName, Mode=OneWay}"/>
+                                                </TextBlock>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                            </Flyout>
+                        </Button.Flyout>
+                        <StackPanel Orientation="Horizontal">
+                            <FontIcon FontFamily="Segoe UI Emoji" 
+                                      Glyph="&#x1F465;" 
+                                      VerticalAlignment="Center"/>
+                            <TextBlock Text="{x:Bind vm.NonSelectedUser.Count, Mode=OneWay}" 
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
                 </StackPanel>
             </CommandBar.Content>
-            <AppBarButton x:Name="AddFood" Icon="Add" Label="Add Food" Command="{x:Bind vm.createFoodCommand}"
-                          Style="{ThemeResource AppBarButtonRevealStyle}">
+            <AppBarButton x:Name="AddFood" 
+                          Icon="Add" 
+                          Label="Add Food" 
+                          Command="{x:Bind vm.createFoodCommand}">
+                <AppBarButton.Background>
+                    <helpers:AnimatedGradientBrush/>
+                </AppBarButton.Background>
                 <AppBarButton.KeyboardAccelerators>
                     <KeyboardAccelerator Modifiers="Control" Key="N"/>
                 </AppBarButton.KeyboardAccelerators>
@@ -283,30 +574,48 @@
                     <KeyboardAccelerator Modifiers="Control" Key="D"/>
                 </AppBarButton.KeyboardAccelerators>
             </AppBarButton>
-            <AppBarButton x:Name="DeleteAllFood" Icon="Delete" Label="Delete entire list" Foreground="Red" 
-                          Command="{x:Bind vm.deleteAllFoodCommand}" IsEnabled="{x:Bind vm.DeleteAllFoodButtonState, Mode=OneWay}"
+            <AppBarButton x:Name="DeleteAllFood" 
+                          Icon="Delete" 
+                          Label="Delete entire list" 
+                          Foreground="Red" 
+                          Command="{x:Bind vm.deleteAllFoodCommand}" 
+                          IsEnabled="{x:Bind vm.DeleteAllFoodButtonState, Mode=OneWay}"
                           Style="{ThemeResource AppBarButtonRevealStyle}">
                 <AppBarButton.KeyboardAccelerators>
                     <KeyboardAccelerator Modifiers="Control,Shift" Key="D"/>
                 </AppBarButton.KeyboardAccelerators>
             </AppBarButton>
-            <AppBarButton x:Name="NotifyTeam" Label="Notified the team" Command="{x:Bind vm.notifyTeamCommand}"
+            <AppBarButton x:Name="NotifyTeam" 
+                          Label="Notified the team" 
+                          Command="{x:Bind vm.notifyTeamCommand}"
                           Style="{ThemeResource AppBarButtonRevealStyle}">
                 <AppBarButton.Icon>
-                    <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xEA8F;" />
+                    <FontIcon FontFamily="Segoe MDL2 Assets" 
+                              Glyph="&#xEA8F;" />
                 </AppBarButton.Icon>
             </AppBarButton>
-            <AppBarButton Icon="Refresh" Command="{x:Bind vm.getUserCommand}" Style="{ThemeResource AppBarButtonRevealStyle}"/>
+            <AppBarButton Icon="Refresh" 
+                          Click="RefreshPage_Click" 
+                          Style="{ThemeResource AppBarButtonRevealStyle}"
+                          ToolTipService.ToolTip="Refresh the page">
+                <AppBarButton.KeyboardAccelerators>
+                    <KeyboardAccelerator Modifiers="Control" Key="R"/>
+                </AppBarButton.KeyboardAccelerators>
+            </AppBarButton>
             <CommandBar.SecondaryCommands>
-                <AppBarButton Label="Export to word document" Command="{x:Bind vm.generateWordDocument}">
+                <AppBarButton Label="Export food ordering sheet" 
+                              Command="{x:Bind vm.generateWordDocument}">
                     <AppBarButton.Icon>
-                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xF585;"/>
+                        <winui:ImageIcon Source="ms-appx:///Assets/AppLogoAssets/WordLogo.svg"/>
                     </AppBarButton.Icon>
                     <AppBarButton.KeyboardAccelerators>
                         <KeyboardAccelerator Modifiers="Control" Key="W"/>
                     </AppBarButton.KeyboardAccelerators>
                 </AppBarButton>
-                <AppBarButton x:Name="PrintSheet" Icon="Print" Label="Print Food Sheet">
+                <AppBarButton x:Name="PrintSheet" 
+                              Icon="Print" 
+                              Label="Print Food Sheet"
+                              Click="PrintSheet_Click">
                     <AppBarButton.KeyboardAccelerators>
                         <KeyboardAccelerator Modifiers="Control" Key="P"/>
                     </AppBarButton.KeyboardAccelerators>

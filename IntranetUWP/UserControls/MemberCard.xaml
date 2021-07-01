@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ToolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls" 
-    xmlns:data="using:IntranetUWP.Models"
+    xmlns:data="using:IntranetUWP.Models" xmlns:muxc="using:Windows.UI.Xaml.Controls"
     mc:Ignorable="d" Loaded="UserControl_Loaded"
     Name="MemberCardUI"
     d:DesignHeight="300"
@@ -15,46 +15,105 @@
     <UserControl.Resources>
         <SwipeItems x:Key="right" Mode="Execute">
             <SwipeItem Text="Disable this user"
-                       Foreground="Black"
-                       Background="#cccccc">
+                       Background="Red"
+                       Invoked="DisableUserSwipe_Invoked">
                 <SwipeItem.IconSource>
                     <SymbolIconSource Symbol="BlockContact"/>
                 </SwipeItem.IconSource>
             </SwipeItem>
         </SwipeItems>
+        <SwipeItems x:Key="left" Mode="Execute">
+            <SwipeItem Text="Remove selection"
+                       Background="Gray"
+                       Invoked="RemoveSelectionSwipe_Invoked">
+                <SwipeItem.IconSource>
+                    <SymbolIconSource Symbol="Clear"/>
+                </SwipeItem.IconSource>
+            </SwipeItem>
+        </SwipeItems>
     </UserControl.Resources>
 
-    <SwipeControl RightItems="{StaticResource right}">
-        <ToolkitControls:DropShadowPanel x:Name="DropShadowHolder" VerticalAlignment="Stretch" Margin="10" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
-                               BlurRadius="20"
-                               ShadowOpacity="0.5"
-                               OffsetX="0"
-                               OffsetY="10"
-                               Padding="0"
-                               Color="Black">
-            <RelativePanel HorizontalAlignment="Stretch" Width="355" Background="{ThemeResource SystemAltHighColor}" CornerRadius="5" Padding="10">
-                <PersonPicture x:Name="Avatar" Margin="0,5,5,5" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignHorizontalCenterWithPanel="True"
-                               ProfilePicture="{x:Bind ProfilePictureUrl, Converter={StaticResource StringToImageSourceConverter}, Mode=OneWay}" Width="70" 
+    <SwipeControl RightItems="{StaticResource right}"
+                  LeftItems="{StaticResource left}"
+                  RightTapped="SwipeControl_RightTapped">
+        <ToolkitControls:DropShadowPanel x:Name="DropShadowHolder" 
+                                         VerticalAlignment="Stretch" 
+                                         Margin="10"
+                                         HorizontalContentAlignment="Stretch" 
+                                         VerticalContentAlignment="Stretch"
+                                         BlurRadius="20"
+                                         ShadowOpacity="0.5"
+                                         OffsetX="0"
+                                         OffsetY="10"
+                                         Padding="0"
+                                         Color="Black">
+            <RelativePanel HorizontalAlignment="Stretch"
+                           Width="355" 
+                           Background="{ThemeResource SystemAltHighColor}" 
+                           CornerRadius="5" 
+                           Padding="10">
+                <PersonPicture x:Name="Avatar" 
+                               Margin="0,5,5,5" 
+                               RelativePanel.AlignLeftWithPanel="True" 
+                               RelativePanel.AlignHorizontalCenterWithPanel="True"
+                               ProfilePicture="{x:Bind ProfilePictureUrl, Converter={StaticResource StringToImageSourceConverter}, Mode=OneWay}"
+                               Width="70" 
                                RelativePanel.AlignVerticalCenterWithPanel="True"/>
-                <StackPanel RelativePanel.RightOf="Avatar" VerticalAlignment="Center"
-                    RelativePanel.AlignVerticalCenterWithPanel="True">
-                    <TextBlock Text="{x:Bind EmployeeName, Mode=OneWay}" FontSize="15" Margin="5"/>
-                    <TextBlock Text="{x:Bind Company, Converter={StaticResource BoolToCompanyConverter}, Mode=OneWay}" Margin="5"/>
+                <StackPanel RelativePanel.RightOf="Avatar" 
+                            VerticalAlignment="Center"
+                            RelativePanel.AlignVerticalCenterWithPanel="True">
+                    <TextBlock Text="{x:Bind EmployeeName, Mode=OneWay}"
+                               FontSize="15"
+                               Margin="5"/>
+                    <TextBlock Text="{x:Bind Company, Converter={StaticResource BoolToCompanyConverter}, Mode=OneWay}" 
+                               Margin="5"/>
                 </StackPanel>
-                <ComboBox x:Name="SelectFoodCombobox" RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True"
-                  Margin="5" PlaceholderText="Chưa chọn" ItemsSource="{x:Bind FoodList, Mode=OneWay}" MaxWidth="120">
+                <ComboBox x:Name="SelectFoodCombobox" 
+                          RelativePanel.AlignRightWithPanel="True" 
+                          RelativePanel.AlignVerticalCenterWithPanel="True"
+                          Margin="5" 
+                          PlaceholderText="Chưa chọn" 
+                          ItemsSource="{x:Bind FoodList, Mode=OneWay}" 
+                          MaxWidth="120">
                     <ComboBox.ItemTemplate>
                         <DataTemplate x:DataType="data:FoodDTO">
                             <StackPanel Orientation="Horizontal">
-                                <Border Background="{ThemeResource SystemAccentColor}" Width="26" Height="26" HorizontalAlignment="Center" VerticalAlignment="Center" CornerRadius="13" Margin="0,5,0,5">
-                                    <TextBlock Text="{x:Bind itemNo, Mode=OneWay}" TextAlignment="Center" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                <Border Background="{ThemeResource SystemAccentColor}" 
+                                        Width="26" Height="26" 
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center" 
+                                        CornerRadius="13"
+                                        Margin="0,5,0,5">
+                                    <TextBlock Text="{x:Bind itemNo, Mode=OneWay}" 
+                                               TextAlignment="Center" 
+                                               FontWeight="Bold" 
+                                               VerticalAlignment="Center" 
+                                               HorizontalAlignment="Center"/>
                                 </Border>
-                                <TextBlock Text="{x:Bind foodEnglishName, Mode=OneWay}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5"/>
+                                <TextBlock Text="{x:Bind foodEnglishName, Mode=OneWay}" 
+                                           VerticalAlignment="Center" 
+                                           HorizontalAlignment="Center" 
+                                           Margin="5"/>
                             </StackPanel>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
             </RelativePanel>
         </ToolkitControls:DropShadowPanel>
+        <FlyoutBase.AttachedFlyout>
+            <muxc:MenuFlyout>
+                <muxc:MenuFlyout.Items>
+                    <muxc:MenuFlyoutItem x:Name="Clear" 
+                                         Text="Clear selection" 
+                                         Icon="Clear"
+                                         Click="ClearSelection_Click"/>
+                    <muxc:MenuFlyoutItem x:Name="Remove" 
+                                         Text="Disable this user" 
+                                         Icon="BlockContact" 
+                                         Foreground="Red"
+                                         Click="DisableUser_Click"/>
+                </muxc:MenuFlyout.Items>
+            </muxc:MenuFlyout>
+        </FlyoutBase.AttachedFlyout>
     </SwipeControl>
 </UserControl>

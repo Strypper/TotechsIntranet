@@ -6,10 +6,10 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" xmlns:winui="using:Microsoft.UI.Xaml.Controls" 
-    xmlns:data="using:IntranetUWP.Models"
+    xmlns:data="using:IntranetUWP.Models" xmlns:winui1="using:Windows.UI.Xaml.Controls"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <winui:ScrollView>
+    <winui1:ScrollViewer>
         <StackPanel>
             <winui:BreadcrumbBar ItemsSource="{x:Bind vm.Foods}">
                 <winui:BreadcrumbBar.ItemTemplate>
@@ -20,7 +20,7 @@
             </winui:BreadcrumbBar>
             <winui:BreadcrumbBarItem Content="Hello"/>
             <winui:BreadcrumbBarItem Content="The Breadcrumb"/>
-            <winui:PagerControl NumberOfPages="10" ButtonPanelAlwaysShowFirstLastPageIndex="True"/>
+            <!--<winui1:PagerControl NumberOfPages="10" ButtonPanelAlwaysShowFirstLastPageIndex="True"/>-->
             <winui:PipsPager NumberOfPages="10" NextButtonVisibility="VisibleOnPointerOver" PreviousButtonVisibility="VisibleOnPointerOver"/>
             <winui:TabView TabItemsSource="{x:Bind vm.Foods}" Background="LightGreen">
                 <winui:TabView.TabStripHeaderTemplate>
@@ -41,5 +41,5 @@
             <winui:RatingControl/>
             <winui:PersonPicture/>
         </StackPanel>
-    </winui:ScrollView>
+    </winui1:ScrollViewer>
 </Page>

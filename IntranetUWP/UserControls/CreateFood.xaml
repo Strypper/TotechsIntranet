@@ -22,21 +22,31 @@
                        Width="150" Height="150"/>
             </Grid>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
-                <RadioButton x:Name="RiceOption" Content="🍚 Rice" Checked="MainFood_Checked"/>
-                <RadioButton x:Name="BreadOption" Content="🥖 Bread" Checked="MainFood_Checked"/>
-                <RadioButton x:Name="SpaghetiOption" Content="🍝 Spagheti" Checked="MainFood_Checked"/>
-                <RadioButton x:Name="NoodleOption" Content="🍜 Noodle" Checked="MainFood_Checked"/>
-                <RadioButton x:Name="DefaultOption" Content="🍱 Default" Checked="MainFood_Checked"/>
+                <RadioButton x:Name="RiceOption" Content="🍚" Checked="MainFood_Checked" MinWidth="60"/>
+                <RadioButton x:Name="BreadOption" Content="🥖" Checked="MainFood_Checked" MinWidth="60"/>
+                <RadioButton x:Name="SpaghetiOption" Content="🍝" Checked="MainFood_Checked" MinWidth="60"/>
+                <RadioButton x:Name="NoodleOption" Content="🍜" Checked="MainFood_Checked" MinWidth="60"/>
+                <RadioButton x:Name="Salad" Content="🥗" MinWidth="60"/>
+                <RadioButton x:Name="ChineseFood" Content="🥡" MinWidth="60"/>
+                <RadioButton x:Name="Hamburger" Content="🍔" MinWidth="60"/>
+                <RadioButton x:Name="Soup" Content="🍲" MinWidth="60"/>
+                <RadioButton x:Name="DefaultOption" Content="🍱" Checked="MainFood_Checked" MinWidth="60"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
-                <RadioButton x:Name="Meat" Content="🥩 Meat" Checked="SecondaryFood_Checked" IsEnabled="{x:Bind _isSelectable, Mode=TwoWay}" IsChecked="{x:Bind _isChecked, Mode=TwoWay}"/>
-                <RadioButton x:Name="Chicken" Content="🍗 Chicken" Checked="SecondaryFood_Checked" IsEnabled="{x:Bind _isSelectable, Mode=TwoWay}" IsChecked="{x:Bind _isChecked, Mode=TwoWay}"/>
-                <RadioButton x:Name="Egg" Content="🍳 Egg" Checked="SecondaryFood_Checked" IsEnabled="{x:Bind _isSelectable, Mode=TwoWay}" IsChecked="{x:Bind _isChecked, Mode=TwoWay}"/>
-                <RadioButton x:Name="Shrimp" Content="🍤 Shrimp" Checked="SecondaryFood_Checked" IsEnabled="{x:Bind _isSelectable, Mode=TwoWay}" IsChecked="{x:Bind _isChecked, Mode=TwoWay}"/>
-                <RadioButton x:Name="Falafel" Content="🧆 Falafel" Checked="SecondaryFood_Checked" IsEnabled="{x:Bind _isSelectable, Mode=TwoWay}" IsChecked="{x:Bind _isChecked, Mode=TwoWay}"/>
+                <RadioButton x:Name="Meat" Content="🥩" Checked="SecondaryFood_Checked" IsEnabled="{x:Bind _isSelectable, Mode=TwoWay}" IsChecked="{x:Bind _isChecked, Mode=TwoWay}" MinWidth="60"/>
+                <RadioButton x:Name="Bacon" Content="🥓" MinWidth="60"/>
+                <RadioButton x:Name="Chicken" Content="🍗" Checked="SecondaryFood_Checked" IsEnabled="{x:Bind _isSelectable, Mode=TwoWay}" IsChecked="{x:Bind _isChecked, Mode=TwoWay}" MinWidth="60"/>
+                <RadioButton x:Name="Egg" Content="🍳" Checked="SecondaryFood_Checked" IsEnabled="{x:Bind _isSelectable, Mode=TwoWay}" IsChecked="{x:Bind _isChecked, Mode=TwoWay}" MinWidth="60"/>
+                <RadioButton x:Name="Shrimp" Content="🍤" Checked="SecondaryFood_Checked" IsEnabled="{x:Bind _isSelectable, Mode=TwoWay}" IsChecked="{x:Bind _isChecked, Mode=TwoWay}" MinWidth="60"/>
+                <RadioButton x:Name="Fish" Content="🦈" MinWidth="60"/>
+                <RadioButton x:Name="Frog" Content="🐸" MinWidth="60"/>
+                <RadioButton x:Name="SecondarySoup" Content="🥣" MinWidth="60"/>
+                <RadioButton x:Name="Falafel" Content="🧆" Checked="SecondaryFood_Checked" IsEnabled="{x:Bind _isSelectable, Mode=TwoWay}" IsChecked="{x:Bind _isChecked, Mode=TwoWay}" MinWidth="60"/>
             </StackPanel>
             <TextBox x:Name="VietnameseFoodName" Header="Vietnamese Name" PlaceholderText="Nhập tên đồ ăn" CornerRadius="2"/>
             <TextBox x:Name="EnglishFoodName" Header="Food Name" PlaceholderText="Insert food name" CornerRadius="2"/>
         </StackPanel>
+        <ToggleButton x:Name="UnavaibleButton" Content="&#xE25B;" FontFamily="Segoe MDL2 Assets"
+                      HorizontalAlignment="Right" VerticalAlignment="Top" Click="UnavaibleButton_Click"/>
     </Grid>
 </ContentDialog>

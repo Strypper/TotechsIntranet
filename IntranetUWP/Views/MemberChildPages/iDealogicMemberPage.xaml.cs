@@ -1,21 +1,47 @@
 ﻿using IntranetUWP.Models;
-using System.Collections.Generic;
+using IntranetUWP.ViewModels.PagesViewModel;
+using Microsoft.Toolkit.Uwp.UI.Controls;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
+using Windows.UI.Xaml.Media.Animation;
 
 namespace IntranetUWP.Views.MemberChildPages
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
     public sealed partial class iDealogicMemberPage : Page
     {
-        public List<UserDTO> Users { get; set; }
+        public iDealogicMemberPageViewModel vm = new iDealogicMemberPageViewModel();
         public iDealogicMemberPage()
         {
             this.InitializeComponent();
-            Users = DemoUserData.getData();
+            this.DataContext = vm;
+        }
+
+        private void NavigateToMemberDetail_Click(object sender, RoutedEventArgs e)
+        {
+            var container = UsersCarousel.ContainerFromItem(UsersCarousel.SelectedItem);
+            if(container != null)
+            {
+                ConnectedAnimationService.GetForCurrentView().PrepareToAnimate("ForwardConnectedAnimation", container as CarouselItem);
+                Frame.Navigate(typeof(MemberDetailPage), UsersCarousel.SelectedItem, new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromRight });
+            }
+        }
+
+        private void UsersCarousel_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (UsersCarousel.SelectedItem as UserDTO != null)
+            {
+                DetailButton.IsEnabled = true;
+                DisableAndDeleteBar.Visibility = Visibility.Visible;
+            }
+            else 
+            { 
+                DetailButton.IsEnabled = false;
+                DisableAndDeleteBar.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
         }
     }
 }

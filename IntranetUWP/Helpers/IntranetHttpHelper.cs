@@ -11,6 +11,16 @@ namespace IntranetUWP.Helpers
         public IntranetHttpHelper()
         {
             this.BaseAddress = new Uri("https://intranetapi.azurewebsites.net/api/");
+            //this.BaseAddress = new Uri("https://localhost:44371/api/");
+            //var handler = new HttpClientHandler();
+            //handler.ClientCertificateOptions = ClientCertificateOption.Manual;
+            //handler.ServerCertificateCustomValidationCallback =
+            //    (httpRequestMessage, cert, cetChain, policyErrors) =>
+            //    {
+            //        return true;
+            //    };
+
+            //var httpClient = new HttpClient(handler);
         }
 
         public async Task<T> GetAsync<T>(string url)

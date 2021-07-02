@@ -5,11 +5,35 @@
 	  xmlns:lottie="using:Microsoft.Toolkit.Uwp.UI.Lottie"
 	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	  xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
-	  xmlns:toolkit="using:Microsoft.Toolkit.Uwp.UI.Controls"
+	  xmlns:usercontrols="using:IntranetUWP.UserControls"
 	  muxc:BackdropMaterial.ApplyToRootOrPageBackground="True"
 	  mc:Ignorable="d">
 
 	<Grid>
+		<usercontrols:TitleBarControl Title="Login page"
+									  Height="32"
+									  VerticalAlignment="Top"
+									  d:Title="Login page"
+									  Canvas.ZIndex="1">
+
+			<StackPanel VerticalAlignment="Center"
+						IsHitTestVisible="False"
+						Orientation="Horizontal">
+				<Image Width="25" Height="25">
+					<Image.Source>
+						<BitmapImage DecodePixelHeight="32"
+									 DecodePixelWidth="32"
+									 UriSource="/Assets/AppLogoAssets/Square44x44Logo.png" />
+					</Image.Source>
+				</Image>
+				<TextBlock VerticalAlignment="Center"
+						   d:Text="IntranetUWP"
+						   FontSize="12"
+						   Text="IntranetUWP" />
+
+			</StackPanel>
+		</usercontrols:TitleBarControl>
+
 		<muxc:TwoPaneView Pane1Length="*"
 						  Pane2Length="400"
 						  PanePriority="Pane2">

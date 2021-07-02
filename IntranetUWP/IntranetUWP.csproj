@@ -126,6 +126,7 @@
     <Compile Include="Converters\DoubleToPercentConverter.cs" />
     <Compile Include="Converters\StringToImageSourceConverter.cs" />
     <Compile Include="Helpers\AnimatedGradientBrush.cs" />
+    <Compile Include="Helpers\ControlExtensions.cs" />
     <Compile Include="Helpers\IntranetHttpHelper.cs" />
     <Compile Include="Helpers\IntranetSignalRHelper.cs" />
     <Compile Include="Helpers\OpenXMLWordHelper.cs" />
@@ -167,6 +168,9 @@
     </Compile>
     <Compile Include="UserControls\TeamCard.xaml.cs">
       <DependentUpon>TeamCard.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\TitleBarControl.xaml.cs">
+      <DependentUpon>TitleBarControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\Commands\RelayCommand.cs" />
     <Compile Include="ViewModels\Commands\SignalRSendMessageCommandParameter.cs" />
@@ -312,6 +316,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Themes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="UserControls\AvatarUploadImage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -345,6 +353,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\TeamCard.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\TitleBarControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -173,6 +173,7 @@
     <Compile Include="ViewModels\PagesViewModel\ChatHubPageViewModel.cs" />
     <Compile Include="ViewModels\PagesViewModel\FoodOrderPageViewModel.cs" />
     <Compile Include="ViewModels\PagesViewModel\iDealogicMemberPageViewModel.cs" />
+    <Compile Include="ViewModels\PagesViewModel\LoginPageViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="Views\ChatHubPage.xaml.cs">
       <DependentUpon>ChatHubPage.xaml</DependentUpon>
@@ -441,7 +442,11 @@
   <ItemGroup>
     <Content Include="Assets\lunchbox.json" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="..\.editorconfig">
+      <Link>.editorconfig</Link>
+    </None>
+  </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\DemoPurpose\Others\Laptop.json" />
   </ItemGroup>

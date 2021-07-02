@@ -24,7 +24,24 @@
 	<Grid>
 		<usercontrols:TitleBarControl Height="32"
 									  VerticalAlignment="Top"
-									  Canvas.ZIndex="1" />
+									  Canvas.ZIndex="1">
+			<StackPanel VerticalAlignment="Center"
+						IsHitTestVisible="False"
+						Orientation="Horizontal">
+				<Image Width="25" Height="25">
+					<Image.Source>
+						<BitmapImage DecodePixelHeight="32"
+									 DecodePixelWidth="32"
+									 UriSource="/Assets/AppLogoAssets/Square44x44Logo.png" />
+					</Image.Source>
+				</Image>
+				<TextBlock VerticalAlignment="Center"
+						   d:Text="IntranetUWP"
+						   FontSize="12"
+						   Text="IntranetUWP" />
+
+			</StackPanel>
+		</usercontrols:TitleBarControl>
 
 		<winui:NavigationView x:Name="MainNavigationView"
 							  CompactModeThresholdWidth="300"

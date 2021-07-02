@@ -1,132 +1,100 @@
-﻿<Page
-    x:Class="IntranetUWP.MainPage"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:IntranetUWP"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-    xmlns:winui="using:Microsoft.UI.Xaml.Controls"
-    mc:Ignorable="d">
+﻿<Page x:Class="IntranetUWP.MainPage"
+	  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	  xmlns:local="using:IntranetUWP"
+	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	  xmlns:usercontrols="using:IntranetUWP.UserControls"
+	  xmlns:winui="using:Microsoft.UI.Xaml.Controls"
+	  winui:BackdropMaterial.ApplyToRootOrPageBackground="True"
+	  mc:Ignorable="d">
 
-    <Page.Resources>
-        <AcrylicBrush x:Key="NavigationViewTopPaneBackground"
-              BackgroundSource="HostBackdrop"
-              FallbackColor="{ThemeResource SystemAltHighColor}"
-              TintColor="{ThemeResource SystemAltHighColor}"
-              TintOpacity=".6"
-              TintTransitionDuration="00:00:00.500" />
-    </Page.Resources>
+	<Page.Resources>
+		<AcrylicBrush x:Key="NavigationViewTopPaneBackground"
+					  BackgroundSource="HostBackdrop"
+					  FallbackColor="{ThemeResource SystemAltHighColor}"
+					  TintColor="{ThemeResource SystemAltHighColor}"
+					  TintOpacity=".6"
+					  TintTransitionDuration="00:00:00.500" />
 
+		<Thickness x:Key="NavigationViewContentMargin">0,32,0,0</Thickness>
 
-    <winui:NavigationView x:Name="MainNavigationView" 
-                          PaneDisplayMode="Left" 
-                          IsBackButtonVisible="Collapsed" 
-                          IsTitleBarAutoPaddingEnabled="True" 
-                          IsSettingsVisible="True"
-                          SelectionChanged="NavigationViewPanel_SelectionChanged">
-        <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup x:Name="WindowsState">
-                <VisualState x:Name="VS1">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="2000"/>
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="MainNavigationView.PaneDisplayMode" Value="Left"/>
-                    </VisualState.Setters>
-                </VisualState>
-                <VisualState x:Name="VS2">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="1500"/>
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="MainNavigationView.PaneDisplayMode" Value="Left"/>
-                    </VisualState.Setters>
-                </VisualState>
-                <VisualState x:Name="VS3">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="1300"/>
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="MainNavigationView.PaneDisplayMode" Value="Left"/>
-                    </VisualState.Setters>
-                </VisualState>
-                <VisualState x:Name="VS4">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="0"/>
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="MainNavigationView.PaneDisplayMode" Value="LeftCompact"/>
-                    </VisualState.Setters>
-                </VisualState>
-            </VisualStateGroup>
-        </VisualStateManager.VisualStateGroups>
+	</Page.Resources>
 
-        <winui:NavigationView.PaneHeader>
-            <Image Source="/Assets/iDealogic.png" 
-                   Width="90" 
-                   Height="30" 
-                   HorizontalAlignment="Left"/>
-        </winui:NavigationView.PaneHeader>
-        <winui:NavigationView.MenuItems>
-            <winui:NavigationViewItem x:Name="LunchOrder" 
-                                      Content="Lunch order - Đặt đồ ăn trưa" 
-                                      IsSelected="True">
-                <winui:NavigationViewItem.Icon>
-                    <FontIcon FontFamily="Segoe UI Emoji" 
-                              Glyph="&#x1F371;"/>
-                </winui:NavigationViewItem.Icon>
-            </winui:NavigationViewItem>
-            <winui:NavigationViewItem x:Name="TeaBreak" 
-                                      Content="Tea break - Nghỉ ngơi thứ 5">
-                <winui:NavigationViewItem.Icon>
-                    <FontIcon FontFamily="Segoe UI Emoji" 
-                              Glyph="&#x2615;" />
-                </winui:NavigationViewItem.Icon>
-            </winui:NavigationViewItem>
-            <!--<winui:NavigationViewItem x:Name="PlayTime" Content="Play time - Tìm bạn chơi">
+	<Grid>
+		<usercontrols:TitleBarControl Height="32"
+									  VerticalAlignment="Top"
+									  Canvas.ZIndex="1" />
+
+		<winui:NavigationView x:Name="MainNavigationView"
+							  CompactModeThresholdWidth="300"
+							  ExpandedModeThresholdWidth="1024"
+							  IsBackButtonVisible="Collapsed"
+							  IsSettingsVisible="True"
+							  IsTitleBarAutoPaddingEnabled="True"
+							  PaneDisplayMode="Auto"
+							  SelectionChanged="NavigationViewPanel_SelectionChanged">
+			<winui:NavigationView.PaneHeader>
+				<Image Width="90"
+					   Height="30"
+					   HorizontalAlignment="Left"
+					   Source="/Assets/iDealogic.png" />
+			</winui:NavigationView.PaneHeader>
+			<winui:NavigationView.MenuItems>
+				<winui:NavigationViewItem x:Name="LunchOrder"
+										  Content="Lunch order - Đặt đồ ăn trưa"
+										  IsSelected="True">
+					<winui:NavigationViewItem.Icon>
+						<FontIcon FontFamily="Segoe UI Emoji" Glyph="&#x1F371;" />
+					</winui:NavigationViewItem.Icon>
+				</winui:NavigationViewItem>
+				<winui:NavigationViewItem x:Name="TeaBreak" Content="Tea break - Nghỉ ngơi thứ 5">
+					<winui:NavigationViewItem.Icon>
+						<FontIcon FontFamily="Segoe UI Emoji" Glyph="&#x2615;" />
+					</winui:NavigationViewItem.Icon>
+				</winui:NavigationViewItem>
+				<!--<winui:NavigationViewItem x:Name="PlayTime" Content="Play time - Tìm bạn chơi">
                 <winui:NavigationViewItem.Icon>
                     <FontIcon FontFamily="Segoe UI Emoji" Glyph="&#x2694;" />
                 </winui:NavigationViewItem.Icon>
             </winui:NavigationViewItem>-->
-            <winui:NavigationViewItem x:Name="ChatHub" 
-                                      Content="Chat hub">
-                <winui:NavigationViewItem.Icon>
-                    <FontIcon FontFamily="Segoe UI Emoji" 
-                              Glyph="&#x1F4AC;" />
-                </winui:NavigationViewItem.Icon>
-            </winui:NavigationViewItem>
-            <winui:NavigationViewItem x:Name="Member" Content="Members">
-                <winui:NavigationViewItem.Icon>
-                    <FontIcon FontFamily="Segoe UI Emoji" Glyph="&#x1F603;" />
-                </winui:NavigationViewItem.Icon>
-            </winui:NavigationViewItem>
-        </winui:NavigationView.MenuItems>
-        <winui:NavigationView.PaneFooter>
-            <Grid Padding="15,10,0,10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="0.2*"/>
-                </Grid.ColumnDefinitions>
-                <StackPanel Orientation="Horizontal">
-                    <PersonPicture x:Name="ProfilePicture" 
-                                   Width="20"/>
-                    <TextBlock x:Name="PersonalName" 
-                               VerticalAlignment="Center" 
-                               Margin="10,0,0,0"/>
-                </StackPanel>
-                <Button x:Name="LogoutButton" 
-                        Grid.Column="1" 
-                        VerticalAlignment="Stretch" 
-                        HorizontalAlignment="Stretch"
-                        FontFamily="Segoe MDL2 Assets" 
-                        Content="&#xE7E8;" 
-                        Background="Transparent"
-                        BorderBrush="Transparent"
-                        Foreground="Red" 
-                        Click="LogoutButton_Click" 
-                        ToolTipService.ToolTip="Log out"/>
-            </Grid>
-        </winui:NavigationView.PaneFooter>
-        <Frame x:Name="TheMainFrame"/>
-    </winui:NavigationView>
+				<winui:NavigationViewItem x:Name="ChatHub" Content="Chat hub">
+					<winui:NavigationViewItem.Icon>
+						<FontIcon FontFamily="Segoe UI Emoji" Glyph="&#x1F4AC;" />
+					</winui:NavigationViewItem.Icon>
+				</winui:NavigationViewItem>
+				<winui:NavigationViewItem x:Name="Member" Content="Members">
+					<winui:NavigationViewItem.Icon>
+						<FontIcon FontFamily="Segoe UI Emoji" Glyph="&#x1F603;" />
+					</winui:NavigationViewItem.Icon>
+				</winui:NavigationViewItem>
+			</winui:NavigationView.MenuItems>
+			<winui:NavigationView.PaneFooter>
+				<Grid Padding="15,10,0,10">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" MinWidth="50" />
+						<ColumnDefinition Width="50" />
+					</Grid.ColumnDefinitions>
+					<StackPanel Orientation="Horizontal">
+						<PersonPicture x:Name="ProfilePicture" Width="20" />
+						<TextBlock x:Name="PersonalName"
+								   Margin="10,0,0,0"
+								   VerticalAlignment="Center" />
+					</StackPanel>
+					<Button x:Name="LogoutButton"
+							Grid.Column="1"
+							HorizontalAlignment="Stretch"
+							VerticalAlignment="Stretch"
+							Background="Transparent"
+							BorderBrush="Transparent"
+							Click="LogoutButton_Click"
+							Content="&#xE7E8;"
+							FontFamily="Segoe MDL2 Assets"
+							Foreground="{ThemeResource SystemErrorTextColor}"
+							ToolTipService.ToolTip="Log out" />
+				</Grid>
+			</winui:NavigationView.PaneFooter>
+			<Frame x:Name="TheMainFrame" Margin="0,-32,0,0" />
+		</winui:NavigationView>
+	</Grid>
 </Page>

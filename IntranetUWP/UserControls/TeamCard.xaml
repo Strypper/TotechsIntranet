@@ -5,33 +5,49 @@
     xmlns:local="using:IntranetUWP.UserControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ToolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     mc:Ignorable="d"
     d:DesignHeight="600"
-    d:DesignWidth="350">
+    d:DesignWidth="350"
+    Loaded="UserControl_Loaded">
 
-    <Grid Width="300"
-                  Height="450"
-                  Background="Gray"
-                  CornerRadius="5"
-                  Margin="10">
-        <StackPanel VerticalAlignment="Top"
-                            HorizontalAlignment="Left">
-            <PersonPicture Width="80"
+    <ToolkitControls:DropShadowPanel x:Name="DropShadowHolder" 
+                    VerticalAlignment="Stretch" 
+                    HorizontalContentAlignment="Stretch" 
+                    VerticalContentAlignment="Stretch"
+                    BlurRadius="20" 
+                    ShadowOpacity="0.5" 
+                    OffsetX="0" 
+                    OffsetY="5"
+                    Color="Black" 
+                    Margin="10">
+        <Grid Width="300"
+              Height="450"
+              CornerRadius="2"
+              Background="{ThemeResource SystemAltHighColor}">
+            <StackPanel VerticalAlignment="Top"
+                        HorizontalAlignment="Left">
+                <PersonPicture x:Name="TeamAvatar"
+                           Width="80"
                            Margin="10"
-                           HorizontalAlignment="Left"
-                           ProfilePicture="{x:Bind Teams.TechLead.profilePic,
-                                            Converter={StaticResource StringToImageSourceConverter},
-                                            Mode=OneWay}"/>
-            <TextBlock Text="{x:Bind Teams.TeamName,
+                           HorizontalAlignment="Left"/>
+                <TextBlock Text="{x:Bind Teams.TeamName,
                               Mode=OneWay}"
                        Margin="10,0,10,10"
                        FontWeight="Bold"
                        FontSize="30"/>
-            <TextBlock Text="Clients: eXpD8, Peter Fitzpatrick"
-                               Margin="10,0,10,10"/>
-            <TextBlock Text="About:"
+                <TextBlock
+                       TextTrimming="CharacterEllipsis"
+                       TextWrapping="Wrap"
+                       Margin="10,0,10,10">
+                <Run Text="Clients: " FontWeight="Bold"/>
+                <Run Text="{x:Bind Teams.Clients,
+                              Mode=OneWay}"/>
+                </TextBlock>
+                <TextBlock Text="About:"
+                       FontWeight="Bold"
                        Margin="10,0,10,0"/>
-            <TextBlock x:Name="About"
+                <TextBlock x:Name="About"
                         Text="{x:Bind Teams.About,
                               Mode=OneWay}"
                         Height="90"
@@ -44,31 +60,40 @@
                              Visibility="{x:Bind About.IsTextTrimmed,
                                           Mode=OneWay}"/>
                 </ToolTipService.ToolTip>
-            </TextBlock>
-            <TextBlock Text="iDealogic"
-                               Foreground="#5e1430"
-                               Margin="10,0,10,10"/>
-            <StackPanel Orientation="Horizontal">
-                <Button Margin="10"
+                </TextBlock>
+                <TextBlock Text="{x:Bind Teams.Company, 
+                              Converter={StaticResource BoolToCompanyConverter},
+                              Mode=OneWay}"
+                       FontWeight="Bold"
+                       Foreground="{x:Bind Teams.Company,
+                                    Converter={StaticResource CompanyBoolToColorConverter},
+                                    Mode=OneWay}"
+                       FontSize="15"
+                       Margin="10,0,10,10"/>
+                <StackPanel Orientation="Horizontal">
+                    <Button Margin="10"
                         Style="{StaticResource ButtonRevealStyle}">
-                    <SymbolIcon Symbol="Comment"/>
-                </Button>
+                        <SymbolIcon Symbol="Comment"/>
+                    </Button>
+                </StackPanel>
             </StackPanel>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal"
-                    VerticalAlignment="Bottom"
-                    HorizontalAlignment="Right"
-                    Margin="10">
-            <PersonPicture Width="40" Margin="0,0,5,0"/>
-            <PersonPicture Width="40" Margin="0,0,5,0"/>
-            <PersonPicture Width="40" Margin="0,0,5,0"/>
-            <PersonPicture Width="40" Margin="0,0,5,0"/>
-        </StackPanel>
-        <Button HorizontalAlignment="Right"
-                        VerticalAlignment="Top"
-                        Margin="10"
-                        Style="{StaticResource ButtonRevealStyle}">
-            <SymbolIcon Symbol="More"/>
-        </Button>
-    </Grid>
+            <local:PreviewAvatarsGroup Members="{x:Bind Teams.Members,
+                                   Mode=OneWay}"
+                                   VerticalAlignment="Bottom"
+                                   HorizontalAlignment="Right"
+                                   Margin="10"/>
+            <Button HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Margin="10"
+                Style="{StaticResource ButtonRevealStyle}">
+                <Button.Flyout>
+                    <MenuFlyout>
+                        <MenuFlyoutItem Icon="Edit" Text="Edit team"/>
+                        <MenuFlyoutItem Icon="Delete" Text="Delete team" Foreground="Red"/>
+                    </MenuFlyout>
+                </Button.Flyout>
+                <SymbolIcon Symbol="More"/>
+            </Button>
+        </Grid>
+    </ToolkitControls:DropShadowPanel>
 </UserControl>

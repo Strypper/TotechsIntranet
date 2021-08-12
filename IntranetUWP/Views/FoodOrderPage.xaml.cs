@@ -40,7 +40,7 @@ namespace IntranetUWP.Views
             var userFoodData = await httpHelper.GetAsync<ObservableCollection<UserFoodDTO>>(vm.getUserSelectedFoodDataUrl);
             var foodData = await httpHelper.GetAsync<ObservableCollection<FoodDTO>>(vm.getFoodsDataUrl);
             var usersData = await httpHelper.GetAsync<List<UserDTO>>(vm.getUsersDataUrl);
-            usersFoodData = userFoodData.Count;
+            usersFoodData = userFoodData == null ? 0 : userFoodData.Count;
             if (App.localSettings.Values["UserId"] != null)
             {
                 personalData = usersData.Where(u => u.id == (int)App
@@ -321,7 +321,7 @@ namespace IntranetUWP.Views
                 MenuFlyout myFlyout = new MenuFlyout();
                 MenuFlyoutItem copyFromClipBoard = new MenuFlyoutItem
                 {
-                    Text = "Copy from clipboard",
+                    Text = "Paste from clipboard",
                     Command = vm.getFoodFromClipboard,
                     Icon = new FontIcon()
                     {
@@ -497,7 +497,7 @@ namespace IntranetUWP.Views
 
             printHelper.AddFrameworkElementToPrint(stackPanel);
 
-            await printHelper.ShowPrintUIAsync("Your physical paper");
+                await printHelper.ShowPrintUIAsync("Your physical paper");
         }
 
     }

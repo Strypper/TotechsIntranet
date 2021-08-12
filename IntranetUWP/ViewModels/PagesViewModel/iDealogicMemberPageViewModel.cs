@@ -20,9 +20,11 @@ namespace IntranetUWP.ViewModels.PagesViewModel
     {
         public string getUsersDataUrl = "User/GetAll";
         public string deleteUserDataUrl = "User/Delete";
+        public string getTeamsByUserIdDataUrl = "UserTeam/GetTeamByUser";
         private IntranetHttpHelper httpHelper = new IntranetHttpHelper(); 
         private ObservableCollection<UserDTO> users = new ObservableCollection<UserDTO>();
         public ObservableCollection<UserDTO> Users { get; set; }
+        public ObservableCollection<TeamsDTO> Teams { get; set; }
         public ICommand getAllUsersCommand { get; set; }
         public ICommand createNewUserCommand { get; set; }
         public ICommand askBeforeDeleteUserCommand { get; set; }
@@ -31,6 +33,7 @@ namespace IntranetUWP.ViewModels.PagesViewModel
         {
             IsBusy = true;
             Users = new ObservableCollection<UserDTO>();
+            Teams = new ObservableCollection<TeamsDTO>();
 
             createNewUserCommand = new RelayCommand(async() => await OpenCreateMemberDialog());
             askBeforeDeleteUserCommand = new RelayCommand(async () => await AskBeforeRemove());
@@ -38,6 +41,7 @@ namespace IntranetUWP.ViewModels.PagesViewModel
         }
 
         private async Task GetUserData() => users = await httpHelper.GetAsync<ObservableCollection<UserDTO>>(getUsersDataUrl);
+
 
         private async Task BindUsersBackToUI()
         {

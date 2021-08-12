@@ -6,11 +6,64 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" xmlns:winui="using:Microsoft.UI.Xaml.Controls" 
-    xmlns:data="using:IntranetUWP.Models" xmlns:winui1="using:Windows.UI.Xaml.Controls"
+    xmlns:data="using:IntranetUWP.Models"
+    xmlns:usercontrols="using:IntranetUWP.UserControls"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <winui1:ScrollViewer>
+    <ScrollViewer>
         <StackPanel>
+            <StackPanel.ChildrenTransitions>
+                <TransitionCollection>
+                    <EntranceThemeTransition FromVerticalOffset="1000"
+                                             IsStaggeringEnabled="True" />
+                    <AddDeleteThemeTransition />
+                </TransitionCollection>
+            </StackPanel.ChildrenTransitions>
+            <Hub Header="News" Orientation="Vertical">
+                <HubSection MinWidth="600" Header="Latest">
+                    <DataTemplate>
+                        <Grid>
+                            <TextBlock Text="The most recent news will be here."/>
+                        </Grid>
+                    </DataTemplate>
+                </HubSection>
+
+                <HubSection x:Name="Tech" Header="Tech" IsHeaderInteractive="True"  
+                            Background="#F4F4F4" MinWidth="250">
+                    <DataTemplate>
+                        <StackPanel>
+                            <TextBlock Text="Tech news goes here."/>
+                            <TextBlock Text="Click the header to go to the Tech page."/>
+                        </StackPanel>
+                    </DataTemplate>
+                </HubSection>
+
+                <HubSection x:Name="Sports" Header="Sports" IsHeaderInteractive="True" 
+                            Background="#F9F9F9" MinWidth="250">
+                    <DataTemplate>
+                        <StackPanel>
+                            <TextBlock Text="Sports news goes here."/>
+                            <TextBlock Text="Click the header to go to the Sports page."/>
+                        </StackPanel>
+                    </DataTemplate>
+                </HubSection>
+            </Hub>
+            <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                        HorizontalScrollMode="Auto"
+                        IsVerticalScrollChainingEnabled="True"
+                        MaxHeight="500">
+                <winui:ItemsRepeater ItemsSource="{x:Bind teams, Mode=OneWay}">
+                    <winui:ItemsRepeater.Layout>
+                        <winui:StackLayout Orientation="Horizontal"/>
+                    </winui:ItemsRepeater.Layout>
+                    <winui:ItemsRepeater.ItemTemplate>
+                        <DataTemplate x:DataType="data:TeamsDTO">
+                            <usercontrols:TeamCard Teams="{x:Bind}"/>
+                        </DataTemplate>
+                    </winui:ItemsRepeater.ItemTemplate>
+                </winui:ItemsRepeater>
+            </ScrollViewer>
+            <usercontrols:PreviewAvatarsGroup/>
             <winui:BreadcrumbBar ItemsSource="{x:Bind vm.Foods}">
                 <winui:BreadcrumbBar.ItemTemplate>
                     <DataTemplate x:DataType="data:FoodDTO">
@@ -21,7 +74,9 @@
             <winui:BreadcrumbBarItem Content="Hello"/>
             <winui:BreadcrumbBarItem Content="The Breadcrumb"/>
             <!--<winui1:PagerControl NumberOfPages="10" ButtonPanelAlwaysShowFirstLastPageIndex="True"/>-->
-            <winui:PipsPager NumberOfPages="10" NextButtonVisibility="VisibleOnPointerOver" PreviousButtonVisibility="VisibleOnPointerOver"/>
+            <winui:PipsPager NumberOfPages="10" 
+                             NextButtonVisibility="VisibleOnPointerOver" 
+                             PreviousButtonVisibility="VisibleOnPointerOver"/>
             <winui:TabView TabItemsSource="{x:Bind vm.Foods}" Background="LightGreen">
                 <winui:TabView.TabStripHeaderTemplate>
                     <DataTemplate x:DataType="data:FoodDTO">
@@ -40,6 +95,23 @@
             <winui:ProgressBar IsIndeterminate="True"/>
             <winui:RatingControl/>
             <winui:PersonPicture/>
+
+            <Canvas x:Name="canvas"
+                    Height="1000" HorizontalAlignment="Stretch" Background="Red"
+                    PointerMoved="Canvas_PointerEntered">
+                <Rectangle x:Name="YellowRec" Canvas.Left="671.333312988281" Canvas.Top="650"
+                           Width="100" Height="100" 
+                           CenterPoint="50,50,50" Fill="Yellow"
+                           PointerEntered="YellowRec_PointerEntered"
+                           PointerExited="YellowRec_PointerExited">
+                    <Rectangle.TranslationTransition>
+                        <Vector3Transition Duration="0:0:3"/>
+                    </Rectangle.TranslationTransition>
+                    <Rectangle.ScaleTransition>
+                        <Vector3Transition />
+                    </Rectangle.ScaleTransition>
+                </Rectangle>
+            </Canvas>
         </StackPanel>
-    </winui1:ScrollViewer>
+    </ScrollViewer>
 </Page>

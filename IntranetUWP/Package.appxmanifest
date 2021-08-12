@@ -51,5 +51,8 @@
 
   <Capabilities>
     <Capability Name="internetClient" />
+    <Capability Name="internetClientServer"/>
+    <uap:Capability Name="chat"/>
+    <DeviceCapability Name="webcam"/>
   </Capabilities>
 </Package>

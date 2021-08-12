@@ -7,12 +7,13 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls" 
     xmlns:lottie="using:Microsoft.Toolkit.Uwp.UI.Lottie" 
-    xmlns:helper="using:IntranetUWP.Helpers"
+    xmlns:m_helper="using:MaterialLibs.Helpers"
+    xmlns:m_control="using:MaterialLibs.Controls"
     mc:Ignorable="d" Loaded="Page_Loaded">
 
-    <Page.Background>
+    <!--<Page.Background>
         <helper:AnimatedGradientBrush/>
-    </Page.Background>
+    </Page.Background>-->
 
     <Grid x:Name="MainPage">
         <Grid.RowDefinitions>
@@ -25,7 +26,7 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="0.7*"/>
         </Grid.ColumnDefinitions>
-        <!--<MediaPlayerElement 
+        <MediaPlayerElement 
                     x:Name="VideoBackGround"
                     Grid.ColumnSpan="3"
                     Grid.RowSpan="3"
@@ -46,69 +47,97 @@
                     </BeginStoryboard>
                 </EventTrigger>
             </MediaPlayerElement.Triggers>
-        </MediaPlayerElement>-->
-        <Grid>
-            <StackPanel Padding="5"
-                        Margin="15"
-                        CornerRadius="5"
-                        Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}">
+        </MediaPlayerElement>
+        <!--<m_control:ParticleCanvas x:Name="particleCanvas"
+                            LineColor="{StaticResource SystemAccentColor}"
+                            ParticleColor="Green"
+                            Density="8"
+                            Paused="False" 
+                            Grid.ColumnSpan="3"
+                            Grid.RowSpan="3"
+                            IsPointerEnable="False"/>-->
+
+        <ListView Margin="15"
+                  CornerRadius="2"
+                  Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}">
+            <ListView.Header>
                 <TextBlock Text="Skills"
                            TextDecorations="Underline"
                            FontWeight="Bold"
                            FontSize="30"
-                           Margin="5,5,5,0"/>
-                <TextBlock FontWeight="Bold"
+                           Margin="15,5,5,5"/>
+            </ListView.Header>
+            <ListViewItem>
+                <StackPanel>
+                    <TextBlock FontWeight="Bold"
                            Text="Universal Windows Platform"
                            Margin="5"/>
-                <ProgressBar Value="100"
-                             Margin="5"/>
-                <TextBlock FontWeight="Bold"
-                           Text="ASP.NET Core"
+                    <ProgressBar Value="90" Margin="0,0,0,10"/>
+                </StackPanel>
+            </ListViewItem>
+            <ListViewItem>
+                <StackPanel>
+                    <TextBlock FontWeight="Bold"
+                           Text="Universal Windows Platform"
                            Margin="5"/>
-                <ProgressBar Value="80"
-                             Margin="5"/>
-                <TextBlock FontWeight="Bold"
-                           Text="MSSQL"
+                    <ProgressBar Value="90" Margin="0,0,0,10"/>
+                </StackPanel>
+            </ListViewItem>
+            <ListViewItem>
+                <StackPanel>
+                    <TextBlock FontWeight="Bold"
+                           Text="Universal Windows Platform"
                            Margin="5"/>
-                <ProgressBar Value="70"
-                             Margin="5"/>
-                <TextBlock FontWeight="Bold"
-                           Text="Azure"
+                    <ProgressBar Value="90" Margin="0,0,0,10"/>
+                </StackPanel>
+            </ListViewItem>
+            <ListViewItem>
+                <StackPanel>
+                    <TextBlock FontWeight="Bold"
+                           Text="Universal Windows Platform"
                            Margin="5"/>
-                <ProgressBar Value="80"
-                             Margin="5"/>
-            </StackPanel>
-            <Button Margin="15"
-                    VerticalAlignment="Bottom"
-                    HorizontalAlignment="Right">
-                <SymbolIcon Symbol="Add" />
-            </Button>
-        </Grid>
-        <Grid Grid.Row="1">
-            <StackPanel Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
-                        CornerRadius="5"
-                        Padding="5"
-                        Margin="15,0,15,15">
-                <TextBlock FontWeight="Bold"
+                    <ProgressBar Value="90" Margin="0,0,0,10"/>
+                </StackPanel>
+            </ListViewItem>
+            <ListView.Footer>
+                <Button Grid.Row="1"
+                    VerticalAlignment="Stretch"
+                    HorizontalAlignment="Stretch"
+                    Margin="5">
+                    <SymbolIcon Symbol="Add" />
+                </Button>
+            </ListView.Footer>
+        </ListView>
+        <ScrollViewer
+              Grid.Row="1"
+              CornerRadius="2"
+              Margin="15,0,15,15">
+            <Grid 
+              Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="0.2*"/>
+                </Grid.RowDefinitions>
+                <StackPanel Padding="5">
+                    <TextBlock FontWeight="Bold"
                        FontSize="30"
                        TextDecorations="Underline"
                        Text="Bio"
                        Margin="5,5,5,0"/>
-                <TextBlock TextWrapping="Wrap" Margin="5"
-                           
+                    <TextBlock TextWrapping="Wrap" Margin="5"
                            Text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."/>
-            </StackPanel>
-            <Button 
-                    VerticalAlignment="Bottom"
-                    HorizontalAlignment="Right"
-                    Margin="15">
-                <SymbolIcon Symbol="Edit"/>
-            </Button>
-        </Grid>
+                </StackPanel>
+                <Button Grid.Row="1"
+                    HorizontalAlignment="Stretch"
+                    Margin="5,10,5,5">
+                    <SymbolIcon Symbol="Edit"/>
+                </Button>
+            </Grid>
+        </ScrollViewer>
         <Grid Grid.Row="2">
             <StackPanel    
                         Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
-                        CornerRadius="5"
+                        CornerRadius="2"
                         Padding="5"
                         Margin="15,0,15,15">
                 <TextBlock FontWeight="Bold"
@@ -120,15 +149,16 @@
         </Grid>
         <Grid
               Grid.Column="1"
-              Grid.RowSpan="2">
-            <StackPanel
-                        Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
-                        Padding="5"
-                        CornerRadius="5"
-                        Margin="0,15,0,15">
+              Grid.RowSpan="2"
+              CornerRadius="2"
+              Margin="0,15,0,15"
+              Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}">
+            <StackPanel VerticalAlignment="Center"
+                        Padding="5">
                 <muxc:AnimatedVisualPlayer x:Name="LottiePlayer" 
                                        VerticalAlignment="Center" 
-                                       HorizontalAlignment="Center" 
+                                       HorizontalAlignment="Center"
+                                       Height="300"
                                        Margin="0">
                     <lottie:LottieVisualSource x:Name="LottieJsonSource" 
                                        UriSource="ms-appx:///Assets/DemoPurpose/Others/Laptop.json"/>
@@ -172,7 +202,7 @@
               Grid.Column="1"
               Padding="5"
               Margin="0,0,0,15"
-              CornerRadius="5"
+              CornerRadius="2"
               Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}">
             <TextBlock HorizontalAlignment="Center"
                            Text="TEAM"
@@ -204,12 +234,12 @@
         <Border Grid.RowSpan="3"
                 Grid.Column="2"
                 Margin="15"
-                CornerRadius="5"
+                CornerRadius="2"
                 Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"/>
         <Border 
                Grid.Column="2"
                Grid.RowSpan="2"
-               CornerRadius="5"
+               CornerRadius="2"
                Margin="25">
             <Image x:Name="ProfileImage"
                    VerticalAlignment="Stretch"
@@ -219,32 +249,35 @@
         <Grid Grid.Column="2"
               Grid.Row="2">
             <StackPanel 
-                        CornerRadius="5"
+                        CornerRadius="2"
                         Padding="5"
                         Margin="15,0,15,15">
-                <TextBlock FontSize="30"
+                <TextBlock x:Name="UserName"
+                           FontSize="30"
                            FontWeight="Bold"
+                           TextAlignment="Center"
                            TextDecorations="Underline"
-                           Margin="5">
-                    <Run Text="{x:Bind LastName.Text, Mode=OneWay}"/>
-                    <Run Text="{x:Bind MiddleName.Text, Mode=OneWay}"/>
-                    <Run Text="{x:Bind FirstName.Text, Mode=OneWay}"/>
-                </TextBlock>
-                <TextBox x:Name="LastName" 
-                         Header="Last Name" 
-                         Margin="5,0,5,5"/>
-                <TextBox x:Name="MiddleName" 
-                         Header="Middle Name" 
-                         Margin="5,0,5,5"/>
-                <TextBox x:Name="FirstName" 
-                         Header="First Name" 
-                         Margin="5,0,5,5"/>
-                <TextBlock x:Name="Age"
-                           Text="20"
-                           FontSize="40"
-                           FontWeight="Bold"
-                           HorizontalAlignment="Right"
                            Margin="5"/>
+                <TextBlock x:Name="Age"
+                           Text="26"
+                           FontSize="50"
+                           FontWeight="Bold"
+                           HorizontalAlignment="Right"/>
+                <PasswordBox x:Name="LastName" 
+                             Header="Change your password" 
+                             Margin="5,0,5,5"/>
+                <Button
+                        Margin="5,0,5,5"
+                        Background="{StaticResource SystemAccentColor}"
+                        HorizontalAlignment="Stretch">
+                    <StackPanel Orientation="Horizontal">
+                        <FontIcon FontFamily="Segoe MDL2 Assets" 
+                                  Glyph="&#xE18F;"
+                                  Margin="5"/>
+                        <TextBlock Text="Change your password"
+                                   Margin="5"/>
+                    </StackPanel>
+                </Button>
             </StackPanel>
         </Grid>
     </Grid>

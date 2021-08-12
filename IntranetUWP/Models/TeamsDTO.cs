@@ -7,11 +7,11 @@ namespace IntranetUWP.Models
     public class TeamsDTO : BaseDTO
     {
         public string TeamName { get; set; }
-        public ICollection<string> Clients { get; set; }
+        public string Clients { get; set; }
         public string About { get; set; }
         public bool Company { get; set; }
-        public UserDTO TechLead { get; set; }
-        public ICollection<UserDTO> Members { get; set; }   
+        public int TechLead { get; set; } = 0;
+        public ObservableCollection<UserDTO> Members { get; set; } = new ObservableCollection<UserDTO>();
     }
 
     public class DemoTeamsData
@@ -29,7 +29,6 @@ namespace IntranetUWP.Models
                 About = costsHubAbout,
                 Company = true,
                 Members = DemoUserData.getData(),
-                TechLead = DemoUserData.getData().FirstOrDefault()
             });
             data.Add(new TeamsDTO()
             {
@@ -38,16 +37,14 @@ namespace IntranetUWP.Models
                 About = threadAbout,
                 Company = true,
                 Members = DemoUserData.getData(),
-                TechLead = DemoUserData.getData().ElementAt(2)
             });
             data.Add(new TeamsDTO()
             {
                 id = 3,
-                TeamName = "Salar Legal",
+                TeamName = "Salar",
                 About = threadAbout,
                 Company = true,
                 Members = DemoUserData.getData(),
-                TechLead = DemoUserData.getData().ElementAt(3)
             });
             data.Add(new TeamsDTO()
             {
@@ -56,25 +53,30 @@ namespace IntranetUWP.Models
                 About = threadAbout,
                 Company = true,
                 Members = DemoUserData.getData(),
-                TechLead = DemoUserData.getData().ElementAt(4)
             });
             data.Add(new TeamsDTO()
             {
                 id = 5,
                 TeamName = "PhP Team",
                 About = threadAbout,
-                Company = true,
+                Company = false,
                 Members = DemoUserData.getData(),
-                TechLead = DemoUserData.getData().ElementAt(5)
             });
             data.Add(new TeamsDTO()
             {
                 id = 6,
                 TeamName = ".NET Team",
                 About = threadAbout,
-                Company = true,
-                Members = DemoUserData.getData(),
-                TechLead = DemoUserData.getData().ElementAt(6)
+                Company = false,
+                Members = DemoUserData.getData()
+            });
+            data.Add(new TeamsDTO()
+            {
+                id = 7,
+                TeamName = "Diskard",
+                About = threadAbout,
+                Company = false,
+                Members = new ObservableCollection<UserDTO>()
             });
             return data;
         }

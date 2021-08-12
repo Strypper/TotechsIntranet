@@ -31,19 +31,19 @@ namespace IntranetUWP.Views
             this.InitializeComponent();
             DataSource = GetData();
             var connection = new HubConnectionBuilder()
-                    //.WithUrl("https://localhost:44371/chathub", options =>
-                    //{
-                    //    options.HttpMessageHandlerFactory = (handler) =>
-                    //    {
-                    //        if (handler is HttpClientHandler clientHandler)
-                    //        {
-                    //            clientHandler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
-                    //        }
-                    //        return handler;
-                    //    };
-                    //}).Build();
                     .WithUrl("https://intranetapi.azurewebsites.net/chathub").Build();
             vm = ChatHubPageViewModel.CreatedConnectedChatHubVM(new IntranetSignalRHelper(connection));
+            //.WithUrl("https://localhost:44371/chathub", options =>
+            //{
+            //    options.HttpMessageHandlerFactory = (handler) =>
+            //    {
+            //        if (handler is HttpClientHandler clientHandler)
+            //        {
+            //            clientHandler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+            //        }
+            //        return handler;
+            //    };
+            //}).Build();
         }
 
         private void HamburgerButton_Click(object sender, RoutedEventArgs e) => splitViewPane.IsPaneOpen = !splitViewPane.IsPaneOpen;

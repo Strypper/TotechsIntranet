@@ -1,6 +1,9 @@
 ﻿using IntranetUWP.Models;
+using System;
+using System.Linq;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media.Imaging;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -24,6 +27,19 @@ namespace IntranetUWP.UserControls
         public TeamCard()
         {
             this.InitializeComponent();
+
+        }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (Teams != null)
+            {
+                var teachLead = Teams.Members.FirstOrDefault(m => m.id == Teams.TechLead);
+                if (teachLead != null)
+                {
+                    TeamAvatar.ProfilePicture = new BitmapImage(new Uri(teachLead.profilePic));
+                }
+            }
         }
     }
 }

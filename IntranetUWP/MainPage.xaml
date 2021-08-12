@@ -17,7 +17,7 @@
 					  TintOpacity=".6"
 					  TintTransitionDuration="00:00:00.500" />
 
-		<Thickness x:Key="NavigationViewContentMargin">0,32,0,0</Thickness>
+		<Thickness x:Key="NavigationViewContentMargin">0,0,0,0</Thickness>
 
 	</Page.Resources>
 
@@ -46,9 +46,9 @@
 		<winui:NavigationView x:Name="MainNavigationView"
 							  CompactModeThresholdWidth="300"
 							  ExpandedModeThresholdWidth="1024"
-							  IsBackButtonVisible="Collapsed"
+							  IsBackButtonVisible="Collapsed" Margin="0,32,0,0"
 							  IsSettingsVisible="True"
-							  IsTitleBarAutoPaddingEnabled="True"
+							  IsTitleBarAutoPaddingEnabled="False"
 							  PaneDisplayMode="Auto"
 							  SelectionChanged="NavigationViewPanel_SelectionChanged">
 			<winui:NavigationView.PaneHeader>
@@ -95,7 +95,7 @@
 					<StackPanel Orientation="Horizontal">
 						<PersonPicture x:Name="ProfilePicture" Width="20" />
 						<TextBlock x:Name="PersonalName"
-								   Margin="10,0,0,0"
+								   Margin="12,0,0,0"
 								   VerticalAlignment="Center" />
 					</StackPanel>
 					<Button x:Name="LogoutButton"
@@ -111,7 +111,7 @@
 							ToolTipService.ToolTip="Log out" />
 				</Grid>
 			</winui:NavigationView.PaneFooter>
-			<Frame x:Name="TheMainFrame" Margin="0,-32,0,0" />
+			<Frame x:Name="TheMainFrame"/>
 		</winui:NavigationView>
 	</Grid>
 </Page>

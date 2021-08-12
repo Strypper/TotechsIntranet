@@ -9,31 +9,52 @@
     xmlns:helpers="using:IntranetUWP.Helpers" 
     xmlns:model="using:IntranetUWP.Models" 
     xmlns:animations="using:Microsoft.Toolkit.Uwp.UI.Animations" 
-    xmlns:customcontrol="using:IntranetUWP.UserControls"
+    xmlns:customcontrol="using:IntranetUWP.UserControls" 
+    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:behaviors="using:Microsoft.Toolkit.Uwp.UI.Behaviors"
     mc:Ignorable="d"
+    Loaded="Page_Loaded"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <controls:AdaptiveGridView x:Name="TeamsGridView"
-                               animations:ReorderGridAnimation.Duration="1000" 
-                               HorizontalContentAlignment="Center"
-                               HorizontalAlignment="Center">
-        <controls:AdaptiveGridView.Header>
-            <StackPanel HorizontalAlignment="Center"
+
+    <GridView x:Name="TeamsGridView"
+            ItemContainerStyle="{StaticResource GridViewItemRevealStyle}"
+            ItemsSource="{x:Bind TeamsFiltered, Mode=OneWay}"
+            HorizontalContentAlignment="Center"
+            animations:ItemsReorderAnimation.Duration="00:00:00.4000000"
+            HorizontalAlignment="Center">
+        <interactivity:Interaction.Behaviors>
+            <behaviors:FadeHeaderBehavior  />
+        </interactivity:Interaction.Behaviors>
+        <GridView.Header>
+            <StackPanel HorizontalAlignment="Stretch"
                         VerticalAlignment="Center">
+                <StackPanel.ChildrenTransitions>
+                    <TransitionCollection>
+                        <EntranceThemeTransition IsStaggeringEnabled="True"  
+                                                 FromVerticalOffset="500"/>
+                        <AddDeleteThemeTransition/>
+                    </TransitionCollection>
+                </StackPanel.ChildrenTransitions>
                 <TextBlock Text="TEAMS"
                            TextAlignment="Center"
                            FontSize="30"
                            FontWeight="ExtraBold"/>
-                <AutoSuggestBox MinWidth="700"
-                                Height="60"
-                                Margin="5"
-                                FontSize="35"
+                <AutoSuggestBox x:Name="FilterTeamSearchBox"
+                                MinWidth="300"
+                                Height="50"
+                                FontSize="30"
+                                Margin="0,0,15,0"
+                                TextChanged="TeamsFilter_TextChanged"
+                                HorizontalAlignment="Stretch"
                                 HorizontalContentAlignment="Center"/>
-                <Button VerticalAlignment="Center"
+                <Button x:Name="CreateTeamButton"
+                        VerticalAlignment="Center"
                         HorizontalAlignment="Center"
                         Width="60" Height="60"
                         Content="&#xE109;"
                         FontFamily="Segoe MDL2 Assets"
+                        Click="CreateTeamButton_Click"
                         FontSize="30"
                         Margin="5">
                     <Button.Background>
@@ -41,18 +62,19 @@
                     </Button.Background>
                 </Button>
             </StackPanel>
-        </controls:AdaptiveGridView.Header>
-        <controls:AdaptiveGridView.ItemContainerTransitions>
+        </GridView.Header>
+        <GridView.ItemContainerTransitions>
             <TransitionCollection>
                 <EntranceThemeTransition IsStaggeringEnabled="True"
                                          FromVerticalOffset="1000"/>
                 <AddDeleteThemeTransition/>
+                <ContentThemeTransition />
             </TransitionCollection>
-        </controls:AdaptiveGridView.ItemContainerTransitions>
-        <controls:AdaptiveGridView.ItemTemplate>
+        </GridView.ItemContainerTransitions>
+        <GridView.ItemTemplate>
             <DataTemplate x:DataType="model:TeamsDTO">
                 <customcontrol:TeamCard Teams="{x:Bind}"/>
             </DataTemplate>
-        </controls:AdaptiveGridView.ItemTemplate>
-    </controls:AdaptiveGridView>
+        </GridView.ItemTemplate>
+    </GridView>
 </Page>

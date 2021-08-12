@@ -200,7 +200,6 @@
         </StackPanel>
 
         <controls:AdaptiveGridView x:Name="FoodGridView" 
-                                   animations:ReorderGridAnimation.Duration="300" 
                                    HorizontalContentAlignment="Center" 
                                    LostFocus="FoodGridView_LostFocus"
                                    SelectedItem="{x:Bind vm.SelectedFood, Mode=TwoWay}"
@@ -209,6 +208,7 @@
                                    OneRowModeEnabled="False" 
                                    Padding="0" 
                                    SelectionMode="Single"
+                                   animations:ItemsReorderAnimation.Duration="00:00:00.4000000"
                                    SelectionChanged="FoodGridView_SelectionChanged" 
                                    ItemsSource="{x:Bind vm.Foods, Mode=TwoWay}"
                                    RightTapped="FoodGridView_RightTapped">

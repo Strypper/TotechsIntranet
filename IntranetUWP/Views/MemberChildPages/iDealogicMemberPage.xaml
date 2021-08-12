@@ -7,26 +7,158 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls" 
     xmlns:winui="using:Microsoft.UI.Xaml.Controls"
-    xmlns:data="using:IntranetUWP.Models" xmlns:helpers="using:IntranetUWP.Helpers"
+    xmlns:data="using:IntranetUWP.Models" 
+    xmlns:helpers="using:IntranetUWP.Helpers" 
+    xmlns:animations="using:Microsoft.Toolkit.Uwp.UI.Animations"
     mc:Ignorable="d" Loaded="Page_Loaded"
+    NavigationCacheMode="Enabled"
     winui:BackdropMaterial.ApplyToRootOrPageBackground="True">
 
     <Grid>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="WindowsState">
+                <VisualState x:Name="VS1">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="2000"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="InformationGrid.ColumnDefinitions[0].Width" Value="*"/>
+                        <Setter Target="InformationGrid.ColumnDefinitions[2].Width" Value="*"/>
+                        <Setter Target="PersonalInformationStack.Visibility" Value="Visible"/>
+                        <Setter Target="PersonalSkillsStack.Visibility" Value="Visible"/>
+                        <Setter Target="DisableAndDeleteBar.Visibility" Value="Visible"/>
+                        <Setter Target="AddNewMemberButton.Visibility" Value="Visible"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="VS2">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="1500"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="InformationGrid.ColumnDefinitions[0].Width" Value="*"/>
+                        <Setter Target="InformationGrid.ColumnDefinitions[2].Width" Value="*"/>
+                        <Setter Target="PersonalInformationStack.Visibility" Value="Visible"/>
+                        <Setter Target="PersonalSkillsStack.Visibility" Value="Visible"/>
+                        <Setter Target="DisableAndDeleteBar.Visibility" Value="Visible"/>
+                        <Setter Target="AddNewMemberButton.Visibility" Value="Visible"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="VS3">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="1300"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="InformationGrid.ColumnDefinitions[0].Width" Value="*"/>
+                        <Setter Target="InformationGrid.ColumnDefinitions[2].Width" Value="*"/>
+                        <Setter Target="PersonalInformationStack.Visibility" Value="Visible"/>
+                        <Setter Target="PersonalSkillsStack.Visibility" Value="Visible"/>
+                        <Setter Target="DisableAndDeleteBar.Visibility" Value="Visible"/>
+                        <Setter Target="AddNewMemberButton.Visibility" Value="Visible"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="VS4">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="InformationGrid.ColumnDefinitions[0].Width" Value="0"/>
+                        <Setter Target="InformationGrid.ColumnDefinitions[2].Width" Value="0"/>
+                        <Setter Target="PersonalInformationStack.Visibility" Value="Collapsed"/>
+                        <Setter Target="PersonalSkillsStack.Visibility" Value="Collapsed"/>
+                        <Setter Target="DisableAndDeleteBar.Visibility" Value="Collapsed"/>
+                        <Setter Target="AddNewMemberButton.Visibility" Value="Collapsed"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        
         <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top">
-            <TextBlock FontSize="30" Margin="10">
+        
+        <StackPanel x:Name="DisableAndDeleteBar" Orientation="Horizontal">
+            <animations:Implicit.ShowAnimations>
+                <animations:TranslationAnimation Duration="0:0:1" To="0, 0, 0"/>
+                <animations:OpacityAnimation Duration="0:0:1" To="1.0"/>
+            </animations:Implicit.ShowAnimations>
+
+            <animations:Implicit.HideAnimations>
+                <animations:ScalarAnimation Target="Opacity" 
+                                            Duration="0:0:1" 
+                                            To="0.0"/>
+                <animations:ScalarAnimation Target="Translation.Y" 
+                                            Duration="0:0:1" 
+                                            To="-200">
+                    <animations:ScalarKeyFrame Key="0.1" Value="30"/>
+                    <animations:ScalarKeyFrame Key="0.5" Value="0.0"/>
+                </animations:ScalarAnimation>
+            </animations:Implicit.HideAnimations>
+            <Button Grid.Row="0" Content="&#xE25B;" FontFamily="Segoe MDL2 Assets" 
+                    VerticalAlignment="Top" HorizontalAlignment="Right" Margin="5"
+                    FontSize="20"/>
+            <Button Grid.Row="0" 
+                    VerticalAlignment="Top" 
+                    HorizontalAlignment="Right" 
+                    Margin="5"
+                    Background="Red"
+                    Command="{x:Bind vm.askBeforeDeleteUserCommand}">
+                <SymbolIcon Symbol="Delete" />
+            </Button>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" 
+                    HorizontalAlignment="Center" 
+                    VerticalAlignment="Top"
+                    Grid.Row="0">
+            <TextBlock FontSize="25" Margin="10">
                 <Run Text="&#xE13D;" FontFamily="Segoe MDL2 Assets"/>
                 <Run Text="{x:Bind vm.Users.Count, Mode=OneWay}"/>
             </TextBlock>
-            <TextBlock FontSize="30" Margin="10">
+            <TextBlock FontSize="25" Margin="10">
                 <Run Text="&#xE902;" FontFamily="Segoe MDL2 Assets"/>
                 <Run Text="8"/>
             </TextBlock>
         </StackPanel>
-        <Border VerticalAlignment="Center" HorizontalAlignment="Center">
+        <Button x:Name="AddNewMemberButton"
+                Grid.Row="0" 
+                VerticalAlignment="Top" 
+                HorizontalAlignment="Right" 
+                Margin="5"
+                Command="{x:Bind vm.createNewUserCommand}">
+            <animations:Implicit.ShowAnimations>
+                <animations:TranslationAnimation Duration="0:0:1"
+                                                 To="0, 0, 0"/>
+                <animations:OpacityAnimation Duration="0:0:1" 
+                                             To="1.0"/>
+            </animations:Implicit.ShowAnimations>
+
+            <animations:Implicit.HideAnimations>
+                <animations:ScalarAnimation Target="Opacity"
+                                            Duration="0:0:1" 
+                                            To="0.0"/>
+                <animations:ScalarAnimation Target="Translation.Y" 
+                                            Duration="0:0:1" 
+                                            To="-200">
+                    <animations:ScalarKeyFrame Key="0.1" 
+                                               Value="30"/>
+                    <animations:ScalarKeyFrame Key="0.5" 
+                                               Value="0.0"/>
+                </animations:ScalarAnimation>
+            </animations:Implicit.HideAnimations>
+            <Button.Background>
+                <helpers:AnimatedGradientBrush/>
+            </Button.Background>
+            <StackPanel Orientation="Horizontal">
+                <SymbolIcon Symbol="Add" 
+                            Margin="5"/>
+                <TextBlock Text="Add new member"
+                           VerticalAlignment="Center"/>
+            </StackPanel>
+        </Button>
+        <Border VerticalAlignment="Center" 
+                HorizontalAlignment="Center"
+                Grid.Row="1">
             <controls:Carousel x:Name="UsersCarousel" 
                                ItemsSource="{x:Bind vm.Users}" 
                                VerticalAlignment="Center" 
@@ -51,7 +183,14 @@
                                   HorizontalAlignment="Center"
                                   IsMasked="True">
                             <Grid CornerRadius="5">
-                                <Image Width="300" Height="430" VerticalAlignment="Center" 
+                                <Grid.Transitions>
+                                    <TransitionCollection>
+                                        <RepositionThemeTransition />
+                                    </TransitionCollection>
+                                </Grid.Transitions>
+
+                                <Image Width="270" Height="380" 
+                                       VerticalAlignment="Center" 
                                        Source="{x:Bind profilePic, Converter={StaticResource StringToImageSourceConverter}}"
                                        Stretch="UniformToFill" />
                             </Grid>
@@ -62,42 +201,86 @@
         </Border>
 
 
-        <Grid VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Grid.Row="1" MaxHeight="320">
+        <Grid x:Name="InformationGrid"
+              VerticalAlignment="Bottom" 
+              HorizontalAlignment="Stretch" 
+              Grid.Row="2" 
+              MaxHeight="300">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top">
+            <StackPanel x:Name="PersonalInformationStack"
+                        HorizontalAlignment="Center" 
+                        VerticalAlignment="Top">
+                <animations:Implicit.ShowAnimations>
+                    <animations:TranslationAnimation Duration="0:0:1" To="0, 0, 0"/>
+                    <animations:OpacityAnimation Duration="0:0:1" To="1.0"/>
+                </animations:Implicit.ShowAnimations>
+
+                <animations:Implicit.HideAnimations>
+                    <animations:ScalarAnimation Target="Opacity"
+                                                Duration="0:0:1" 
+                                                To="0.0"/>
+                    <animations:ScalarAnimation Target="Translation.X" 
+                                                Duration="0:0:1" 
+                                                To="-200">
+                        <animations:ScalarKeyFrame Key="0.1" Value="30"/>
+                        <animations:ScalarKeyFrame Key="0.5" Value="0.0"/>
+                    </animations:ScalarAnimation>
+                </animations:Implicit.HideAnimations>
+
                 <TextBlock HorizontalAlignment="Center" FontSize="25" FontWeight="Bold">
                     <Run Text="&#xE156;" FontFamily="Segoe MDL2 Assets"/>
                     <Run Text="Information"/>
                 </TextBlock>
-                <TextBlock Margin="10" FontSize="20">
+                <TextBlock x:Name="FullName" Margin="10" FontSize="20">
                     <Run Text="&#xE13D;" FontFamily="Segoe MDL2 Assets"/>
                     <Run Text="Name: "/>
-                    <Run Text="To Hoang Viet"/>
+                    <Run x:Name="LastName"/>
+                    <Run x:Name="MiddleName"/>
+                    <Run x:Name="FirstName"/>
                 </TextBlock>
-                <TextBlock Margin="10" FontSize="20">
+                <TextBlock Margin="10" FontSize="20"
+                           MaxWidth="350"
+                           TextTrimming="CharacterEllipsis">
                     <Run Text="&#xE902;" FontFamily="Segoe MDL2 Assets"/>
                     <Run Text="Team: "/>
-                    <Run Text="CostsHub"/>
+                    <Run x:Name="Teams"/>
                 </TextBlock>
                 <TextBlock Margin="10" FontSize="20">
                     <Run Text="&#xE821;" FontFamily="Segoe MDL2 Assets"/>
                     <Run Text="Role: "/>
-                    <Run Text="Fullstack Developer"/>
+                    <Run x:Name="Role"/>
                 </TextBlock>
                 <TextBlock Margin="10" FontSize="20">
                     <Run Text="&#xECA7;" FontFamily="Segoe MDL2 Assets"/>
                     <Run Text="Level: "/>
-                    <Run Text="Associate Developer"/>
+                    <Run x:Name="Level"/>
                 </TextBlock>
             </StackPanel>
 
-            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Column="2">
-                <TextBlock HorizontalAlignment="Center" FontSize="25" FontWeight="Bold">
+            <StackPanel x:Name="PersonalSkillsStack"
+                        HorizontalAlignment="Center" 
+                        VerticalAlignment="Top" 
+                        Grid.Column="2">
+                <animations:Implicit.ShowAnimations>
+                    <animations:TranslationAnimation Duration="0:0:1" To="0, 0, 0"/>
+                    <animations:OpacityAnimation Duration="0:0:1" To="1.0"/>
+                </animations:Implicit.ShowAnimations>
+
+                <animations:Implicit.HideAnimations>
+                    <animations:ScalarAnimation Target="Opacity" Duration="0:0:1" To="0.0"/>
+                    <animations:ScalarAnimation Target="Translation.X" Duration="0:0:1" To="200">
+                        <animations:ScalarKeyFrame Key="0.1" Value="30"/>
+                        <animations:ScalarKeyFrame Key="0.5" Value="0.0"/>
+                    </animations:ScalarAnimation>
+                </animations:Implicit.HideAnimations>
+                <TextBlock HorizontalAlignment="Center" 
+                           FontSize="25" 
+                           FontWeight="Bold">
                     <Run Text="&#xEC4A;" FontFamily="Segoe MDL2 Assets"/>
                     <Run Text="Top Skills"/>
                 </TextBlock>
@@ -111,13 +294,18 @@
                 <ProgressBar Width="400" Height="5" CornerRadius="2" Margin="0,5,0,5" Value="60"/>
             </StackPanel>
 
-            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Column="1" Padding="20,0,20,0">
+            <StackPanel HorizontalAlignment="Center"
+                        VerticalAlignment="Top" 
+                        Grid.Column="1" 
+                        Padding="20,0,20,0">
                 <TextBlock HorizontalAlignment="Center" FontSize="25" FontWeight="Bold">
                     <Run Text="&#xED15;" FontFamily="Segoe MDL2 Assets"/>
                     <Run Text="Hello There !"/>
                 </TextBlock>
-                <TextBlock HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"
-                           Text="Hey friend! the name is Strypper, great to be here. I'm a software engineer bring the beautiful of fluent design language to our modern technology. My main core sit in the dotNET echosystem. Feel free to ask me for help, because that's what I'm here for, to bring our organization to another level" 
+                <TextBlock x:Name="Bio"
+                           HorizontalAlignment="Center" 
+                           TextAlignment="Justify" 
+                           TextWrapping="Wrap"
                            Margin="5" FontSize="15"/>
 
                 <Button x:Name="DetailButton" Click="NavigateToMemberDetail_Click" 
@@ -128,34 +316,5 @@
                 </Button>
             </StackPanel>
         </Grid>
-
-        <Button Grid.Row="0" 
-                VerticalAlignment="Top" 
-                HorizontalAlignment="Right" 
-                Margin="5"
-                Command="{x:Bind vm.createNewUserCommand}">
-            <Button.Background>
-                <helpers:AnimatedGradientBrush/>
-            </Button.Background>
-            <StackPanel Orientation="Horizontal">
-                <SymbolIcon Symbol="Add" 
-                            Margin="5"/>
-                <TextBlock Text="Add new member"
-                           VerticalAlignment="Center"/>
-            </StackPanel>
-        </Button>
-        <StackPanel x:Name="DisableAndDeleteBar" Orientation="Horizontal">
-            <Button Grid.Row="0" Content="&#xE25B;" FontFamily="Segoe MDL2 Assets" 
-                    VerticalAlignment="Top" HorizontalAlignment="Right" Margin="5"
-                    FontSize="20"/>
-            <Button Grid.Row="0" 
-                    VerticalAlignment="Top" 
-                    HorizontalAlignment="Right" 
-                    Margin="5"
-                    Background="Red"
-                    Command="{x:Bind vm.askBeforeDeleteUserCommand}">
-                <SymbolIcon Symbol="Delete" />
-            </Button>
-        </StackPanel>
     </Grid>
 </Page>

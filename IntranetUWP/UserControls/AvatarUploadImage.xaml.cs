@@ -50,8 +50,11 @@ namespace IntranetUWP.UserControls
             ActiveCamButton.Scale = new Vector3(1.5f, 1.5f, 1.5f);
             OpenFolderButton.Scale = new Vector3(1.5f, 1.5f, 1.5f);
 
-            _springAnimation.FinalValue = 100f;
-            effectBrush.StartAnimation("Blur.BlurAmount", _springAnimation);
+            if (_springAnimation != null && effectBrush != null)
+            {
+                _springAnimation.FinalValue = 100f;
+                effectBrush.StartAnimation("Blur.BlurAmount", _springAnimation);
+            }
         }
 
         private void Avatar_PointerExited(object sender, PointerRoutedEventArgs e)
@@ -59,8 +62,11 @@ namespace IntranetUWP.UserControls
             ActiveCamButton.Scale = new Vector3(0, 0, 0);
             OpenFolderButton.Scale = new Vector3(0, 0, 0);
 
-            _springAnimation.FinalValue = 0f;
-            effectBrush.StartAnimation("Blur.BlurAmount", _springAnimation);
+            if (_springAnimation != null && effectBrush != null)
+            {
+                _springAnimation.FinalValue = 0f;
+                effectBrush.StartAnimation("Blur.BlurAmount", _springAnimation);
+            }
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)

@@ -21,8 +21,9 @@
       An Assembly element with Name="*Application*" applies to all assemblies in
       the application package. The asterisks are not wildcards.
     -->
+    <Namespace Name="Microsoft.Extensions.Options" Serialize="Required Public" />
     <Assembly Name="*Application*" Dynamic="Required All" />
-    
+    <Type Name="Microsoft.Extensions.Caching.Memory.MemoryCacheOptions" Dynamic="Required All" />
     
     <!-- Add your application specific runtime directives here. -->
 

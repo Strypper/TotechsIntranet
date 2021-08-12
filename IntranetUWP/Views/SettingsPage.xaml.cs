@@ -27,8 +27,9 @@ namespace IntranetUWP.Views
                                   new Uri(App.localSettings.Values["ProfilePic"]
                                   as string)
                                   );
+            UserName.Text = App.localSettings.Values["UserName"].ToString();
 
-            //VideoBackGround.MediaPlayer.IsLoopingEnabled = true;
+            VideoBackGround.MediaPlayer.IsLoopingEnabled = true;
 
             var currentTheme = Application.Current.RequestedTheme;
             AdaptiveTheme(currentTheme);
@@ -49,10 +50,10 @@ namespace IntranetUWP.Views
             switch (theme)
             {
                 case ApplicationTheme.Dark:
-                    //VideoBackGround.Source = MediaSource.CreateFromUri(new Uri("https://intranetblobstorages.blob.core.windows.net/backgroundvideo/ProfileVideo.mp4"));
+                    VideoBackGround.Source = MediaSource.CreateFromUri(new Uri("https://intranetblobstorages.blob.core.windows.net/backgroundvideo/ProfileVideo.mp4"));
                     break;
                 case ApplicationTheme.Light:
-                    //VideoBackGround.Source = MediaSource.CreateFromUri(new Uri("https://intranetblobstorages.blob.core.windows.net/backgroundvideo/SnowVideo.mp4"));
+                    VideoBackGround.Source = MediaSource.CreateFromUri(new Uri("https://intranetblobstorages.blob.core.windows.net/backgroundvideo/SnowVideo.mp4"));
                     break;
                 default:
                     break;

@@ -57,7 +57,8 @@
 								Spacing="8">
 						<StackPanel.ChildrenTransitions>
 							<TransitionCollection>
-								<EntranceThemeTransition FromVerticalOffset="1000" IsStaggeringEnabled="True" />
+								<EntranceThemeTransition FromVerticalOffset="1000"
+                                                         IsStaggeringEnabled="True" />
 								<AddDeleteThemeTransition />
 							</TransitionCollection>
 						</StackPanel.ChildrenTransitions>

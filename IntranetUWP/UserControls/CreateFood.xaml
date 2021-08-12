@@ -10,8 +10,10 @@
     PrimaryButtonText="Submit"
     SecondaryButtonText="Cancel"
     DefaultButton="Primary"
+    SecondaryButtonStyle="{ThemeResource DefaultButtonStyle}"
     PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
-    SecondaryButtonClick="ContentDialog_SecondaryButtonClick">
+    SecondaryButtonClick="ContentDialog_SecondaryButtonClick"
+    CornerRadius="5">
     
     <Grid>
         <StackPanel>

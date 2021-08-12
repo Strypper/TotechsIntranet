@@ -9,23 +9,43 @@
     d:DesignHeight="150"
     d:DesignWidth="150">
 
-    <Border Width="150" Height="150" CornerRadius="75"
-            PointerEntered="Avatar_PointerEntered" PointerExited="Avatar_PointerExited">
+    <Border Width="110" 
+            Height="110" 
+            CornerRadius="50"
+            PointerEntered="Avatar_PointerEntered" 
+            PointerExited="Avatar_PointerExited">
         <Grid>
             <PersonPicture x:Name="Avatar" 
                            ProfilePicture="{x:Bind AvatarImage, Mode=OneWay}"
-                           Width="150" Height="150"/>
-            <Ellipse x:Name="Glass" Width="150" Height="150"/>
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-                <Button x:Name="ActiveCamButton" Background="Transparent" Scale="1.5,1.5,0" CenterPoint="20,20,0"
-                        Width="40" Height="40" Padding="0" Margin="0,0,20,0" Click="ActiveCamButton_Click">
+                           Width="110" Height="110"/>
+            <Ellipse x:Name="Glass"
+                     Width="110"
+                     Height="110"/>
+            <StackPanel Orientation="Horizontal" 
+                        VerticalAlignment="Center" 
+                        HorizontalAlignment="Center">
+                <Button x:Name="ActiveCamButton" 
+                        Background="Transparent" 
+                        Scale="1.2,1.2,0" 
+                        CenterPoint="15,15,0"
+                        Width="30" 
+                        Height="30" 
+                        Padding="0" 
+                        Margin="0,0,20,0" 
+                        Click="ActiveCamButton_Click">
                     <Button.ScaleTransition>
                         <Vector3Transition />
                     </Button.ScaleTransition>
                     <SymbolIcon Symbol="Camera" Foreground="White"/>
                 </Button>
-                <Button x:Name="OpenFolderButton" Background="Transparent" Scale="1.5,1.5,0" CenterPoint="20,20,0"
-                        Width="40" Height="40" Padding="0" Click="OpenFolderButton_Click">
+                <Button x:Name="OpenFolderButton" 
+                        Background="Transparent" 
+                        Scale="1.2,1.2,0" 
+                        CenterPoint="15,15,0"
+                        Width="30" 
+                        Height="30" 
+                        Padding="0" 
+                        Click="OpenFolderButton_Click">
                     <Button.ScaleTransition>
                         <Vector3Transition />
                     </Button.ScaleTransition>

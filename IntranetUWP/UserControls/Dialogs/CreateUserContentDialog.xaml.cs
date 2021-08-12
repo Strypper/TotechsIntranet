@@ -1,8 +1,10 @@
-﻿using IntranetUWP.Models;
+﻿using IntranetUWP.Helpers;
+using IntranetUWP.Models;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Text;
@@ -21,12 +23,19 @@ namespace IntranetUWP.UserControls.Dialogs
     public sealed partial class CreateUserContentDialog : ContentDialog
     {
         public readonly string RegisterUrl = "https://intranetapi.azurewebsites.net/api/User/Create";
+        public string getTeamsDataUrl = "Team/GetAll";
         HttpClient httpClient = new HttpClient();
+        private IntranetHttpHelper httpHelper = new IntranetHttpHelper();
         private StorageFile userPhoto;
         private string AzureProfileImageUrl;
         public CreateUserContentDialog()
         {
             this.InitializeComponent();
+        }
+        private async void ContentDialog_Loaded(object sender, RoutedEventArgs e)
+        {
+            var teams = await httpHelper.GetAsync<IList<TeamsDTO>>(getTeamsDataUrl);
+            //TeamsFinder.ItemsSource = teams;
         }
 
         private async void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
@@ -42,10 +51,11 @@ namespace IntranetUWP.UserControls.Dialogs
                 firstName = FirstName.Text,
                 middleName = MiddleName.Text,
                 lastName = LastName.Text,
-                role = MemberRadioButton.IsChecked == true ? "Member" : "HR",
+                role = Role.Text,
                 gender = BoyToggle.IsChecked == true ? true : false,
                 age = AgeSlider.Value.ToString(),
-                profilePic = AzureProfileImageUrl
+                profilePic = AzureProfileImageUrl,
+                level = Level.Text
             };
             var content = new StringContent(JsonConvert.SerializeObject(signUpInfo), Encoding.UTF8, "application/json");
             var response = await httpClient.PostAsync(RegisterUrl, content);
@@ -59,8 +69,6 @@ namespace IntranetUWP.UserControls.Dialogs
                 WorkingBar.ShowError = true;
                 this.Title = "Something is wrong 🤔";
             }
-            Debug.WriteLine(response.StatusCode.ToString());
-            Debug.WriteLine(result);
         }
 
         private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
@@ -158,5 +166,6 @@ namespace IntranetUWP.UserControls.Dialogs
 
             return storageAccount;
         }
+
     }
 }

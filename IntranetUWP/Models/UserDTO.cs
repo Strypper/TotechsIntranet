@@ -1,17 +1,20 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.ObjectModel;
 
 namespace IntranetUWP.Models
 {
     public class UserDTO : BaseDTO
     {
         public string userName { get; set; }
-        public string firstName { get; set; }
-        public string middleName { get; set; }
-        public string lastName { get; set; }
+        public string firstName { get; set; } = String.Empty;
+        public string middleName { get; set; } = String.Empty;
+        public string lastName { get; set; } = String.Empty;
         public string profilePic { get; set; }
         public bool company { get; set; }
         public string age { get; set; }
         public string role { get; set; }
+        public string level { get; set; }
+        public string bio { get; set; }
     }
 
     public class RegistingModel : UserDTO
@@ -22,9 +25,9 @@ namespace IntranetUWP.Models
 
     public class DemoUserData
     {
-        public static List<UserDTO> getData()
+        public static ObservableCollection<UserDTO> getData()
         {
-            var data = new List<UserDTO>();
+            var data = new ObservableCollection<UserDTO>();
             data.Add(new UserDTO() { profilePic = "ms-appx:///Assets/DemoPurpose/Users/MenHair.jpg" });
             data.Add(new UserDTO() { profilePic = "ms-appx:///Assets/DemoPurpose/Users/MenHair1.jpg" });
             data.Add(new UserDTO() { profilePic = "ms-appx:///Assets/DemoPurpose/Users/MenHair2.jpg" });

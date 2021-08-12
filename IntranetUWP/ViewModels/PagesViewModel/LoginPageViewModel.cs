@@ -61,9 +61,6 @@ namespace IntranetUWP.ViewModels.PagesViewModel
 				{
 					throw new Exception();
 				}
-
-				System.Diagnostics.Debug.WriteLine(response.StatusCode.ToString());
-				System.Diagnostics.Debug.WriteLine(result);
 			}
 			catch
 			{

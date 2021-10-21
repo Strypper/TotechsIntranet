@@ -9,19 +9,31 @@ namespace IntranetUWP.Helpers
 {
     public class IntranetHttpHelper : HttpClient
     {
-        public IntranetHttpHelper()
-        {
-            this.BaseAddress = new Uri("https://intranetapi.azurewebsites.net/api/");
-            //this.BaseAddress = new Uri("https://localhost:44371/api/");
-            //var handler = new HttpClientHandler();
-            //handler.ClientCertificateOptions = ClientCertificateOption.Manual;
-            //handler.ServerCertificateCustomValidationCallback =
-            //    (httpRequestMessage, cert, cetChain, policyErrors) =>
-            //    {
-            //        return true;
-            //    };
+        private HttpMessageHandler _handler;
 
-            //var httpClient = new HttpClient(handler);
+        public IntranetHttpHelper(string baseAddress = "https://intranetapi.azurewebsites.net/api/") : this(baseAddress, new HttpClientHandler()) {}
+
+        public IntranetHttpHelper(string baseAddress, HttpMessageHandler handler) : base(handler)
+        {
+            _handler = handler;
+
+            //BaseAddress = new Uri("https://localhost:5001/api/");
+            BaseAddress = new Uri(baseAddress);
+
+            if (BaseAddress.Host.StartsWith("localhost"))
+            {
+                var clientHandler = handler as HttpClientHandler;
+                if (clientHandler != null)
+                {
+                    clientHandler.ClientCertificateOptions = ClientCertificateOption.Manual;
+                    clientHandler.ServerCertificateCustomValidationCallback =
+                        (httpRequestMessage, cert, cetChain, policyErrors) =>
+                        {
+                            return true;
+                        };
+
+                }
+            }
         }
 
         public async Task<T> GetAsync<T>(string url)
@@ -39,7 +51,7 @@ namespace IntranetUWP.Helpers
             return JsonConvert.DeserializeObject<T>(result);
         }
 
-        public async Task<T> CreateAsync<T>(string url, object o)
+        public async Task<T> CreateAsync<T>(string url,object o)
         {
             var content = new StringContent(JsonConvert.SerializeObject(o), Encoding.UTF8, "application/json");
             var response = await PostAsync(url, content);
@@ -47,7 +59,7 @@ namespace IntranetUWP.Helpers
             return JsonConvert.DeserializeObject<T>(result);
         }
 
-        public async Task<bool> CreateAsyncWithoutDTO<T>(string url, object o)
+        public async Task<bool> CreateAsyncWithoutDTO<T>(string url,object o)
         {
             var content = new StringContent(JsonConvert.SerializeObject(o), Encoding.UTF8, "application/json");
             var response = await PostAsync(url, content);

@@ -52,7 +52,8 @@
                 </Grid>
                 <TextBlock TextAlignment="Left"
                            VerticalAlignment="Center"
-                           MinWidth="200"
+                           HorizontalTextAlignment="Center"
+                           MinWidth="600"
                            Margin="5">
                     <Run Text="{x:Bind foodName}"/>
                     <Run Text=" - "/>
@@ -186,12 +187,12 @@
             </animations:Implicit.HideAnimations>
 
             <winui:AnimatedVisualPlayer x:Name="EmptyFoodListLottie" 
-                                   VerticalAlignment="Center" 
-                                   HorizontalAlignment="Center"
-                                   Width="150"
-                                   Height="150">
+                                        VerticalAlignment="Center" 
+                                        HorizontalAlignment="Center"
+                                        Width="150"
+                                        Height="150">
                 <lottie:LottieVisualSource x:Name="LottieJsonSource" 
-                                           UriSource="ms-appx:///Assets/lunchbox.json"/>
+                                           UriSource="ms-appx:///Assets/FoodAssets/lunchbox.json"/>
             </winui:AnimatedVisualPlayer>
             <TextBlock Text="NO FOOD HAVE ADDED YET"
                        TextAlignment="Center"
@@ -237,17 +238,17 @@
                         </StackPanel.Triggers>
                         <TextBlock x:Name="FirstWelcomeMessage" 
                                    FontWeight="Bold" 
-                                   FontSize="50" 
+                                   FontSize="68" 
                                    Margin="5,5,5,0"/>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock x:Name="PickedFoodText" 
                                        FontWeight="Bold" 
-                                       FontSize="30" Margin="5"
+                                       FontSize="40" Margin="5"
                                        VerticalAlignment="Bottom" 
                                        HorizontalAlignment="Center"/>
                             <TextBlock x:Name="FoodNameText" 
                                        FontWeight="Bold" 
-                                       FontSize="30" Margin="5"
+                                       FontSize="40" Margin="5"
                                        VerticalAlignment="Bottom" 
                                        HorizontalAlignment="Center"/>
                             <Border Background="{ThemeResource SystemAccentColor}" 
@@ -554,10 +555,8 @@
             <AppBarButton x:Name="AddFood" 
                           Icon="Add" 
                           Label="Add Food" 
-                          Command="{x:Bind vm.createFoodCommand}">
-                <AppBarButton.Background>
-                    <helpers:AnimatedGradientBrush/>
-                </AppBarButton.Background>
+                          Command="{x:Bind vm.createFoodCommand}"
+                          Background="{StaticResource SystemAccentColor}">
                 <AppBarButton.KeyboardAccelerators>
                     <KeyboardAccelerator Modifiers="Control" Key="N"/>
                 </AppBarButton.KeyboardAccelerators>

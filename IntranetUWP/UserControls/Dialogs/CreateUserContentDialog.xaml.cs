@@ -35,7 +35,7 @@ namespace IntranetUWP.UserControls.Dialogs
         private async void ContentDialog_Loaded(object sender, RoutedEventArgs e)
         {
             var teams = await httpHelper.GetAsync<IList<TeamsDTO>>(getTeamsDataUrl);
-            //TeamsFinder.ItemsSource = teams;
+            TeamsFinder.SuggestedItemsSource = teams;
         }
 
         private async void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
@@ -52,8 +52,8 @@ namespace IntranetUWP.UserControls.Dialogs
                 middleName = MiddleName.Text,
                 lastName = LastName.Text,
                 role = Role.Text,
+                dateOfBirth = DateOfBirthPicker.Date.DateTime,
                 gender = BoyToggle.IsChecked == true ? true : false,
-                age = AgeSlider.Value.ToString(),
                 profilePic = AzureProfileImageUrl,
                 level = Level.Text
             };
@@ -167,5 +167,9 @@ namespace IntranetUWP.UserControls.Dialogs
             return storageAccount;
         }
 
+        private void TeamsFinder_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
+        {
+
+        }
     }
 }

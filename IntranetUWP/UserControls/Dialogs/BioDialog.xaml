@@ -1,0 +1,30 @@
+﻿<ContentDialog
+    x:Class="IntranetUWP.UserControls.Dialogs.BioDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:IntranetUWP.UserControls.Dialogs"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    CornerRadius="5"
+    Title="TELL US ABOUT YOU"
+    PrimaryButtonText="UPDATE"
+    SecondaryButtonText="CANCEL"
+    DefaultButton="Primary"
+    Loaded="ContentDialog_Loaded"
+    SecondaryButtonStyle="{ThemeResource DefaultButtonStyle}"
+    PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
+    SecondaryButtonClick="ContentDialog_SecondaryButtonClick">
+
+
+    <RichEditBox x:Name="Bio" 
+                 Height="350" 
+                 Width="450">
+        <RichEditBox.Header>
+            <TextBlock Text="&#x1F601;"
+                       FontFamily="Segoe UI Emoji"
+                       HorizontalAlignment="Center"
+                       FontSize="30" Margin="0,0,0,15"/>
+        </RichEditBox.Header>
+    </RichEditBox>
+</ContentDialog>

@@ -35,5 +35,23 @@ namespace IntranetUWP.Views
 				button.IsEnabled = true;
 			}
 		}
-	}
+
+        private async void PasswordEnter_Click(Windows.UI.Xaml.Input.KeyboardAccelerator sender, Windows.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs args)
+        {
+			NavigateMainFrameButton.IsEnabled = false;
+			try
+			{
+				await ViewModel.LoginAsync();
+				_ = Frame.Navigate(typeof(MainPage));
+			}
+			catch (Exception e)
+			{
+				Debug.WriteLine(e);
+			}
+			finally
+			{
+				NavigateMainFrameButton.IsEnabled = true;
+			}
+		}
+    }
 }

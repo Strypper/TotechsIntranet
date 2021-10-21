@@ -1,14 +1,14 @@
 ﻿using IntranetUWP.Helpers;
 using IntranetUWP.Models;
 using IntranetUWP.UserControls.Dialogs;
-using Newtonsoft.Json;
+using IntranetUWP.ViewModels.Commands;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Net.Http;
-using System.Text;
+using Windows.UI;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
@@ -21,18 +21,20 @@ namespace IntranetUWP.Views.MemberChildPages
     public sealed partial class TeamsPage : Page
     {
         private IntranetHttpHelper httpHelper = new IntranetHttpHelper();
-        public string getUsersDataUrl = "User/GetAll";
-        public string getAllTeamsWithMembersUrl = "Team/GetAllTeamsWithMembers";
-        public string createTeamDataUrl = "Team/CreatTeamWithUsers";
+        public readonly string getUsersDataUrl = "User/GetAll";
+        public readonly string getAllTeamsWithMembersUrl = "Team/GetAllTeamsWithMembers";
+        public readonly string createTeamDataUrl = "Team/CreatTeamWithUsers";
+        public readonly string deleteTeamDataUrl = "Team/Delete";
         private IList<TeamsDTO> _source;
         private ObservableCollection<TeamsDTO> TeamsFiltered { get; }
+        public bool IsBusy { get; set; }
         public TeamsPage()
         {
             InitializeComponent();
             TeamsFiltered = new ObservableCollection<TeamsDTO>();
         }
 
-        private async void Page_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
             _source = await httpHelper.GetAsync<IList<TeamsDTO>>(getAllTeamsWithMembersUrl);
             foreach (var team in _source)
@@ -86,12 +88,40 @@ namespace IntranetUWP.Views.MemberChildPages
             }
         }
 
-        private async void CreateTeamButton_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        private async void CreateTeamButton_Click(object sender, RoutedEventArgs e)
         {
             var createTeamDialog = new CreateTeamDialog();
             createTeamDialog.Members = await httpHelper.GetAsync<ObservableCollection<UserDTO>>(getUsersDataUrl);
             createTeamDialog.PrimaryButtonClick += CreateTeamDialog_PrimaryButtonClick;
             await createTeamDialog.ShowAsync();
+        }
+
+        private async void TeamCard_DeleteTeam(int teamId)
+        {
+            var removeTeam = TeamsFiltered.FirstOrDefault(t => t.id == teamId);
+            var confirmDeletButtonStyle = new Style(typeof(Button));
+            confirmDeletButtonStyle.Setters.Add(new Setter(Button.BackgroundProperty, Colors.Red));
+            confirmDeletButtonStyle.Setters.Add(new Setter(Button.ForegroundProperty, Colors.White));
+            var confirmDeleteDialog = await new ContentDialog()
+            {
+                Title = "🗑 Delete this team ?",
+                Content = $"Check before you delete {removeTeam.TeamName} ?",
+                PrimaryButtonText = "Yes",
+                SecondaryButtonText = "No",
+                PrimaryButtonStyle = confirmDeletButtonStyle,
+                PrimaryButtonCommand = new RelayCommand(async () =>
+                {
+                    IsBusy = true;
+                    if (removeTeam != null)
+                    {
+                        var deleteResult = await httpHelper.RemoveAsync(deleteTeamDataUrl, teamId);
+                        if (deleteResult == true) TeamsFiltered.Remove(removeTeam);
+                        else Debug.Write("Delete operation error");
+                    }
+                    IsBusy = false;
+                })
+            }.ShowAsync();
+
         }
 
         private async void CreateTeamDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)

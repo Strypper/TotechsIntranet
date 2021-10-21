@@ -7,8 +7,12 @@ using Windows.UI.Xaml.Navigation;
 using Windows.UI.Xaml;
 using System.Numerics;
 using IntranetUWP.Extensions;
-
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
+using System.Collections.ObjectModel;
+using IntranetUWP.Helpers;
+using System.Threading.Tasks;
+using System.Linq;
+using Windows.ApplicationModel.Email;
+using Windows.ApplicationModel.DataTransfer;
 
 namespace IntranetUWP.Views.MemberChildPages
 {
@@ -17,40 +21,14 @@ namespace IntranetUWP.Views.MemberChildPages
     /// </summary>
     public sealed partial class MemberDetailPage : Page
     {
+        private IntranetHttpHelper httpHelper = new IntranetHttpHelper();
+        public string getAllTeamWithMember = "Team/GetAllTeamsWithMembers";
+        public string getUserById = "User/Get";
+        public UserDTO User { get; set; } = new UserDTO();
+
+
         public MemberDetailPage()
-        {
-            this.InitializeComponent();
-        }
-
-        protected override void OnNavigatedTo(NavigationEventArgs e)
-        {
-            base.OnNavigatedTo(e);
-            var user = e.Parameter as UserDTO;
-            if (user.profilePic != null)
-            {
-                Avatar.Source = new BitmapImage(new Uri(user.profilePic));
-            }
-            UserName.Content = user.userName;
-            CompanyImage.Source = new BitmapImage(new Uri(user.company == true
-                ? "ms-appx:///Assets/iDealogic.png"
-                : "ms-appx:///Assets/Devinition.png"));
-            LastName.Text = user.lastName;
-            MiddleName.Text = user.middleName;
-            FirstName.Text = user.firstName;
-            var anim = ConnectedAnimationService
-                .GetForCurrentView()
-                .GetAnimation("ForwardConnectedAnimation");
-            if (anim != null)
-            {
-                anim.TryStart(Avatar, new UIElement[] { FullName });
-            }
-        }
-
-        private void SwipeItem_Invoked(SwipeItem sender, SwipeItemInvokedEventArgs args)
-        {
-            Frame.Navigate(typeof(iDealogicMemberPage), null, 
-                           new SlideNavigationTransitionInfo() {  Effect = SlideNavigationTransitionEffect.FromLeft });
-        }
+         => this.InitializeComponent();
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
@@ -78,7 +56,7 @@ namespace IntranetUWP.Views.MemberChildPages
             UserName.EnableImplicitAnimation(VisualPropertyType.Offset, 500);
             PhoneNumber.EnableImplicitAnimation(VisualPropertyType.Offset, 500);
             Country.EnableImplicitAnimation(VisualPropertyType.Offset, 500);
-            FormerWork.EnableImplicitAnimation(VisualPropertyType.Offset, 500);
+            Relationship.EnableImplicitAnimation(VisualPropertyType.Offset, 500);
             Hobby.EnableImplicitAnimation(VisualPropertyType.Offset, 500);
 
             BioHeader.EnableImplicitAnimation(VisualPropertyType.Offset, 500);
@@ -106,10 +84,79 @@ namespace IntranetUWP.Views.MemberChildPages
             SecondBottomColumn.EnableFluidVisibilityAnimation(showFromScale: 0.6f, hideToScale: 0.8f, showDelay: 200, showDuration: 500, hideDuration: 500);
             BioSection.EnableFluidVisibilityAnimation(showFromScale: 0.6f, hideToScale: 0.8f, showDelay: 400, showDuration: 500, hideDuration: 500);
             SkillsList.EnableFluidVisibilityAnimation(showFromScale: 0.6f, hideToScale: 0.8f, showDelay: 400, showDuration: 500, hideDuration: 500);
+
+
+        }
+
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            User = e.Parameter as UserDTO;
+            var anim = ConnectedAnimationService
+                .GetForCurrentView()
+                .GetAnimation("ForwardConnectedAnimation");
+            if (anim != null)
+            {
+                anim.TryStart(Avatar, new UIElement[] { FullName });
+            }
+
+            await GetTeamsInfo(User);
+        }
+
+        private void SwipeItem_Invoked(SwipeItem sender, SwipeItemInvokedEventArgs args)
+        {
+            Frame.Navigate(typeof(iDealogicMemberPage), null, 
+                           new SlideNavigationTransitionInfo() {  Effect = SlideNavigationTransitionEffect.FromLeft });
+        }
+
+        private async Task GetTeamsInfo(UserDTO userInfo)
+        {
+            var teams = await httpHelper.GetAsync<ObservableCollection<TeamsDTO>>(getAllTeamWithMember);
+            TeamsCards.ItemsSource = teams.Where(t => t.Members.Any(m => m.id == userInfo.id));
         }
 
         private void NavigateBackToMembers_Click(object sender, RoutedEventArgs e)
            => Frame.Navigate(typeof(iDealogicMemberPage), null,
                            new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromLeft });
+
+        public static BitmapImage GetUserInfo(int userInfo, TeamsDTO team)
+        {
+            if (userInfo != 0)
+            {
+                var user = team.Members.FirstOrDefault(u => u.id == userInfo);
+                return new BitmapImage(new Uri(user.profilePic));
+            }
+            else return null;
+        }
+
+        private async void EmailHyperLink_Click(object sender, RoutedEventArgs e)
+        {
+            var emailMessage = new EmailMessage();
+            emailMessage.Subject = "This is a subject";
+            emailMessage.Body = "Hello, this is sample email body.";
+
+            var emailRecipient = new EmailRecipient(User.userName);
+            emailMessage.To.Add(emailRecipient);
+
+            await EmailManager.ShowComposeNewEmailAsync(emailMessage);
+        }
+
+        private async void CopyEmail_Click(object sender, RoutedEventArgs e)
+        {
+            DataPackage dataPackage = new DataPackage();
+            dataPackage.SetText(User.userName);
+            Clipboard.SetContent(dataPackage);
+
+            PageStatus.Title = "Copied Email:";
+            PageStatus.Message = $"{User.userName} is now in your clipboard";
+            PageStatus.Severity = Microsoft.UI.Xaml.Controls.InfoBarSeverity.Success;
+            PageStatus.IconSource = new Microsoft.UI.Xaml.Controls.SymbolIconSource() { Symbol = Symbol.Copy };
+            PageStatus.IsOpen = true;
+            await Task.Delay(3000);
+            if (PageStatus.IsOpen == true)
+            {
+                PageStatus.IsOpen = false;
+            }
+        }
     }
 }

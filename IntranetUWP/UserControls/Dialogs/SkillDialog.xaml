@@ -1,0 +1,124 @@
+﻿<ContentDialog
+    x:Class="IntranetUWP.UserControls.Dialogs.SkillDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:IntranetUWP.UserControls.Dialogs"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:controls="using:Microsoft.UI.Xaml.Controls" 
+    xmlns:models="using:IntranetUWP.Models"
+    xmlns:lottie="using:Microsoft.Toolkit.Uwp.UI.Lottie"
+    mc:Ignorable="d"
+    CornerRadius="5"
+    PrimaryButtonText="UPDATE SKILLS"
+    SecondaryButtonText="CANCEL"
+    DefaultButton="Primary"
+    SecondaryButtonStyle="{ThemeResource DefaultButtonStyle}"
+    PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
+    SecondaryButtonClick="ContentDialog_SecondaryButtonClick">
+    <ContentControl.Resources>
+        <SwipeItems x:Key="right" Mode="Execute">
+            <SwipeItem Text="Delete this skill"
+                       Background="Red" Foreground="White"
+                       Invoked="DeleteSkill_Swipe">
+                <SwipeItem.IconSource>
+                    <SymbolIconSource Symbol="Delete"/>
+                </SwipeItem.IconSource>
+            </SwipeItem>
+        </SwipeItems>
+    </ContentControl.Resources>
+    <ContentDialog.Title>
+        <StackPanel Orientation="Horizontal">
+            <FontIcon Glyph="&#xEB3C;" Margin="5" FontSize="30"/>
+            <TextBlock Text="YOUR MOST CONFIDENT SKILLS"
+                       FontWeight="Bold" 
+                       VerticalAlignment="Bottom"
+                       Margin="5"/>
+        </StackPanel>
+    </ContentDialog.Title>
+
+    <ListView x:Name="SkillsList" ItemsSource="{x:Bind Skills, Mode=OneWay}">
+        <ListView.ItemContainerTransitions>
+            <TransitionCollection>
+                <EntranceThemeTransition IsStaggeringEnabled="True" 
+                                         FromVerticalOffset="450"/>
+                <AddDeleteThemeTransition/>
+            </TransitionCollection>
+        </ListView.ItemContainerTransitions>
+        <ListView.Header>
+            <controls:AnimatedVisualPlayer x:Name="LottiePlayer" 
+                                       VerticalAlignment="Center" 
+                                       HorizontalAlignment="Center"
+                                       Height="250"
+                                       Margin="0">
+                <lottie:LottieVisualSource x:Name="LottieJsonSource" 
+                                           UriSource="ms-appx:///Assets/DemoPurpose/Others/Laptop.json"/>
+            </controls:AnimatedVisualPlayer>
+        </ListView.Header>
+        <ListView.ItemTemplate>
+            <DataTemplate x:DataType="models:SkillDTO">
+                <SwipeControl RightItems="{StaticResource right}"
+                              MaxWidth="400">
+                    <StackPanel>
+                        <TextBlock Text="{x:Bind Name}"
+                               Margin="0,15,0,5"
+                               FontWeight="Bold"/>
+                        <ProgressBar x:Name="SkillValueBar"
+                                 Value="{x:Bind SkillValue}"
+                                 Width="400" Margin="0,0,0,15"
+                                 CornerRadius="2">
+                            <ProgressBar.Triggers>
+                                <EventTrigger>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="SkillValueBar"
+                                                 Storyboard.TargetProperty="Value"
+                                                 EnableDependentAnimation="True"
+                                                 From="0" Duration="0:0:5"
+                                                 To="{x:Bind SkillValue, Mode=OneWay}">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <CubicEase/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                            </ProgressBar.Triggers>
+                        </ProgressBar>
+                        <Button HorizontalAlignment="Right"
+                                Margin="0,0,0,10" Background="Red"
+                                Click="DeleteSkill_Click"
+                                CommandParameter="{x:Bind}">
+                            <StackPanel Orientation="Horizontal">
+                                <FontIcon Glyph="&#xE107;" Margin="5"/>
+                                <TextBlock Text="Delete this skill" Margin="0,5,5,5"
+                                           VerticalAlignment="Bottom"/>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </SwipeControl>
+            </DataTemplate>
+        </ListView.ItemTemplate>
+        <ListView.Footer>
+            <StackPanel Padding="15">
+                <TextBox x:Name="SkillName"
+                         FontWeight="Bold"
+                         Header="Skill name" 
+                         Margin="0,5,0,5"/>
+                <TextBlock>
+                    <Run Text="How confedence you feel about it: "/>
+                    <Run Text="{x:Bind SkillValue.Value, Mode=OneWay}"/>
+                    <Run Text="%"/>
+                </TextBlock>
+                <Slider x:Name="SkillValue"
+                        Maximum="100"
+                        Minimum="0"/>
+                <Button Content="Add skill"
+                        HorizontalAlignment="Stretch"
+                        Click="AddSkill_Click"
+                        IsEnabled="{x:Bind local:SkillDialog.EnableAddSkillBySkillValue(SkillValue.Value), Mode=OneWay}"
+                        Background="{StaticResource SystemAccentColor}"/>
+            </StackPanel>
+        </ListView.Footer>
+    </ListView>
+</ContentDialog>

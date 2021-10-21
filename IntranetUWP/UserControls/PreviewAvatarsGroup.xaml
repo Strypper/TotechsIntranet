@@ -28,7 +28,7 @@
                     <Button Content="Update members"
                             HorizontalAlignment="Stretch"
                             Margin="5"
-                            Click="AddMember_Click"
+                            Click="AddOrUpdateMember_Click"
                             Background="{StaticResource SystemAccentColor}"/>
                     <ListView x:Name="FlyoutList"
                               MaxHeight="200">
@@ -42,7 +42,7 @@
                         <ListView.ItemContainerTransitions>
                             <TransitionCollection>
                                 <EntranceThemeTransition IsStaggeringEnabled="True" 
-                                                         FromHorizontalOffset="1450"/>
+                                                         FromVerticalOffset="1450"/>
                                 <AddDeleteThemeTransition/>
                             </TransitionCollection>
                         </ListView.ItemContainerTransitions>
@@ -53,9 +53,12 @@
                                     <PersonPicture Width="40"
                                                    ProfilePicture="{x:Bind profilePic,
                                                                     Mode=OneWay}"/>
-                                    <TextBlock Text="Strypper Jason"
-                                               VerticalAlignment="Center"
-                                               Margin="5"/>
+                                    <TextBlock VerticalAlignment="Center"
+                                               Margin="5">
+                                        <Run Text="{x:Bind lastName, Mode=OneWay}"/>
+                                        <Run Text="{x:Bind middleName, Mode=OneWay}"/>
+                                        <Run Text="{x:Bind firstName, Mode=OneWay}"/>
+                                    </TextBlock>
                                 </StackPanel>
                             </DataTemplate>
                         </ListView.ItemTemplate>
@@ -79,7 +82,7 @@
                 <StackPanel.ChildrenTransitions>
                     <TransitionCollection>
                         <EntranceThemeTransition FromVerticalOffset="1000"
-                                             IsStaggeringEnabled="True" />
+                                                 IsStaggeringEnabled="True" />
                         <AddDeleteThemeTransition />
                     </TransitionCollection>
                 </StackPanel.ChildrenTransitions>

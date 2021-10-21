@@ -17,8 +17,8 @@
 		<ResourceDictionary>
 			<media:AcrylicBrush x:Key="CustomAcrylicInAppLuminosity"
 								BackgroundSource="Backdrop"
-								FallbackColor="SkyBlue"
-								TintColor="SkyBlue"
+								FallbackColor="{ThemeResource SystemAltHighColor}"
+								TintColor="{ThemeResource SystemAltHighColor}"
 								TintLuminosityOpacity="0.270000012824312"
 								TintOpacity="0" />
 		</ResourceDictionary>
@@ -50,7 +50,8 @@
 				   PaneBackground="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
 				   PanePlacement="Left">
 			<SplitView.Pane>
-				<StackPanel HorizontalAlignment="Stretch" Background="{StaticResource CustomAcrylicInAppLuminosity}">
+				<StackPanel HorizontalAlignment="Stretch" 
+                            Background="{StaticResource AcrylicInAppFillColorDefaultBrush}">
 					<controls:DockPanel HorizontalAlignment="Stretch"
 										VerticalAlignment="Top"
 										LastChildFill="True">
@@ -68,7 +69,7 @@
 								   VerticalAlignment="Center"
 								   controls:DockPanel.Dock="Right"
 								   FontWeight="Bold"
-								   Text="Chat Hub" />
+								   Text="Chat Hub (beta)" />
 					</controls:DockPanel>
 					<controls:DockPanel HorizontalAlignment="Stretch"
 										VerticalAlignment="Top"
@@ -81,6 +82,7 @@
 								Background="{ThemeResource SystemAccentColor}"
 								Click="AddChannel_Click"
 								FontFamily="Segoe MDL2 Assets"
+                                IsEnabled="False"
 								FontSize="25">
 							<SymbolIcon Symbol="Add" />
 						</Button>
@@ -95,6 +97,7 @@
 									CanDrag="False"
 									CanDragItems="False"
 									CanReorderItems="False"
+                                    IsEnabled="False"
 									ItemsSource="{x:Bind DataSource}">
 						<winui:TreeView.ItemContainerTransitions>
 							<TransitionCollection>
@@ -141,7 +144,7 @@
 				</StackPanel>
 			</SplitView.Pane>
 			<SplitView.Content>
-				<Grid>
+				<Grid MaxWidth="1000">
 					<Grid.RowDefinitions>
 						<RowDefinition Height="*" />
 						<RowDefinition Height="auto" />
@@ -152,7 +155,8 @@
 							  SelectionMode="Extended">
 						<ListView.ItemsPanel>
 							<ItemsPanelTemplate>
-								<ItemsStackPanel VerticalAlignment="Bottom" ItemsUpdatingScrollMode="KeepLastItemInView" />
+								<ItemsStackPanel VerticalAlignment="Bottom" 
+                                                 ItemsUpdatingScrollMode="KeepLastItemInView" />
 							</ItemsPanelTemplate>
 						</ListView.ItemsPanel>
 						<ListView.Header>
@@ -226,39 +230,65 @@
 							</DataTemplate>
 						</ListView.ItemTemplate>
 					</ListView>
-					<Grid Grid.Row="1"
+                    <Grid Grid.Row="1"
 						  HorizontalAlignment="Stretch"
-						  VerticalAlignment="Bottom">
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="*" />
-							<ColumnDefinition Width="80" />
-						</Grid.ColumnDefinitions>
+						  VerticalAlignment="Bottom"
+                          CornerRadius="3"
+                          Padding="5"
+                          Background="{StaticResource AcrylicInAppFillColorDefaultBrush}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 						<TextBox x:Name="MessageTextBox"
 								 Margin="5"
 								 HorizontalAlignment="Stretch"
 								 VerticalAlignment="Stretch"
 								 Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
 								 FontSize="15"
-								 PlaceholderText="Text message"
+								 PlaceholderText="Type a new message"
+                                 CornerRadius="3"
 								 Text="{x:Bind vm.MessContent, Mode=TwoWay}">
 							<TextBox.KeyboardAccelerators>
-								<KeyboardAccelerator Key="Enter" Invoked="KeyboardAccelerator_Invoked" />
+								<KeyboardAccelerator Key="Enter" 
+                                                     Invoked="KeyboardAccelerator_Invoked" />
 							</TextBox.KeyboardAccelerators>
 						</TextBox>
-						<Button x:Name="SendMessageButton"
-								Grid.Column="1"
+                        <Button x:Name="SendMessageButton"
+								Grid.Row="1"
+                                Width="80"
+                                CornerRadius="3"
 								Margin="0,5,5,5"
-								HorizontalAlignment="Stretch"
+								HorizontalAlignment="Right"
 								VerticalAlignment="Stretch"
+                                Background="{StaticResource SystemAccentColor}"
 								Command="{x:Bind vm.sendMessageCommand}"
 								CommandParameter="{x:Bind vm.MessContent, Mode=OneWay}">
-							<Button.Background>
-								<helpers:AnimatedGradientBrush />
-							</Button.Background>
-							<Button.Content>
-								<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE122;" />
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Send" Margin="0,0,5,0"/>
+                                    <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" 
+                                              Glyph="&#xE122;" />
+                                </StackPanel>
 							</Button.Content>
 						</Button>
+                        <StackPanel Orientation="Horizontal"
+                                    Grid.Row="1">
+                            <Button Margin="5,5,25,0"
+									Background="Transparent"
+                                    BorderBrush="Transparent"
+                                    Content="&#xE76E;"
+                                    FontFamily="Segoe MDL2 Assets"
+                                    FontSize="18"
+                                    Padding="0"/>
+                            <Button Margin="0,5,25,0"
+									Background="Transparent"
+                                    BorderBrush="Transparent"
+                                    Content="&#xEB9F;"
+                                    FontFamily="Segoe MDL2 Assets"
+                                    FontSize="18"
+                                    Padding="0"/>
+                        </StackPanel>
 					</Grid>
 				</Grid>
 			</SplitView.Content>

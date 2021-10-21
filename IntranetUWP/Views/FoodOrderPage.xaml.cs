@@ -37,6 +37,7 @@ namespace IntranetUWP.Views
         }
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
+            await vm.GetUserFoodsData();
             var userFoodData = await httpHelper.GetAsync<ObservableCollection<UserFoodDTO>>(vm.getUserSelectedFoodDataUrl);
             var foodData = await httpHelper.GetAsync<ObservableCollection<FoodDTO>>(vm.getFoodsDataUrl);
             var usersData = await httpHelper.GetAsync<List<UserDTO>>(vm.getUsersDataUrl);
@@ -463,6 +464,24 @@ namespace IntranetUWP.Views
                 HorizontalAlignment = HorizontalAlignment.Center
             };
 
+            stackPanel.Children.Add(TableListView);
+
+            printHelper.AddFrameworkElementToPrint(stackPanel);
+
+
+            //Second iDealogic page
+            var secondPageStackPanel = new StackPanel();
+            secondPageStackPanel.HorizontalAlignment = HorizontalAlignment.Stretch;
+
+
+            secondPageStackPanel.Children.Add(iDealogicImage);
+            secondPageStackPanel.Children.Add(iDealogicListView);
+            secondPageStackPanel.Children.Add(sumOfiDealogicOrder);
+
+            printHelper.AddFrameworkElementToPrint(secondPageStackPanel);
+
+            //Third Devinition page
+
             var DevinitionImage = new Image();
             DevinitionImage.Source = new BitmapImage(new Uri("ms-appx:///Assets/Devinition.png"));
             DevinitionImage.HorizontalAlignment = HorizontalAlignment.Center;
@@ -481,26 +500,21 @@ namespace IntranetUWP.Views
                 HorizontalAlignment = HorizontalAlignment.Center
             };
 
-            stackPanel.Children.Add(TableListView);
+            var thirdPageStackPanel = new StackPanel();
+            thirdPageStackPanel.HorizontalAlignment = HorizontalAlignment.Stretch;
 
-            stackPanel.Children.Add(new AppBarSeparator());
 
-            stackPanel.Children.Add(iDealogicImage);
-            stackPanel.Children.Add(iDealogicListView);
-            stackPanel.Children.Add(sumOfiDealogicOrder);
+            thirdPageStackPanel.Children.Add(DevinitionImage);
+            thirdPageStackPanel.Children.Add(DevinitionListView);
+            thirdPageStackPanel.Children.Add(sumOfDevinitionOrder);
 
-            stackPanel.Children.Add(new AppBarSeparator());
+            printHelper.AddFrameworkElementToPrint(thirdPageStackPanel);
 
-            stackPanel.Children.Add(DevinitionImage);
-            stackPanel.Children.Add(DevinitionListView);
-            stackPanel.Children.Add(sumOfDevinitionOrder);
-
-            printHelper.AddFrameworkElementToPrint(stackPanel);
-
-                await printHelper.ShowPrintUIAsync("Your physical paper");
+            await printHelper.ShowPrintUIAsync("Your physical paper");
         }
 
     }
+
     public class ExtendedFoodDTO : FoodDTO
     {
         public string MainFoodUrl { get; set; }

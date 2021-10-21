@@ -1,58 +1,45 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-
-<Package
-  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
-  xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
-  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
-  IgnorableNamespaces="uap mp">
-
-  <Identity
-    Name="e9852ccd-8079-4f3a-8460-d84d2be3cdd9"
-    Publisher="CN=viet.to"
-    Version="1.0.0.0" />
-
-  <mp:PhoneIdentity PhoneProductId="e9852ccd-8079-4f3a-8460-d84d2be3cdd9" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
-
+<Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
+  <Identity Name="47268StrypperVandelJason.IntranetiDev" Publisher="CN=C5255E29-81AE-4129-9BC3-9E2C461A195A" Version="1.0.22.0" />
+  <mp:PhoneIdentity PhoneProductId="737d4430-dddb-47b0-ab9a-09235391ffa0" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
-    <DisplayName>Intranet</DisplayName>
-    <PublisherDisplayName>To.Hoang.Viet</PublisherDisplayName>
+    <DisplayName>Intranet iDev</DisplayName>
+    <PublisherDisplayName>Strypper Vandel Jason</PublisherDisplayName>
     <Logo>Assets\AppLogoAssets\StoreLogo.png</Logo>
   </Properties>
-
   <Dependencies>
     <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.0.0" MaxVersionTested="10.0.0.0" />
   </Dependencies>
-
   <Resources>
-    <Resource Language="x-generate"/>
+    <Resource Language="x-generate" />
   </Resources>
-
   <Applications>
-    <Application Id="App"
-      Executable="$targetnametoken$.exe"
-      EntryPoint="IntranetUWP.App">
-      <uap:VisualElements
-        DisplayName="Intranet"
-        Square150x150Logo="Assets\AppLogoAssets\Square150x150Logo.png"
-        Square44x44Logo="Assets\AppLogoAssets\Square44x44Logo.png"
-        Description="Intranet internal app, use this for lunch food ordering, book room meeting, chat with other members of Intranet and browse company information"
-        BackgroundColor="transparent">
-        <uap:DefaultTile  Square71x71Logo="Assets\AppLogoAssets\SmallTile.png" Square310x310Logo="Assets\AppLogoAssets\LargeTile.png" Wide310x150Logo="Assets\AppLogoAssets\Wide310x150Logo.png"/>
-        <uap:SplashScreen Image="Assets\AppLogoAssets\SplashScreen.png" />
-        <uap:LockScreen BadgeLogo="Assets\AppLogoAssets\BadgeLogo.png" Notification="badgeAndTileText"/>
+    <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="IntranetUWP.App">
+      <uap:VisualElements DisplayName="Intranet iDev" Square150x150Logo="Assets\AppLogoAssets\Square150x150Logo.png" Square44x44Logo="Assets\AppLogoAssets\Square44x44Logo.png" Description="Intranet internal app, use this for lunch food ordering, book room meeting, chat with other members of Intranet and browse company information" BackgroundColor="transparent">
+        <uap:DefaultTile Square71x71Logo="Assets\AppLogoAssets\SmallTile.png" Square310x310Logo="Assets\AppLogoAssets\LargeTile.png" Wide310x150Logo="Assets\AppLogoAssets\Wide310x150Logo.png" ShortName="Intranet">
+          <uap:ShowNameOnTiles>
+            <uap:ShowOn Tile="square150x150Logo" />
+            <uap:ShowOn Tile="wide310x150Logo" />
+            <uap:ShowOn Tile="square310x310Logo" />
+          </uap:ShowNameOnTiles>
+        </uap:DefaultTile>
+        <uap:SplashScreen Image="Assets\AppLogoAssets\SplashScreen.png" BackgroundColor="transparent" />
+        <uap:LockScreen BadgeLogo="Assets\AppLogoAssets\BadgeLogo.png" Notification="badgeAndTileText" />
         <uap:InitialRotationPreference>
-          <uap:Rotation Preference="landscape"/>
-          <uap:Rotation Preference="portrait"/>
-          <uap:Rotation Preference="landscapeFlipped"/>
-          <uap:Rotation Preference="portraitFlipped"/></uap:InitialRotationPreference>
+          <uap:Rotation Preference="portrait" />
+          <uap:Rotation Preference="landscape" />
+          <uap:Rotation Preference="portraitFlipped" />
+          <uap:Rotation Preference="landscapeFlipped" />
+        </uap:InitialRotationPreference>
       </uap:VisualElements>
     </Application>
   </Applications>
-
   <Capabilities>
     <Capability Name="internetClient" />
-    <Capability Name="internetClientServer"/>
-    <uap:Capability Name="chat"/>
-    <DeviceCapability Name="webcam"/>
+    <Capability Name="internetClientServer" />
+    <uap:Capability Name="chat" />
+    <uap:Capability Name="phoneCall" />
+    <DeviceCapability Name="webcam" />
+    <DeviceCapability Name="microphone" />
   </Capabilities>
 </Package>

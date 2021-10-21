@@ -18,39 +18,56 @@ namespace IntranetUWP.ViewModels.PagesViewModel
 {
     public class iDealogicMemberPageViewModel : ViewModelBase
     {
-        public string getUsersDataUrl = "User/GetAll";
-        public string deleteUserDataUrl = "User/Delete";
-        public string getTeamsByUserIdDataUrl = "UserTeam/GetTeamByUser";
+        public readonly string getUsersDataUrl = "User/GetAll";
+        public readonly string deleteUserDataUrl = "User/Delete";
+        public readonly string getAllTeamsDataUrl = "Team/GetAll";
+        public readonly string getTeamsByUserIdDataUrl = "UserTeam/GetTeamByUser";
         private IntranetHttpHelper httpHelper = new IntranetHttpHelper(); 
-        private ObservableCollection<UserDTO> users = new ObservableCollection<UserDTO>();
+        private List<UserDTO> users = new List<UserDTO>();
         public ObservableCollection<UserDTO> Users { get; set; }
+        private List<TeamsDTO> teams = new List<TeamsDTO>();
         public ObservableCollection<TeamsDTO> Teams { get; set; }
         public ICommand getAllUsersCommand { get; set; }
         public ICommand createNewUserCommand { get; set; }
         public ICommand askBeforeDeleteUserCommand { get; set; }
-        public UserDTO SelectedUser { get; set; }
+        private UserDTO selectedUser;
+
+        public UserDTO SelectedUser
+        {
+            get { return selectedUser; }
+            set 
+            { 
+                selectedUser = value;
+                OnPropertyChanged();
+            }
+        }
+
         public iDealogicMemberPageViewModel()
         {
-            IsBusy = true;
+            IsBusy = false;
             Users = new ObservableCollection<UserDTO>();
             Teams = new ObservableCollection<TeamsDTO>();
 
             createNewUserCommand = new RelayCommand(async() => await OpenCreateMemberDialog());
             askBeforeDeleteUserCommand = new RelayCommand(async () => await AskBeforeRemove());
-            BindUsersBackToUI();
         }
 
-        private async Task GetUserData() => users = await httpHelper.GetAsync<ObservableCollection<UserDTO>>(getUsersDataUrl);
+        private async Task GetUserData() => users = await httpHelper.GetAsync<List<UserDTO>>(getUsersDataUrl);
 
+        private async Task GetTeamsData() => teams = await httpHelper.GetAsync<List<TeamsDTO>>(getAllTeamsDataUrl);
 
-        private async Task BindUsersBackToUI()
+        public async Task BindUsersBackToUI()
         {
             await GetUserData();
-            foreach (var user in users)
+            await GetTeamsData();
+            users.ForEach(u => Users.Add(u));
+            teams.ForEach(t => Teams.Add(t));
+            var userId = App.localSettings.Values["UserId"];
+            if (userId != null && Users.Count > 0)
             {
-                Users.Add(user);
+                SelectedUser = userId != null ? Users.FirstOrDefault(u => u.id == (int)userId) : null;
             }
-            IsBusy = true;
+            IsBusy = false;
         }
 
         private async Task AskBeforeRemove()

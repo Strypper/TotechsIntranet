@@ -16,7 +16,7 @@
         <controls:ItemsRepeater>
             <controls:ItemsRepeater.ItemTemplate>
                 <DataTemplate x:DataType="data:TeamsDTO">
-                    <local:TeamCard Teams="{x:Bind}"/>
+                    <local:TeamCard Team="{x:Bind}"/>
                 </DataTemplate>
             </controls:ItemsRepeater.ItemTemplate>
         </controls:ItemsRepeater>

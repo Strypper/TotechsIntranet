@@ -7,6 +7,7 @@ using Microsoft.Toolkit.Uwp.Notifications;
 using Newtonsoft.Json;
 using System;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using Windows.ApplicationModel;
@@ -161,10 +162,11 @@ namespace IntranetUWP
                         LoginModel logininfo = new LoginModel() { userName = UserName as string, password = Password as string };
                         var content = new StringContent(JsonConvert.SerializeObject(logininfo), Encoding.UTF8, "application/json");
                         var response = await httpClient.PostAsync(LoginUrl, content);
-                        if (response.StatusCode.ToString() == "OK")
+                        if (response != null && response.StatusCode == HttpStatusCode.OK)
                         {
                             rootFrame.Navigate(typeof(MainPage), e.Arguments);
-                        } else rootFrame.Navigate(typeof(LoginPage), e.Arguments);
+                        }
+                        else rootFrame.Navigate(typeof(LoginPage), e.Arguments);
                     }
                 }
                 // Ensure the current window is active

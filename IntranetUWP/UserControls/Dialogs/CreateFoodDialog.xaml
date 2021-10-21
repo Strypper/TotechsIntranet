@@ -1,0 +1,17 @@
+﻿<ContentDialog
+    x:Class="IntranetUWP.UserControls.Dialogs.CreateFoodDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:local="using:IntranetUWP.UserControls.Dialogs"
+    xmlns:usercontrols="using:IntranetUWP.UserControls"
+    SecondaryButtonStyle="{ThemeResource DefaultButtonStyle}"
+    DefaultButton="Primary"
+    mc:Ignorable="d" CornerRadius="5"
+    PrimaryButtonText="ADD"
+    SecondaryButtonText="CANCEL"
+    PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
+    SecondaryButtonClick="ContentDialog_SecondaryButtonClick">
+    <usercontrols:CreateFoodV2 x:Name="CreateFoodModule"/>
+</ContentDialog>

@@ -8,11 +8,74 @@
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls" 
     xmlns:winui="using:Microsoft.UI.Xaml.Controls"
     xmlns:data="using:IntranetUWP.Models" 
-    xmlns:helpers="using:IntranetUWP.Helpers" 
-    xmlns:animations="using:Microsoft.Toolkit.Uwp.UI.Animations"
+    xmlns:animations="using:Microsoft.Toolkit.Uwp.UI.Animations" 
+    xmlns:usercontrols="using:IntranetUWP.UserControls"
     mc:Ignorable="d" Loaded="Page_Loaded"
     NavigationCacheMode="Enabled"
     winui:BackdropMaterial.ApplyToRootOrPageBackground="True">
+
+    <Page.Resources>
+        <DataTemplate x:Key="CarouselCardTemplate"
+                      x:DataType="data:UserDTO">
+            <controls:DropShadowPanel BlurRadius="8"
+                                  ShadowOpacity="1"
+                                  OffsetX="2"
+                                  OffsetY="2"
+                                  Color="Black"
+                                  VerticalAlignment="Center"
+                                  HorizontalAlignment="Center"
+                                  IsMasked="True">
+                <Grid CornerRadius="5">
+                    <Grid.Transitions>
+                        <TransitionCollection>
+                            <RepositionThemeTransition />
+                        </TransitionCollection>
+                    </Grid.Transitions>
+
+                    <Image Width="270" Height="380" 
+                                       VerticalAlignment="Center" 
+                                       Source="{x:Bind profilePic, Converter={StaticResource StringToImageSourceConverter}}"
+                                       Stretch="UniformToFill" />
+
+                    <Button x:Name="DetailButton" Click="NavigateToMemberDetail_Click" 
+                                        Background="{ThemeResource SystemAccentColor}"
+                                        HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="5"
+                                        Width="45" Height="45" CornerRadius="25">
+                        <SymbolIcon Symbol="Contact"/>
+                    </Button>
+                </Grid>
+            </controls:DropShadowPanel>
+        </DataTemplate>
+        <DataTemplate x:Key="SkillTemplate"
+                      x:DataType="data:SkillDTO">
+            <StackPanel HorizontalAlignment="Stretch">
+                <TextBlock FontWeight="Bold"
+                           Text="{x:Bind Name}"
+                           Margin="5"/>
+                <ProgressBar x:Name="SkillValueBar"
+                             HorizontalAlignment="Stretch"
+                             Margin="0,0,0,10" CornerRadius="2">
+                    <ProgressBar.Triggers>
+                        <EventTrigger>
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetName="SkillValueBar"
+                                                 Storyboard.TargetProperty="Value"
+                                                 EnableDependentAnimation="True"
+                                                 From="0" Duration="0:0:5"
+                                                 To="{x:Bind SkillValue, Mode=OneWay}">
+                                        <DoubleAnimation.EasingFunction>
+                                            <CubicEase/>
+                                        </DoubleAnimation.EasingFunction>
+                                    </DoubleAnimation>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </ProgressBar.Triggers>
+                </ProgressBar>
+            </StackPanel>
+        </DataTemplate>
+    </Page.Resources>
 
     <Grid>
         <VisualStateManager.VisualStateGroups>
@@ -80,8 +143,8 @@
         
         <StackPanel x:Name="DisableAndDeleteBar" Orientation="Horizontal">
             <animations:Implicit.ShowAnimations>
-                <animations:TranslationAnimation Duration="0:0:1" To="0, 0, 0"/>
-                <animations:OpacityAnimation Duration="0:0:1" To="1.0"/>
+                <animations:TranslationAnimation Duration="0:0:0.5" To="0, 0, 0"/>
+                <animations:OpacityAnimation Duration="0:0:0.5" To="1.0"/>
             </animations:Implicit.ShowAnimations>
 
             <animations:Implicit.HideAnimations>
@@ -91,8 +154,10 @@
                 <animations:ScalarAnimation Target="Translation.Y" 
                                             Duration="0:0:1" 
                                             To="-200">
-                    <animations:ScalarKeyFrame Key="0.1" Value="30"/>
-                    <animations:ScalarKeyFrame Key="0.5" Value="0.0"/>
+                    <animations:ScalarKeyFrame Key="0.1" 
+                                               Value="30"/>
+                    <animations:ScalarKeyFrame Key="0.5" 
+                                               Value="0.0"/>
                 </animations:ScalarAnimation>
             </animations:Implicit.HideAnimations>
             <Button Grid.Row="0" Content="&#xE25B;" FontFamily="Segoe MDL2 Assets" 
@@ -111,25 +176,36 @@
                     HorizontalAlignment="Center" 
                     VerticalAlignment="Top"
                     Grid.Row="0">
-            <TextBlock FontSize="25" Margin="10">
-                <Run Text="&#xE13D;" FontFamily="Segoe MDL2 Assets"/>
-                <Run Text="{x:Bind vm.Users.Count, Mode=OneWay}"/>
-            </TextBlock>
-            <TextBlock FontSize="25" Margin="10">
-                <Run Text="&#xE902;" FontFamily="Segoe MDL2 Assets"/>
-                <Run Text="8"/>
-            </TextBlock>
+            <StackPanel Orientation="Horizontal"
+                        Margin="10">
+                <FontIcon Glyph="&#xE13D;"
+                          FontSize="28"
+                          VerticalAlignment="Center"/>
+                <TextBlock FontSize="28" Margin="10"
+                           VerticalAlignment="Center"
+                           Text="{x:Bind vm.Users.Count, Mode=OneWay}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal"
+                        Margin="0,10,10,10">
+                <FontIcon Glyph="&#xE902;"
+                          FontSize="28"
+                          VerticalAlignment="Center"/>
+                <TextBlock FontSize="28" Margin="10"
+                           VerticalAlignment="Center"
+                           Text="{x:Bind vm.Teams.Count, Mode=OneWay}"/>
+            </StackPanel>
         </StackPanel>
         <Button x:Name="AddNewMemberButton"
                 Grid.Row="0" 
                 VerticalAlignment="Top" 
                 HorizontalAlignment="Right" 
                 Margin="5"
+                Background="{ThemeResource SystemAccentColor}" 
                 Command="{x:Bind vm.createNewUserCommand}">
             <animations:Implicit.ShowAnimations>
-                <animations:TranslationAnimation Duration="0:0:1"
+                <animations:TranslationAnimation Duration="0:0:0.5"
                                                  To="0, 0, 0"/>
-                <animations:OpacityAnimation Duration="0:0:1" 
+                <animations:OpacityAnimation Duration="0:0:0.5" 
                                              To="1.0"/>
             </animations:Implicit.ShowAnimations>
 
@@ -146,55 +222,33 @@
                                                Value="0.0"/>
                 </animations:ScalarAnimation>
             </animations:Implicit.HideAnimations>
-            <Button.Background>
-                <helpers:AnimatedGradientBrush/>
-            </Button.Background>
             <StackPanel Orientation="Horizontal">
-                <SymbolIcon Symbol="Add" 
-                            Margin="5"/>
-                <TextBlock Text="Add new member"
-                           VerticalAlignment="Center"/>
+                <SymbolIcon Symbol="AddFriend"/>
+                <TextBlock Text="Add member"
+                           VerticalAlignment="Center"
+                           Margin="5"/>
             </StackPanel>
         </Button>
         <Border VerticalAlignment="Center" 
                 HorizontalAlignment="Center"
                 Grid.Row="1">
             <controls:Carousel x:Name="UsersCarousel" 
-                               ItemsSource="{x:Bind vm.Users}" 
+                               ItemsSource="{x:Bind vm.Users, Mode=OneWay}" 
                                VerticalAlignment="Center" 
-                               HorizontalAlignment="Center" 
-                               SelectedItem="{x:Bind vm.SelectedUser,Mode=TwoWay}"
+                               HorizontalAlignment="Center"
                                ItemMargin="30" 
                                ItemDepth="100" 
                                ItemRotationY="0" 
                                TransitionDuration="500" 
+                               SelectedItem="{x:Bind vm.SelectedUser, Mode=TwoWay}"
                                SelectionChanged="UsersCarousel_SelectionChanged">
                 <controls:Carousel.EasingFunction>
                     <CubicEase EasingMode="EaseOut" />
                 </controls:Carousel.EasingFunction>
                 <controls:Carousel.ItemTemplate>
                     <DataTemplate x:DataType="data:UserDTO">
-                        <controls:DropShadowPanel BlurRadius="8"
-                                  ShadowOpacity="1"
-                                  OffsetX="2"
-                                  OffsetY="2"
-                                  Color="Black"
-                                  VerticalAlignment="Center"
-                                  HorizontalAlignment="Center"
-                                  IsMasked="True">
-                            <Grid CornerRadius="5">
-                                <Grid.Transitions>
-                                    <TransitionCollection>
-                                        <RepositionThemeTransition />
-                                    </TransitionCollection>
-                                </Grid.Transitions>
-
-                                <Image Width="270" Height="380" 
-                                       VerticalAlignment="Center" 
-                                       Source="{x:Bind profilePic, Converter={StaticResource StringToImageSourceConverter}}"
-                                       Stretch="UniformToFill" />
-                            </Grid>
-                        </controls:DropShadowPanel>
+                        <usercontrols:MemberCarouselCard UserInfo="{x:Bind}"
+                                                         NavigateMemberDetail="MemberCarouselCard_NavigateMemberDetail"/>
                     </DataTemplate>
                 </controls:Carousel.ItemTemplate>
             </controls:Carousel>
@@ -215,11 +269,16 @@
             <StackPanel x:Name="PersonalInformationStack"
                         HorizontalAlignment="Center" 
                         VerticalAlignment="Top">
+                <StackPanel.ChildrenTransitions>
+                    <TransitionCollection>
+                        <EntranceThemeTransition IsStaggeringEnabled="True"  
+                                                 FromVerticalOffset="500"/>
+                    </TransitionCollection>
+                </StackPanel.ChildrenTransitions>
                 <animations:Implicit.ShowAnimations>
                     <animations:TranslationAnimation Duration="0:0:1" To="0, 0, 0"/>
                     <animations:OpacityAnimation Duration="0:0:1" To="1.0"/>
                 </animations:Implicit.ShowAnimations>
-
                 <animations:Implicit.HideAnimations>
                     <animations:ScalarAnimation Target="Opacity"
                                                 Duration="0:0:1" 
@@ -232,45 +291,74 @@
                     </animations:ScalarAnimation>
                 </animations:Implicit.HideAnimations>
 
-                <TextBlock HorizontalAlignment="Center" FontSize="25" FontWeight="Bold">
-                    <Run Text="&#xE156;" FontFamily="Segoe MDL2 Assets"/>
-                    <Run Text="Information"/>
-                </TextBlock>
-                <TextBlock x:Name="FullName" Margin="10" FontSize="20">
-                    <Run Text="&#xE13D;" FontFamily="Segoe MDL2 Assets"/>
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Center">
+                    <FontIcon Glyph="&#xE136;" 
+                              FontSize="28"
+                              Margin="5"
+                              VerticalAlignment="Center"/>
+                    <TextBlock VerticalAlignment="Center" 
+                               FontSize="28" 
+                               FontWeight="Bold"
+                               Text="Information"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal"
+                            Margin="10">
+                    <FontIcon Glyph="&#xE13D;"
+                              VerticalAlignment="Center"
+                              Margin="5"/>
+                    <TextBlock x:Name="FullName"
+                               VerticalAlignment="Center"
+                               FontSize="20">
                     <Run Text="Name: "/>
-                    <Run x:Name="LastName"/>
-                    <Run x:Name="MiddleName"/>
-                    <Run x:Name="FirstName"/>
-                </TextBlock>
-                <TextBlock Margin="10" FontSize="20"
-                           MaxWidth="350"
-                           TextTrimming="CharacterEllipsis">
-                    <Run Text="&#xE902;" FontFamily="Segoe MDL2 Assets"/>
-                    <Run Text="Team: "/>
-                    <Run x:Name="Teams"/>
-                </TextBlock>
-                <TextBlock Margin="10" FontSize="20">
-                    <Run Text="&#xE821;" FontFamily="Segoe MDL2 Assets"/>
-                    <Run Text="Role: "/>
-                    <Run x:Name="Role"/>
-                </TextBlock>
-                <TextBlock Margin="10" FontSize="20">
-                    <Run Text="&#xECA7;" FontFamily="Segoe MDL2 Assets"/>
-                    <Run Text="Level: "/>
-                    <Run x:Name="Level"/>
-                </TextBlock>
+                    <Run Text="{x:Bind User.lastName, Mode=OneWay}"/>
+                    <Run Text="{x:Bind User.middleName, Mode=OneWay}"/>
+                    <Run Text="{x:Bind User.firstName, Mode=OneWay}"/>
+                    </TextBlock>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal"
+                            Margin="10">
+                    <FontIcon Glyph="&#xE902;"
+                              VerticalAlignment="Center"
+                              Margin="5"/>
+                    <TextBlock VerticalAlignment="Center"
+                               FontSize="20">
+                        <Run Text="Team: "/>
+                        <Run x:Name="Teams"/>
+                    </TextBlock>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal"
+                            Margin="10">
+                    <FontIcon Glyph="&#xE821;"
+                              VerticalAlignment="Center"
+                              Margin="5"/>
+                    <TextBlock VerticalAlignment="Center"
+                               FontSize="20">
+                        <Run Text="Role: "/>
+                        <Run Text="{x:Bind User.role, Mode=OneWay}"/>
+                    </TextBlock>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal"
+                            Margin="10">
+                    <FontIcon Glyph="&#xECA7;"
+                              VerticalAlignment="Center"
+                              Margin="5"/>
+                    <TextBlock VerticalAlignment="Center"
+                               FontSize="20">
+                        <Run Text="Level: "/>
+                        <Run Text="{x:Bind User.level, Mode=OneWay}"/>
+                    </TextBlock>
+                </StackPanel>
             </StackPanel>
 
             <StackPanel x:Name="PersonalSkillsStack"
-                        HorizontalAlignment="Center" 
+                        HorizontalAlignment="Stretch" 
                         VerticalAlignment="Top" 
                         Grid.Column="2">
                 <animations:Implicit.ShowAnimations>
                     <animations:TranslationAnimation Duration="0:0:1" To="0, 0, 0"/>
                     <animations:OpacityAnimation Duration="0:0:1" To="1.0"/>
                 </animations:Implicit.ShowAnimations>
-
                 <animations:Implicit.HideAnimations>
                     <animations:ScalarAnimation Target="Opacity" Duration="0:0:1" To="0.0"/>
                     <animations:ScalarAnimation Target="Translation.X" Duration="0:0:1" To="200">
@@ -278,43 +366,58 @@
                         <animations:ScalarKeyFrame Key="0.5" Value="0.0"/>
                     </animations:ScalarAnimation>
                 </animations:Implicit.HideAnimations>
-                <TextBlock HorizontalAlignment="Center" 
-                           FontSize="25" 
-                           FontWeight="Bold">
-                    <Run Text="&#xEC4A;" FontFamily="Segoe MDL2 Assets"/>
-                    <Run Text="Top Skills"/>
-                </TextBlock>
-                <TextBlock Text="Design" FontSize="20"/>
-                <ProgressBar Width="400" Height="5" CornerRadius="2" Margin="0,5,0,5" Value="70"/>
-                <TextBlock Text="Universal Windows Platform" FontSize="20"/>
-                <ProgressBar Width="400" Height="5" CornerRadius="2" Margin="0,5,0,5" Value="100"/>
-                <TextBlock Text="ASP.NET CORE" FontSize="20"/>
-                <ProgressBar Width="400" Height="5" CornerRadius="2" Margin="0,5,0,5" Value="65"/>
-                <TextBlock Text="ENTITY FRAMEWORK CORE" FontSize="20"/>
-                <ProgressBar Width="400" Height="5" CornerRadius="2" Margin="0,5,0,5" Value="60"/>
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Center">
+                    <FontIcon Glyph="&#xEC4A;" FontSize="28"
+                              VerticalAlignment="Center"
+                              Margin="5"/>
+                    <TextBlock HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           FontSize="28" FontWeight="Bold"
+                           Text="Top Skills"/>
+                </StackPanel>
+                <ListView x:Name="SkillsList"
+                          HorizontalAlignment="Stretch"
+                          MaxWidth="500"
+                          ItemTemplate="{StaticResource SkillTemplate}"
+                          ItemsSource="{x:Bind Skills, Mode=OneWay}">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.ItemContainerTransitions>
+                        <TransitionCollection>
+                            <EntranceThemeTransition IsStaggeringEnabled="True" 
+                                             FromVerticalOffset="450"/>
+                            <AddDeleteThemeTransition/>
+                        </TransitionCollection>
+                    </ListView.ItemContainerTransitions>
+                </ListView>
             </StackPanel>
 
             <StackPanel HorizontalAlignment="Center"
-                        VerticalAlignment="Top" 
+                        VerticalAlignment="Stretch" 
                         Grid.Column="1" 
                         Padding="20,0,20,0">
-                <TextBlock HorizontalAlignment="Center" FontSize="25" FontWeight="Bold">
-                    <Run Text="&#xED15;" FontFamily="Segoe MDL2 Assets"/>
-                    <Run Text="Hello There !"/>
-                </TextBlock>
-                <TextBlock x:Name="Bio"
-                           HorizontalAlignment="Center" 
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Center">
+                    <FontIcon Glyph="&#xED15;" FontSize="28"
+                              VerticalAlignment="Center"
+                              Margin="5"/>
+                    <TextBlock HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           FontSize="28" FontWeight="Bold"
+                           Text="Hello There!"/>
+                </StackPanel>
+                <TextBlock HorizontalAlignment="Center" 
                            TextAlignment="Justify" 
-                           TextWrapping="Wrap"
-                           Margin="5" FontSize="15"/>
-
-                <Button x:Name="DetailButton" Click="NavigateToMemberDetail_Click" 
-                        Background="{ThemeResource SystemAccentColor}"
-                        HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="5"
-                        Width="45" Height="45" CornerRadius="25">
-                    <SymbolIcon Symbol="Contact"/>
-                </Button>
+                           TextWrapping="Wrap" 
+                           TextTrimming="CharacterEllipsis"
+                           Text="{x:Bind User.bio, Mode=OneWay}"
+                           Margin="5" FontSize="18" Height="200"/>
             </StackPanel>
         </Grid>
+        <winui:InfoBar x:Name="PageStatus" HorizontalAlignment="Center"/>
     </Grid>
 </Page>

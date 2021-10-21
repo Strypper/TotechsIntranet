@@ -4,6 +4,7 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using IntranetUWP.Helpers;
 using IntranetUWP.Models;
 using IntranetUWP.UserControls;
+using IntranetUWP.UserControls.Dialogs;
 using IntranetUWP.ViewModels.Commands;
 using Microsoft.Toolkit.Uwp.Notifications;
 using System;
@@ -98,8 +99,6 @@ namespace IntranetUWP.ViewModels.PagesViewModel
             UserFoods = new ObservableCollection<UserFoodDTO>();
             iDealogicUsersFood = new ObservableCollection<UserFoodDTO>();
             DevinitionUsersFood = new ObservableCollection<UserFoodDTO>();
-            //This need to be init in a static method
-            GetUserFoodsData();
             getAllFoodCommand = new RelayCommand(async () => await GetAllFood());
             createFoodCommand = new RelayCommand(async () => await CreateFood());
             askBeforeDeleteFoodCommand = new RelayCommand(async () => await AskBeforeRemove());
@@ -114,7 +113,7 @@ namespace IntranetUWP.ViewModels.PagesViewModel
             => foods = await httpHelper.GetAsync<ObservableCollection<FoodDTO>>(getFoodsDataUrl);
         private async Task CreateFood()
         {
-            CreateFood createFoodDialog = new CreateFood();
+            var createFoodDialog = new CreateFoodDialog();
             createFoodDialog.PrimaryButtonClick += CreateFoodDialog_PrimaryButtonClick;
             await createFoodDialog.ShowAsync();
         }
@@ -181,14 +180,17 @@ namespace IntranetUWP.ViewModels.PagesViewModel
         private async void CreateFoodDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
             IsBusy = true;
-            var food = (sender as CreateFood).Food;
-            var createResult = await httpHelper.CreateAsync<FoodDTO>(createFoodDataUrl, food);
-            if (createResult != null)
+            var food = (sender as CreateFoodDialog).Food;
+            if (!string.IsNullOrEmpty(food.foodEnglishName))
             {
-                createResult.itemNo = Foods.Count() + 1;
-                Foods.Add(createResult);
+                var createResult = await httpHelper.CreateAsync<FoodDTO>(createFoodDataUrl, food);
+                if (createResult != null)
+                {
+                    createResult.itemNo = Foods.Count() + 1;
+                    Foods.Add(createResult);
+                }
+                else Debug.WriteLine("Create operation error");
             }
-            else Debug.WriteLine("Create operation error");
             IsBusy = false;
         }
         public async void EditFoodDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
@@ -323,7 +325,7 @@ namespace IntranetUWP.ViewModels.PagesViewModel
 
             IsBusy = false;
         }
-        private async Task GetUserFoodsData()
+        public async Task GetUserFoodsData()
         {
             if (UserFoods.Count > 0) { Users.Clear(); UserFoods.Clear(); Foods.Clear(); await Task.Delay(1000); IsBusy = false; }
             var userSelectedFoods = await httpHelper.GetAsync<ObservableCollection<UserFoodDTO>>(getUserSelectedFoodDataUrl);

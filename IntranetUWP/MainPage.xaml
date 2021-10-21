@@ -5,8 +5,8 @@
 	  xmlns:local="using:IntranetUWP"
 	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	  xmlns:usercontrols="using:IntranetUWP.UserControls"
-	  xmlns:winui="using:Microsoft.UI.Xaml.Controls"
-	  winui:BackdropMaterial.ApplyToRootOrPageBackground="True"
+	  xmlns:winui="using:Microsoft.UI.Xaml.Controls" xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+      winui:BackdropMaterial.ApplyToRootOrPageBackground="True"
 	  mc:Ignorable="d">
 
 	<Page.Resources>
@@ -50,6 +50,7 @@
 							  IsSettingsVisible="True"
 							  IsTitleBarAutoPaddingEnabled="False"
 							  PaneDisplayMode="Auto"
+                              IsPaneOpen="False"
 							  SelectionChanged="NavigationViewPanel_SelectionChanged">
 			<winui:NavigationView.PaneHeader>
 				<Image Width="90"
@@ -65,52 +66,58 @@
 						<FontIcon FontFamily="Segoe UI Emoji" Glyph="&#x1F371;" />
 					</winui:NavigationViewItem.Icon>
 				</winui:NavigationViewItem>
-				<winui:NavigationViewItem x:Name="TeaBreak" Content="Tea break - Nghỉ ngơi thứ 5">
+				<!--<winui:NavigationViewItem x:Name="TeaBreak" Content="Tea break - Nghỉ ngơi thứ 5">
 					<winui:NavigationViewItem.Icon>
 						<FontIcon FontFamily="Segoe UI Emoji" Glyph="&#x2615;" />
 					</winui:NavigationViewItem.Icon>
-				</winui:NavigationViewItem>
+				</winui:NavigationViewItem>-->
 				<!--<winui:NavigationViewItem x:Name="PlayTime" Content="Play time - Tìm bạn chơi">
                 <winui:NavigationViewItem.Icon>
                     <FontIcon FontFamily="Segoe UI Emoji" Glyph="&#x2694;" />
                 </winui:NavigationViewItem.Icon>
             </winui:NavigationViewItem>-->
 				<winui:NavigationViewItem x:Name="ChatHub" Content="Chat hub">
-					<winui:NavigationViewItem.Icon>
+                    <winui:NavigationViewItem.InfoBadge>
+                        <winui:InfoBadge x:Name="ChatHubBadge" Value="17" />
+                    </winui:NavigationViewItem.InfoBadge>
+                    <winui:NavigationViewItem.Icon>
 						<FontIcon FontFamily="Segoe UI Emoji" Glyph="&#x1F4AC;" />
 					</winui:NavigationViewItem.Icon>
 				</winui:NavigationViewItem>
 				<winui:NavigationViewItem x:Name="Member" Content="Members">
-					<winui:NavigationViewItem.Icon>
+                    <winui:NavigationViewItem.InfoBadge>
+						<winui:InfoBadge x:Name="MemberBadge" Value="5" />
+                    </winui:NavigationViewItem.InfoBadge>
+                    <winui:NavigationViewItem.Icon>
 						<FontIcon FontFamily="Segoe UI Emoji" Glyph="&#x1F603;" />
 					</winui:NavigationViewItem.Icon>
 				</winui:NavigationViewItem>
 			</winui:NavigationView.MenuItems>
-			<winui:NavigationView.PaneFooter>
-				<Grid Padding="15,10,0,10">
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="*" MinWidth="50" />
-						<ColumnDefinition Width="50" />
-					</Grid.ColumnDefinitions>
-					<StackPanel Orientation="Horizontal">
-						<PersonPicture x:Name="ProfilePicture" Width="20" />
-						<TextBlock x:Name="PersonalName"
-								   Margin="12,0,0,0"
+            <winui:NavigationView.FooterMenuItems>
+                <winui:NavigationViewItem x:Name="Profile">
+                    <controls:DockPanel>
+                        <StackPanel Orientation="Horizontal"
+                                    controls:DockPanel.Dock="Left">
+                            <PersonPicture x:Name="ProfilePicture"
+                                       Width="25" Margin="0,0,0,0"
+                                       ProfilePicture="{x:Bind ProfileImage, Mode=OneWay}"/>
+                            <TextBlock x:Name="PersonalName"
+								   Margin="10,0,0,0"
 								   VerticalAlignment="Center" />
-					</StackPanel>
-					<Button x:Name="LogoutButton"
-							Grid.Column="1"
-							HorizontalAlignment="Stretch"
-							VerticalAlignment="Stretch"
-							Background="Transparent"
-							BorderBrush="Transparent"
-							Click="LogoutButton_Click"
-							Content="&#xE7E8;"
-							FontFamily="Segoe MDL2 Assets"
-							Foreground="{ThemeResource SystemErrorTextColor}"
-							ToolTipService.ToolTip="Log out" />
-				</Grid>
-			</winui:NavigationView.PaneFooter>
+                        </StackPanel>
+                        <Button x:Name="LogoutButton"
+								HorizontalAlignment="Right"
+								Background="Transparent"
+								BorderBrush="Transparent"
+								Click="LogoutButton_Click"
+								Content="&#xE7E8;"
+								FontFamily="Segoe MDL2 Assets"
+								Foreground="{ThemeResource SystemErrorTextColor}"
+                                controls:DockPanel.Dock="Right"
+								ToolTipService.ToolTip="Log out" />
+                    </controls:DockPanel>
+                </winui:NavigationViewItem>
+            </winui:NavigationView.FooterMenuItems>
 			<Frame x:Name="TheMainFrame"/>
 		</winui:NavigationView>
 	</Grid>

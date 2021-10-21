@@ -1,0 +1,259 @@
+﻿<UserControl
+    x:Class="IntranetUWP.UserControls.CreateFoodV2"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:IntranetUWP.UserControls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls" xmlns:animations="using:Microsoft.Toolkit.Uwp.UI.Animations"
+    Loaded="UserControl_Loaded"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400">
+
+    <UserControl.Resources>
+        <Storyboard x:Name="FadePrimaryIconIn">
+            <DoubleAnimation Storyboard.TargetName="PrimaryFood"
+                             Storyboard.TargetProperty="Opacity" 
+                             From="0" To="1">
+                <DoubleAnimation.EasingFunction>
+                    <CircleEase EasingMode="EaseInOut" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+
+        <Storyboard x:Name="FadeIconIn">
+            <DoubleAnimation Storyboard.TargetName="SecondaryFood"
+                             Storyboard.TargetProperty="Opacity" 
+                             From="0" To="1">
+                <DoubleAnimation.EasingFunction>
+                    <CircleEase EasingMode="EaseInOut" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+
+        <Storyboard x:Name="DropIconIn">
+            <DoubleAnimation Storyboard.TargetName="TranslateTransform"
+                             Storyboard.TargetProperty="Y" 
+                             From="-100" To="20" Duration="0:0:1">
+                <DoubleAnimation.EasingFunction>
+                    <CircleEase EasingMode="EaseInOut" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+
+        <Storyboard x:Name="DropIconOut">
+            <DoubleAnimation Storyboard.TargetName="TranslateTransform"
+                             Storyboard.TargetProperty="X" 
+                             From="0" To="-500">
+                <DoubleAnimation.EasingFunction>
+                    <CircleEase EasingMode="EaseInOut" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+
+        <DataTemplate  x:Key="FoodNavigationViewTemplate"
+                       x:DataType="local:FoodIconModel">
+            <muxc:NavigationViewItem Tag="{x:Bind Icon}">
+                <muxc:NavigationViewItem.Content>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{x:Bind Icon}" 
+                                       FontFamily="Segoe UI Emoji"
+                                       HorizontalAlignment="Center"/>
+                        <TextBlock FontWeight="Bold"
+                                       HorizontalAlignment="Center"
+                                       Text="{x:Bind Name}"/>
+                    </StackPanel>
+                </muxc:NavigationViewItem.Content>
+            </muxc:NavigationViewItem>
+        </DataTemplate>
+
+        <DataTemplate x:Key="SecondaryFoodGridTemplate"
+                      x:DataType="local:FoodIconModel">
+            <GridViewItem CanDrag="True">
+                <StackPanel Margin="5" Width="80">
+                    <TextBlock Text="{x:Bind Icon}"
+                                   FontSize="50"
+                                   FontFamily="Segoe UI Emoji"
+                                   HorizontalAlignment="Center"/>
+                    <TextBlock Text="{x:Bind Name}"
+                                   FontWeight="Bold"
+                                   HorizontalAlignment="Center"/>
+                </StackPanel>
+            </GridViewItem>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <StackPanel>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="WideState">
+                    <VisualState.StateTriggers>
+                        <!--When window width is >=1200 effective pixels-->
+                        <AdaptiveTrigger MinWindowWidth="1201" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+
+                    </VisualState.Setters>
+                </VisualState>
+
+                <VisualState x:Name="NormalState">
+                    <VisualState.StateTriggers>
+                        <!--When window width is >=720 effective pixels-->
+                        <AdaptiveTrigger MinWindowWidth="721" />
+                    </VisualState.StateTriggers>
+
+                    <VisualState.Setters>
+                        <Setter Target="SecondaryFoodGrid.(Grid.Row)"
+                                Value="0" />
+                        <Setter Target="SecondaryFoodGrid.(Grid.Column)"
+                                Value="1" />
+
+                        <Setter Target="FoodContainer.ColumnDefinitions[1].Width"
+                                Value="200" />
+
+                        <Setter Target="FoodContainer.RowDefinitions[1].Height"
+                                Value="0" />
+                    </VisualState.Setters>
+                </VisualState>
+
+                <VisualState x:Name="NarrowState">
+                    <VisualState.StateTriggers>
+                        <!--When window width is <720 effective pixels-->
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+
+                    <VisualState.Setters>
+                        <Setter Target="SecondaryFoodGrid.(Grid.Row)"
+                                Value="1" />
+                        <Setter Target="SecondaryFoodGrid.(Grid.Column)"
+                                Value="0" />
+
+                        <Setter Target="FoodContainer.ColumnDefinitions[1].Width"
+                                Value="0" />
+                        
+                        <Setter Target="FoodContainer.RowDefinitions[1].Height"
+                                Value="100" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        <StackPanel.ChildrenTransitions>
+            <TransitionCollection>
+                <EntranceThemeTransition IsStaggeringEnabled="True"  
+                                         FromVerticalOffset="200"/>
+            </TransitionCollection>
+        </StackPanel.ChildrenTransitions>
+        <StackPanel>
+            <StackPanel.ChildrenTransitions>
+                <TransitionCollection>
+                    <EntranceThemeTransition IsStaggeringEnabled="True"/>
+                </TransitionCollection>
+            </StackPanel.ChildrenTransitions>
+            <TextBlock Text="&#x1F371;" 
+                       FontFamily="Segoe UI Emoji"
+                       HorizontalAlignment="Center"
+                       FontSize="40"/>
+            <TextBlock FontWeight="ExtraBlack"
+                       FontSize="20"
+                       HorizontalAlignment="Center"
+                       Text="ADD FOOD"
+                       TextDecorations="Underline"/>
+        </StackPanel>
+        <muxc:NavigationView x:Name="FoodNav" 
+                             PaneDisplayMode="Top"
+                             IsBackButtonVisible="Collapsed"
+                             IsSettingsVisible="False"
+                             MenuItemsSource="{x:Bind primaryFoodList}"
+                             MenuItemTemplate="{StaticResource FoodNavigationViewTemplate}"
+                             SelectionChanged="FoodNav_SelectionChanged">
+            <StackPanel>
+                <StackPanel.ChildrenTransitions>
+                    <TransitionCollection>
+                        <EntranceThemeTransition IsStaggeringEnabled="True"  
+                                         FromVerticalOffset="200"/>
+                    </TransitionCollection>
+                </StackPanel.ChildrenTransitions>
+                <Grid x:Name="FoodContainer">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="200"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="0"/>
+                    </Grid.RowDefinitions>
+                    <Grid x:Name="FoodImage"
+                          Width="400" Height="350"
+                          VerticalAlignment="Center"
+                          HorizontalAlignment="Center"
+                          AllowDrop="True"
+                          DragOver="Grid_DragOver"
+                          Drop="Grid_Drop">
+                        <TextBlock x:Name="PrimaryFood"
+                                   Text="&#x1F35A;" 
+                                   FontSize="270"
+                                   FontFamily="Segoe UI Emoji"
+                                   HorizontalAlignment="Center"
+                                   CenterPoint="135,135,0">
+                            <TextBlock.ScaleTransition>
+                                <Vector3Transition />
+                            </TextBlock.ScaleTransition>
+                        </TextBlock>
+                        <TextBlock x:Name="SecondaryFood"
+                                   FontFamily="Segoe UI Emoji"
+                                   FontSize="120"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Top"
+                                   Translation="-50,0,0">
+                            <TextBlock.RenderTransform>
+                                <TranslateTransform x:Name="TranslateTransform"/>
+                            </TextBlock.RenderTransform>
+
+                        </TextBlock>
+                    </Grid>
+                    <GridView x:Name="SecondaryFoodGrid"
+                              Grid.Column="1"
+                              Margin="5"
+                              IsItemClickEnabled="True"
+                              CanDrag="True"
+                              CanDragItems="True"
+                              HorizontalContentAlignment="Center"
+                              HorizontalAlignment="Center"
+                              DragItemsStarting="SecondaryFoodGrid_DragItemsStarting"
+                              DragItemsCompleted="SecondaryFoodGrid_DragItemsCompleted"
+                              ItemsSource="{x:Bind secondaryFoodList, Mode=OneWay}"
+                              ItemTemplate="{StaticResource SecondaryFoodGridTemplate}">
+                        <animations:Implicit.ShowAnimations>
+                            <animations:TranslationAnimation Duration="0:0:1" To="0, 0, 0"/>
+                            <animations:OpacityAnimation Duration="0:0:1" To="1.0"/>
+                        </animations:Implicit.ShowAnimations>
+                        <animations:Implicit.HideAnimations>
+                            <animations:ScalarAnimation Target="Opacity" 
+                                                            Duration="0:0:1" 
+                                                            To="0.0"/>
+                            <animations:ScalarAnimation Target="Translation.X" 
+                                                            Duration="0:0:1" 
+                                                            To="200">
+                                <animations:ScalarKeyFrame Key="0.1" Value="30"/>
+                                <animations:ScalarKeyFrame Key="0.5" Value="0.0"/>
+                            </animations:ScalarAnimation>
+                        </animations:Implicit.HideAnimations>
+                    </GridView>
+                </Grid>
+                <TextBox x:Name="VietnameseFoodName" 
+                         Header="Vietnamese Name" 
+                         PlaceholderText="Nhập tên đồ ăn" 
+                         TextChanged="VietnameseFoodName_TextChanged"
+                         CornerRadius="2"
+                         Margin="15"/>
+                <TextBox x:Name="EnglishFoodName" 
+                         Header="Food Name" 
+                         PlaceholderText="Insert food name" 
+                         TextChanged="EnglishFoodName_TextChanged"
+                         CornerRadius="2"
+                         Margin="15,0,15,15"/>
+            </StackPanel>
+        </muxc:NavigationView>
+    </StackPanel>
+</UserControl>

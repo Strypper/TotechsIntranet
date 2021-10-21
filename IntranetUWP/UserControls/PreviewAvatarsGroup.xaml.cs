@@ -51,13 +51,14 @@ namespace IntranetUWP.UserControls
             }
         }
 
-        private async void AddMember_Click(object sender, RoutedEventArgs e)
+        private async void AddOrUpdateMember_Click(object sender, RoutedEventArgs e)
         {
             if(VisualTreeHelper.GetOpenPopups(Window.Current).Count == 1)
             {
                 var peoplePickerDialog = new PeoplePickerContentDialog();
                 //This should be the whole user Lists
                 peoplePickerDialog.UsersList = await httpHelper.GetAsync<ObservableCollection<UserDTO>>(getUsersDataUrl);
+                peoplePickerDialog.SelectedUsers = Members.ToList();
                 await peoplePickerDialog.ShowAsync();
             }
             else

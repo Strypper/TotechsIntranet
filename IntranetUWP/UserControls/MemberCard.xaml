@@ -6,7 +6,13 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ToolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls" 
-    xmlns:data="using:IntranetUWP.Models" xmlns:muxc="using:Windows.UI.Xaml.Controls"
+    xmlns:data="using:IntranetUWP.Models" 
+    xmlns:muxc="using:Windows.UI.Xaml.Controls" 
+    xmlns:ui="using:Microsoft.Toolkit.Uwp.UI" 
+    xmlns:ani="using:Microsoft.Toolkit.Uwp.UI.Animations" 
+    xmlns:interactivity="using:Microsoft.Xaml.Interactivity" 
+    xmlns:interactions="using:Microsoft.Xaml.Interactions.Core" 
+    xmlns:behaviors="using:Microsoft.Toolkit.Uwp.UI.Behaviors"
     mc:Ignorable="d" Loaded="UserControl_Loaded"
     Name="MemberCardUI"
     d:DesignHeight="300"
@@ -31,42 +37,90 @@
                 </SwipeItem.IconSource>
             </SwipeItem>
         </SwipeItems>
+        <ui:AttachedDropShadow x:Key="CommonShadow" Offset="4" CastTo="{x:Bind ShadowTarget}"/>
+        <ani:AnimationSet x:Key="ShadowEnterAnimation">
+            <ani:OffsetDropShadowAnimation To="12"/>
+        </ani:AnimationSet>
+
+        <ani:AnimationSet x:Key="ShadowExitAnimation">
+            <ani:OffsetDropShadowAnimation To="4"/>
+        </ani:AnimationSet>
+
+        <ani:AnimationSet x:Key="ShadowPopAnimation" IsSequential="True">
+            <ani:TranslationAnimation To="-8" Duration="0:0:1"/>
+            <ani:OffsetDropShadowAnimation To="16" Duration="0:0:2" Target="{StaticResource CommonShadow}"/>
+            <ani:OffsetDropShadowAnimation To="4" Delay="0:0:0.5" Duration="0:0:2" Target="{StaticResource CommonShadow}"/>
+            <ani:TranslationAnimation To="0" Duration="0:0:1"/>
+        </ani:AnimationSet>
     </UserControl.Resources>
 
     <SwipeControl RightItems="{StaticResource right}"
                   LeftItems="{StaticResource left}"
                   RightTapped="SwipeControl_RightTapped">
-        <ToolkitControls:DropShadowPanel x:Name="DropShadowHolder" 
-                                         VerticalAlignment="Stretch" 
-                                         Margin="10"
-                                         HorizontalContentAlignment="Stretch" 
-                                         VerticalContentAlignment="Stretch"
-                                         BlurRadius="20"
-                                         ShadowOpacity="0.5"
-                                         OffsetX="0"
-                                         OffsetY="10"
-                                         Padding="0"
-                                         Color="Black">
+        <Grid Margin="10">
+            <Border x:Name="ShadowTarget"/>
             <RelativePanel HorizontalAlignment="Stretch"
                            Width="355" 
                            Background="{ThemeResource SystemAltHighColor}" 
+                           ui:Effects.Shadow="{StaticResource CommonShadow}"
                            CornerRadius="5" 
-                           Padding="10">
-                <PersonPicture x:Name="Avatar" 
-                               Margin="0,5,5,5" 
-                               RelativePanel.AlignLeftWithPanel="True" 
-                               RelativePanel.AlignHorizontalCenterWithPanel="True"
-                               ProfilePicture="{x:Bind ProfilePictureUrl, Converter={StaticResource StringToImageSourceConverter}, Mode=OneWay}"
-                               Width="70" 
-                               RelativePanel.AlignVerticalCenterWithPanel="True"/>
+                           Padding="10"
+                           PointerEntered="TeamCard_PointerEntered"
+                           PointerExited="TeamCard_PointerExited">
+                <interactivity:Interaction.Behaviors>
+                    <interactions:EventTriggerBehavior EventName="PointerEntered">
+                        <behaviors:StartAnimationAction Animation="{StaticResource ShadowEnterAnimation}"/>
+                    </interactions:EventTriggerBehavior>
+                    <interactions:EventTriggerBehavior EventName="PointerExited">
+                        <behaviors:StartAnimationAction Animation="{StaticResource ShadowExitAnimation}"/>
+                    </interactions:EventTriggerBehavior>
+                </interactivity:Interaction.Behaviors>
+                <Border x:Name="Avatar" 
+                        Margin="0,5,5,5" 
+                        CenterPoint="35, 35, 0"
+                        Width="70" Height="70"
+                        CornerRadius="35"
+                        RelativePanel.AlignLeftWithPanel="True" 
+                        RelativePanel.AlignHorizontalCenterWithPanel="True"
+                        RelativePanel.AlignVerticalCenterWithPanel="True">
+                    <Border.ScaleTransition>
+                        <Vector3Transition />
+                    </Border.ScaleTransition>
+                    <Image Source="{x:Bind ProfilePictureUrl, Converter={StaticResource StringToImageSourceConverter}, Mode=OneWay}"
+                           Width="70" Height="70" Stretch="UniformToFill"/>
+                </Border>
                 <StackPanel RelativePanel.RightOf="Avatar" 
                             VerticalAlignment="Center"
                             RelativePanel.AlignVerticalCenterWithPanel="True">
-                    <TextBlock Text="{x:Bind EmployeeName, Mode=OneWay}"
+                    <TextBlock x:Name="EmployeeNameText"
+                               Text="{x:Bind EmployeeName, Mode=OneWay}"
                                FontSize="15"
-                               Margin="5"/>
-                    <TextBlock Text="{x:Bind Company, Converter={StaticResource BoolToCompanyConverter}, Mode=OneWay}" 
-                               Margin="5"/>
+                               Translation="0,10,0"
+                               Margin="5">
+                        <TextBlock.TranslationTransition>
+                            <Vector3Transition />
+                        </TextBlock.TranslationTransition>
+                    </TextBlock>
+                    <TextBlock x:Name="TeamsText" 
+                               Text="Team" 
+                               Translation="0,0,0"
+                               Opacity="0"
+                               MaxWidth="120"
+                               TextTrimming="CharacterEllipsis">
+                        <TextBlock.OpacityTransition>
+                            <ScalarTransition />
+                        </TextBlock.OpacityTransition>
+
+                        <TextBlock.TranslationTransition>
+                            <Vector3Transition />
+                        </TextBlock.TranslationTransition>
+                    </TextBlock>
+                    <TextBlock x:Name="CompanyText" Text="{x:Bind Company, Converter={StaticResource BoolToCompanyConverter}, Mode=OneWay}" 
+                               Margin="5" Translation="0,-10,0">
+                        <TextBlock.TranslationTransition>
+                            <Vector3Transition />
+                        </TextBlock.TranslationTransition>
+                    </TextBlock>
                 </StackPanel>
                 <ComboBox x:Name="SelectFoodCombobox" 
                           RelativePanel.AlignRightWithPanel="True" 
@@ -99,7 +153,7 @@
                     </ComboBox.ItemTemplate>
                 </ComboBox>
             </RelativePanel>
-        </ToolkitControls:DropShadowPanel>
+        </Grid>
         <FlyoutBase.AttachedFlyout>
             <muxc:MenuFlyout>
                 <muxc:MenuFlyout.Items>

@@ -150,6 +150,7 @@
             <ListView x:Name="MemberList"
                       Grid.Column="1"
                       Margin="5"
+                      Height="420"
                       SelectionMode="Multiple"
                       SelectionChanged="MemberList_SelectionChanged"
                       ItemsSource="{x:Bind Members}">
@@ -161,8 +162,8 @@
                 </ListView.Header>
                 <ListView.ItemContainerTransitions>
                     <TransitionCollection>
-                        <EntranceThemeTransition IsStaggeringEnabled="True" 
-                                                 FromHorizontalOffset="1450"/>
+                        <EntranceThemeTransition IsStaggeringEnabled="True"
+                                                 FromHorizontalOffset="200"/>
                         <AddDeleteThemeTransition/>
                     </TransitionCollection>
                 </ListView.ItemContainerTransitions>

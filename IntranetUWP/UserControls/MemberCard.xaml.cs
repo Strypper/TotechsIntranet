@@ -1,7 +1,9 @@
 ﻿using IntranetUWP.Helpers;
 using IntranetUWP.Models;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Numerics;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -12,6 +14,7 @@ namespace IntranetUWP.UserControls
 {
     public sealed partial class MemberCard : UserControl
     {
+        public readonly string getTeamsByUserIdDataUrl = "UserTeam/GetTeamByUser";
         public delegate void ClearSelectionMemberCardEventHandler(int userId);
         public delegate void DisableMemberCardEventHandler(int userId);
         public int UserId
@@ -89,7 +92,7 @@ namespace IntranetUWP.UserControls
             this.InitializeComponent();
         }
 
-        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        private async void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             if (SelectedFood != -1 && FoodList != null)
             {
@@ -97,6 +100,9 @@ namespace IntranetUWP.UserControls
                 SelectFoodCombobox.SelectedItem = selectedFood != null ? selectedFood : null;
             }
             SelectFoodCombobox.SelectionChanged += SelectFoodCombobox_SelectionChanged;
+
+            var teams = await httpHelper.GetByIdAsync<List<TeamsDTO>>(getTeamsByUserIdDataUrl, UserId);
+            TeamsText.Text = teams.Count == 0 ? "Not assigned to team yet" : string.Join(", ", teams.Select(t => t.TeamName));
         }
 
         private async void SelectFoodCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -115,5 +121,25 @@ namespace IntranetUWP.UserControls
         private void DisableUser_Click(object sender, RoutedEventArgs e) => DisableUser?.Invoke(UserId);
         private void RemoveSelectionSwipe_Invoked(SwipeItem sender, SwipeItemInvokedEventArgs args) => ClearSelection?.Invoke(UserId);
         private void DisableUserSwipe_Invoked(SwipeItem sender, SwipeItemInvokedEventArgs args) => DisableUser?.Invoke(UserId);
+
+        private void TeamCard_PointerEntered(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            Avatar.Scale = new Vector3(1.08f, 1.08f, 0);
+
+            EmployeeNameText.Translation = new Vector3(5, 0, 0);
+            TeamsText.Translation = new Vector3(10, 0, 0);
+            TeamsText.Opacity = 1;
+            CompanyText.Translation = new Vector3(5, 0, 0);
+        }
+
+        private void TeamCard_PointerExited(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            Avatar.Scale = new Vector3(1, 1, 0);
+
+            EmployeeNameText.Translation = new Vector3(0, 10, 0);
+            TeamsText.Translation = new Vector3(0, 0, 0);
+            TeamsText.Opacity = 0;
+            CompanyText.Translation = new Vector3(0, -10, 0);
+        }
     }
 }

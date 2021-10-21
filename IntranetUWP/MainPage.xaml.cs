@@ -8,13 +8,14 @@ namespace IntranetUWP
 { 
     public sealed partial class MainPage : Page
     {
+        public string ProfileImage { get; set; }
         public MainPage()
         {
             this.InitializeComponent();
             TheMainFrame.Navigate(typeof(FoodOrderPage));
             if(App.localSettings.Values["ProfilePic"] != null)
             {
-                ProfilePicture.ProfilePicture = new BitmapImage(new Uri(App.localSettings.Values["ProfilePic"] as string));
+                ProfileImage = App.localSettings.Values["ProfilePic"] as string;
             }
             if (App.localSettings.Values["FirstName"] != null)
             {
@@ -52,6 +53,9 @@ namespace IntranetUWP
                     break;
                 case "SettingsItem":
                     TheMainFrame.Navigate(typeof(SettingsPage));
+                    break;
+                case "Profile":
+                    TheMainFrame.Navigate(typeof(ProfilePage));
                     break;
                 default:
                     TheMainFrame.Navigate(typeof(FoodOrderPage));

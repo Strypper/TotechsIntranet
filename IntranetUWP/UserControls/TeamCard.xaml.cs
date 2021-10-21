@@ -1,6 +1,7 @@
 ﻿using IntranetUWP.Models;
 using System;
 using System.Linq;
+using Windows.ApplicationModel.Email;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
@@ -11,35 +12,47 @@ namespace IntranetUWP.UserControls
 {
     public sealed partial class TeamCard : UserControl
     {
-
-
-        public TeamsDTO Teams
+        public delegate void DeleteTeamCardEventHandler(int teamId);
+        public event DeleteTeamCardEventHandler DeleteTeam;
+        public TeamsDTO Team
         {
-            get { return (TeamsDTO)GetValue(TeamsProperty); }
-            set { SetValue(TeamsProperty, value); }
+            get { return (TeamsDTO)GetValue(TeamProperty); }
+            set { SetValue(TeamProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for Teams.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty TeamsProperty =
-            DependencyProperty.Register("Teams", typeof(TeamsDTO), typeof(TeamsDTO), new PropertyMetadata(null));
+        public static readonly DependencyProperty TeamProperty =
+            DependencyProperty.Register("Team", typeof(TeamsDTO), typeof(TeamsDTO), new PropertyMetadata(null));
 
 
         public TeamCard()
-        {
-            this.InitializeComponent();
-
-        }
+            => this.InitializeComponent();
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            if (Teams != null)
+            if (Team != null)
             {
-                var teachLead = Teams.Members.FirstOrDefault(m => m.id == Teams.TechLead);
+                var teachLead = Team.Members.FirstOrDefault(m => m.id == Team.TechLead);
                 if (teachLead != null)
                 {
                     TeamAvatar.ProfilePicture = new BitmapImage(new Uri(teachLead.profilePic));
                 }
             }
+        }
+
+        private void DeleteTeam_Click(object sender, RoutedEventArgs e)
+            => DeleteTeam?.Invoke(Team.id);
+
+        private async void SendMailToWholeTeam_Clicked(object sender, RoutedEventArgs e)
+        {
+            var emailMessage = new EmailMessage();
+            emailMessage.Subject = "Welcome new member";
+            emailMessage.Body = $"Dear {Team.TeamName}";
+
+            var emailRecipient = new EmailRecipient(string.Join("; ", Team.Members.Select(m => m.userName)));
+            emailMessage.To.Add(emailRecipient);
+
+            await EmailManager.ShowComposeNewEmailAsync(emailMessage);
         }
     }
 }

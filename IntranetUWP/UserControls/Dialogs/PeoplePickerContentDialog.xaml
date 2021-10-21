@@ -9,7 +9,7 @@
     mc:Ignorable="d"
     CornerRadius="5"
     Title="Employees"
-    PrimaryButtonText="Add"
+    PrimaryButtonText="Update"
     IsPrimaryButtonEnabled="True"
     DefaultButton="Primary"
     FocusVisualPrimaryBrush="{StaticResource SystemAccentColor}"
@@ -18,12 +18,14 @@
     PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
     SecondaryButtonClick="ContentDialog_SecondaryButtonClick">
 
-    <ListView ItemsSource="{x:Bind UsersList, Mode=OneWay}"
+    <ListView x:Name="MemberList"
+              Loaded="MemberList_Loaded"
+              ItemsSource="{x:Bind UsersList, Mode=TwoWay}"
               SelectionMode="Multiple">
         <ListView.ItemContainerTransitions>
             <TransitionCollection>
                 <EntranceThemeTransition IsStaggeringEnabled="True" 
-                                         FromHorizontalOffset="1450"/>
+                                         FromVerticalOffset="1450"/>
                 <AddDeleteThemeTransition/>
             </TransitionCollection>
         </ListView.ItemContainerTransitions>

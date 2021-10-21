@@ -12,12 +12,24 @@
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.19041.0</TargetPlatformVersion>
-    <TargetPlatformMinVersion>10.0.18362.0</TargetPlatformMinVersion>
+    <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WindowsXamlEnableOverview>true</WindowsXamlEnableOverview>
-    <AppxPackageSigningEnabled>false</AppxPackageSigningEnabled>
+    <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
+    <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
+    <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+    <AppxBundle>Always</AppxBundle>
+    <AppxBundlePlatforms>x86|x64|arm|arm64</AppxBundlePlatforms>
+    <PackageCertificateThumbprint>
+    </PackageCertificateThumbprint>
+    <PackageCertificateKeyFile>IntranetUWP_StoreKey.pfx</PackageCertificateKeyFile>
+    <AppInstallerUpdateFrequency>0</AppInstallerUpdateFrequency>
+    <AppInstallerCheckForUpdateFrequency>OnApplicationRun</AppInstallerCheckForUpdateFrequency>
+    <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
+    <GenerateTestArtifacts>True</GenerateTestArtifacts>
+    <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -120,13 +132,16 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\BoolToCompanyConverter.cs" />
+    <Compile Include="Converters\BoolToCompanyImageSourceConverter.cs" />
     <Compile Include="Converters\BoolToFrameworkAlignmentConverter.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\CompanyBoolToColorConverter.cs" />
     <Compile Include="Converters\CountToCollapseConverter.cs" />
     <Compile Include="Converters\CountToVisibilityConverter.cs" />
     <Compile Include="Converters\DoubleToPercentConverter.cs" />
+    <Compile Include="Converters\FullDateToDateConverter.cs" />
     <Compile Include="Converters\StringToImageSourceConverter.cs" />
+    <Compile Include="Converters\TechLeadIdToFullTechLeadInfoConverter.cs" />
     <Compile Include="Extensions\AnimationExtensions.cs" />
     <Compile Include="Extensions\CompositionExtensions.Clip.cs" />
     <Compile Include="Extensions\CompositionExtensions.Implicit.cs" />
@@ -155,18 +170,30 @@
     <Compile Include="Models\ChatMessageDTO.cs" />
     <Compile Include="Models\FoodDTO.cs" />
     <Compile Include="Models\LoginModel.cs" />
+    <Compile Include="Models\SkillDTO.cs" />
     <Compile Include="Models\TeamsDTO.cs" />
     <Compile Include="Models\UserDTO.cs" />
     <Compile Include="Models\UserFoodDTO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Ultils\DateToAgeHelper.cs" />
+    <Compile Include="Ultils\FoodImageDictionaries.cs" />
     <Compile Include="UserControls\AvatarUploadImage.xaml.cs">
       <DependentUpon>AvatarUploadImage.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\CreateFood.xaml.cs">
       <DependentUpon>CreateFood.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\CreateFoodV2.xaml.cs">
+      <DependentUpon>CreateFoodV2.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\DataGrid.xaml.cs">
       <DependentUpon>DataGrid.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\Dialogs\BioDialog.xaml.cs">
+      <DependentUpon>BioDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\Dialogs\CreateFoodDialog.xaml.cs">
+      <DependentUpon>CreateFoodDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\Dialogs\CreateTeamDialog.xaml.cs">
       <DependentUpon>CreateTeamDialog.xaml</DependentUpon>
@@ -174,11 +201,17 @@
     <Compile Include="UserControls\Dialogs\CreateUserContentDialog.xaml.cs">
       <DependentUpon>CreateUserContentDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\Dialogs\SkillDialog.xaml.cs">
+      <DependentUpon>SkillDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\FoodCard.xaml.cs">
       <DependentUpon>FoodCard.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\MemberCard.xaml.cs">
       <DependentUpon>MemberCard.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\MemberCarouselCard.xaml.cs">
+      <DependentUpon>MemberCarouselCard.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\MemberProfileCard.xaml.cs">
       <DependentUpon>MemberProfileCard.xaml</DependentUpon>
@@ -232,6 +265,9 @@
     <Compile Include="Views\PlayTimePage.xaml.cs">
       <DependentUpon>PlayTimePage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\ProfilePage.xaml.cs">
+      <DependentUpon>ProfilePage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\SettingsPage.xaml.cs">
       <DependentUpon>SettingsPage.xaml</DependentUpon>
     </Compile>
@@ -271,11 +307,6 @@
     <Content Include="Assets\AppLogoAssets\Square150x150Logo.scale-150.png" />
     <Content Include="Assets\AppLogoAssets\Square150x150Logo.scale-200.png" />
     <Content Include="Assets\AppLogoAssets\Square150x150Logo.scale-400.png" />
-    <Content Include="Assets\AppLogoAssets\Square44x44Logo.altform-lightunplated_targetsize-16.png" />
-    <Content Include="Assets\AppLogoAssets\Square44x44Logo.altform-lightunplated_targetsize-24.png" />
-    <Content Include="Assets\AppLogoAssets\Square44x44Logo.altform-lightunplated_targetsize-256.png" />
-    <Content Include="Assets\AppLogoAssets\Square44x44Logo.altform-lightunplated_targetsize-32.png" />
-    <Content Include="Assets\AppLogoAssets\Square44x44Logo.altform-lightunplated_targetsize-48.png" />
     <Content Include="Assets\AppLogoAssets\Square44x44Logo.altform-unplated_targetsize-16.png" />
     <Content Include="Assets\AppLogoAssets\Square44x44Logo.altform-unplated_targetsize-24.png" />
     <Content Include="Assets\AppLogoAssets\Square44x44Logo.altform-unplated_targetsize-256.png" />
@@ -334,6 +365,8 @@
     <Content Include="Assets\iDealogic.png" />
     <Content Include="Assets\AppLogoAssets\WordLogo.png" />
     <Content Include="Assets\AppLogoAssets\WordLogo.svg" />
+    <None Include="IntranetUWP_StoreKey.pfx" />
+    <None Include="Package.StoreAssociation.xml" />
     <Content Include="Properties\Default.rd.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -344,6 +377,10 @@
     <Page Include="MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\AnimatedMemberCard.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -357,7 +394,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UserControls\CreateFoodV2.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UserControls\DataGrid.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\Dialogs\BioDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\Dialogs\CreateFoodDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -369,11 +418,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UserControls\Dialogs\SkillDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UserControls\FoodCard.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\MemberCard.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\MemberCarouselCard.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -437,6 +494,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\ProfilePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\SettingsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -448,43 +509,49 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="DocumentFormat.OpenXml">
-      <Version>2.13.0</Version>
+      <Version>2.14.0-beta0001</Version>
     </PackageReference>
     <PackageReference Include="MaterialLibs">
       <Version>0.1.31</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client">
-      <Version>6.0.0-preview.6.21355.2</Version>
+      <Version>6.0.0-rc.2.21480.10</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
-      <Version>6.2.12</Version>
+      <Version>6.2.13</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit">
-      <Version>7.0.2</Version>
+      <Version>7.1.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp">
-      <Version>7.0.2</Version>
+      <Version>7.1.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications">
-      <Version>7.0.2</Version>
+      <Version>7.1.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.UI">
-      <Version>7.0.2</Version>
+      <Version>7.1.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Animations">
-      <Version>7.0.2</Version>
+      <Version>7.1.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Behaviors">
-      <Version>7.0.2</Version>
+      <Version>7.1.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Controls">
-      <Version>7.0.2</Version>
+      <Version>7.1.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Controls.Media">
+      <Version>7.1.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Lottie">
-      <Version>7.0.3</Version>
+      <Version>7.1.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Media">
+      <Version>7.1.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.UI.Xaml">
-      <Version>2.6.1</Version>
+      <Version>2.8.0-prerelease.210927001</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Xaml.Behaviors.Uwp.Managed">
       <Version>2.0.1</Version>
@@ -503,7 +570,7 @@
     <Content Include="Assets\IntranetLogin.json" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\lunchbox.json" />
+    <Content Include="Assets\FoodAssets\lunchbox.json" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\.editorconfig">
@@ -513,6 +580,7 @@
   <ItemGroup>
     <Content Include="Assets\DemoPurpose\Others\Laptop.json" />
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

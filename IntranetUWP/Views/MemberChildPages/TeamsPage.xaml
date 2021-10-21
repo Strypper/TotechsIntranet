@@ -17,64 +17,77 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
 
-    <GridView x:Name="TeamsGridView"
+    <Grid>
+        <GridView x:Name="TeamsGridView"
             ItemContainerStyle="{StaticResource GridViewItemRevealStyle}"
             ItemsSource="{x:Bind TeamsFiltered, Mode=OneWay}"
             HorizontalContentAlignment="Center"
+            VerticalAlignment="Stretch"
             animations:ItemsReorderAnimation.Duration="00:00:00.4000000"
             HorizontalAlignment="Center">
-        <interactivity:Interaction.Behaviors>
-            <behaviors:FadeHeaderBehavior  />
-        </interactivity:Interaction.Behaviors>
-        <GridView.Header>
-            <StackPanel HorizontalAlignment="Stretch"
-                        VerticalAlignment="Center">
-                <StackPanel.ChildrenTransitions>
-                    <TransitionCollection>
-                        <EntranceThemeTransition IsStaggeringEnabled="True"  
+            <interactivity:Interaction.Behaviors>
+                <behaviors:FadeHeaderBehavior  />
+            </interactivity:Interaction.Behaviors>
+            <GridView.Header>
+                <StackPanel HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center"
+                            Margin="0,0,0,15">
+                    <StackPanel.ChildrenTransitions>
+                        <TransitionCollection>
+                            <EntranceThemeTransition IsStaggeringEnabled="True"  
                                                  FromVerticalOffset="500"/>
-                        <AddDeleteThemeTransition/>
-                    </TransitionCollection>
-                </StackPanel.ChildrenTransitions>
-                <TextBlock Text="TEAMS"
+                            <AddDeleteThemeTransition/>
+                        </TransitionCollection>
+                    </StackPanel.ChildrenTransitions>
+                    <ProgressBar IsIndeterminate="{x:Bind IsBusy, Mode=OneWay}"
+                             Visibility="{x:Bind IsBusy, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Center">
+                        <FontIcon Glyph="&#xE902;"
+                                  FontSize="28"
+                                  VerticalAlignment="Center"/>
+                        <TextBlock Text="TEAMS"
                            TextAlignment="Center"
-                           FontSize="30"
-                           FontWeight="ExtraBold"/>
-                <AutoSuggestBox x:Name="FilterTeamSearchBox"
-                                MinWidth="300"
-                                Height="50"
-                                FontSize="30"
+                           FontSize="28"
+                           FontWeight="ExtraBold"
+                           Margin="5"/>
+                    </StackPanel>
+                    <AutoSuggestBox x:Name="FilterTeamSearchBox"
                                 Margin="0,0,15,0"
+                                MinWidth="400"
+                                MaxWidth="600"
+                                FontSize="18"
+                                QueryIcon="Find"
+                                FontWeight="Bold"
+                                PlaceholderText="Type to seach team"
                                 TextChanged="TeamsFilter_TextChanged"
-                                HorizontalAlignment="Stretch"
-                                HorizontalContentAlignment="Center"/>
-                <Button x:Name="CreateTeamButton"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Center"
-                        Width="60" Height="60"
+                                HorizontalAlignment="Stretch"/>
+                </StackPanel>
+            </GridView.Header>
+            <GridView.ItemContainerTransitions>
+                <TransitionCollection>
+                    <EntranceThemeTransition IsStaggeringEnabled="True"
+                                         FromVerticalOffset="1000"/>
+                    <AddDeleteThemeTransition/>
+                    <ContentThemeTransition />
+                </TransitionCollection>
+            </GridView.ItemContainerTransitions>
+            <GridView.ItemTemplate>
+                <DataTemplate x:DataType="model:TeamsDTO">
+                    <customcontrol:TeamCard Team="{x:Bind}"
+                                        DeleteTeam="TeamCard_DeleteTeam"/>
+                </DataTemplate>
+            </GridView.ItemTemplate>
+        </GridView>
+        <Button x:Name="CreateTeamButton"
+                        VerticalAlignment="Bottom"
+                        HorizontalAlignment="Right"
+                        Width="50" Height="50"
                         Content="&#xE109;"
                         FontFamily="Segoe MDL2 Assets"
                         Click="CreateTeamButton_Click"
-                        FontSize="30"
-                        Margin="5">
-                    <Button.Background>
-                        <helpers:AnimatedGradientBrush/>
-                    </Button.Background>
-                </Button>
-            </StackPanel>
-        </GridView.Header>
-        <GridView.ItemContainerTransitions>
-            <TransitionCollection>
-                <EntranceThemeTransition IsStaggeringEnabled="True"
-                                         FromVerticalOffset="1000"/>
-                <AddDeleteThemeTransition/>
-                <ContentThemeTransition />
-            </TransitionCollection>
-        </GridView.ItemContainerTransitions>
-        <GridView.ItemTemplate>
-            <DataTemplate x:DataType="model:TeamsDTO">
-                <customcontrol:TeamCard Teams="{x:Bind}"/>
-            </DataTemplate>
-        </GridView.ItemTemplate>
-    </GridView>
+                        FontSize="25"
+                        Margin="15"
+                        Background="{ThemeResource SystemAccentColor}" />
+    </Grid>
 </Page>

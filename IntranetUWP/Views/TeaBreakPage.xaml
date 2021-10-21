@@ -11,8 +11,11 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <ScrollViewer>
-        <StackPanel>
-            <StackPanel.ChildrenTransitions>
+
+        <winui:WebView2 Source="https://teams.microsoft.com/" 
+                        VerticalAlignment="Stretch"/>
+        <!--<StackPanel>
+            --><!--<StackPanel.ChildrenTransitions>
                 <TransitionCollection>
                     <EntranceThemeTransition FromVerticalOffset="1000"
                                              IsStaggeringEnabled="True" />
@@ -58,45 +61,14 @@
                     </winui:ItemsRepeater.Layout>
                     <winui:ItemsRepeater.ItemTemplate>
                         <DataTemplate x:DataType="data:TeamsDTO">
-                            <usercontrols:TeamCard Teams="{x:Bind}"/>
+                            <usercontrols:TeamCard Team="{x:Bind}"/>
                         </DataTemplate>
                     </winui:ItemsRepeater.ItemTemplate>
                 </winui:ItemsRepeater>
-            </ScrollViewer>
-            <usercontrols:PreviewAvatarsGroup/>
-            <winui:BreadcrumbBar ItemsSource="{x:Bind vm.Foods}">
-                <winui:BreadcrumbBar.ItemTemplate>
-                    <DataTemplate x:DataType="data:FoodDTO">
-                        <TextBlock Text="{x:Bind itemNo}"/>
-                    </DataTemplate>
-                </winui:BreadcrumbBar.ItemTemplate>
-            </winui:BreadcrumbBar>
-            <winui:BreadcrumbBarItem Content="Hello"/>
-            <winui:BreadcrumbBarItem Content="The Breadcrumb"/>
-            <!--<winui1:PagerControl NumberOfPages="10" ButtonPanelAlwaysShowFirstLastPageIndex="True"/>-->
-            <winui:PipsPager NumberOfPages="10" 
-                             NextButtonVisibility="VisibleOnPointerOver" 
-                             PreviousButtonVisibility="VisibleOnPointerOver"/>
-            <winui:TabView TabItemsSource="{x:Bind vm.Foods}" Background="LightGreen">
-                <winui:TabView.TabStripHeaderTemplate>
-                    <DataTemplate x:DataType="data:FoodDTO">
-                        <TextBlock Text="{x:Bind foodName}"/>
-                    </DataTemplate>
-                </winui:TabView.TabStripHeaderTemplate>
-                <winui:TabView.TabItemTemplate>
-                    <DataTemplate x:DataType="data:FoodDTO">
-                        <TextBlock Text="{x:Bind foodEnglishName}"/>
-                    </DataTemplate>
-                </winui:TabView.TabItemTemplate>
-            </winui:TabView>
-            <winui:ToggleSplitButton Content="Bruh"/>
-            <winui:ColorPicker/>
-            <winui:InfoBar Content="Bruh bruh" IsOpen="True"/>
-            <winui:ProgressBar IsIndeterminate="True"/>
-            <winui:RatingControl/>
-            <winui:PersonPicture/>
+            </ScrollViewer>-->
 
-            <Canvas x:Name="canvas"
+
+            <!--<Canvas x:Name="canvas"
                     Height="1000" HorizontalAlignment="Stretch" Background="Red"
                     PointerMoved="Canvas_PointerEntered">
                 <Rectangle x:Name="YellowRec" Canvas.Left="671.333312988281" Canvas.Top="650"
@@ -111,7 +83,7 @@
                         <Vector3Transition />
                     </Rectangle.ScaleTransition>
                 </Rectangle>
-            </Canvas>
-        </StackPanel>
+            </Canvas>--><!--
+        </StackPanel>-->
     </ScrollViewer>
 </Page>

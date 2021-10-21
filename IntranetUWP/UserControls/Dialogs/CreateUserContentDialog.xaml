@@ -7,7 +7,7 @@
     xmlns:usercontrols="using:IntranetUWP.UserControls" 
     xmlns:muxc="using:Windows.UI.Xaml.Controls"
     xmlns:ui="using:Microsoft.Toolkit.Uwp.UI"
-    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls" xmlns:model="using:IntranetUWP.Models"
     mc:Ignorable="d"
     Title="😀 NEW MEMBER"
     DefaultButton="Primary"
@@ -43,14 +43,36 @@
                     <TextBox x:Name="MiddleName" Header="Middle Name" HorizontalAlignment="Stretch" Margin="5"/>
                     <TextBox x:Name="LastName" Grid.Column="1" Header="Last Name" HorizontalAlignment="Stretch" Margin="0,5,5,5"/>
                 </Grid>
-                <Slider x:Name="AgeSlider" Header="Age" Minimum="18" Maximum="80" TickFrequency="1" TickPlacement="Outside" Margin="5"/>
-                <controls:TokenizingTextBox
-                    x:Name="TeamsFinder"
-                    Width="400"
-                    QueryIcon="{ui:SymbolIconSource Symbol=Find}"
-                    HorizontalAlignment="Center"
-                    Header="Teams:"
-                    Margin="5"/>
+                <DatePicker x:Name="DateOfBirthPicker"
+                            Header="Date of birth"
+                            HorizontalAlignment="Stretch"
+                            Margin="5"/>
+                <Border CornerRadius="5"
+                        Padding="0"
+                        Margin="5">
+                    <controls:TokenizingTextBox
+                            x:Name="TeamsFinder"
+                            Width="400"
+                            HorizontalAlignment="Center"
+                            Header="Teams (Not ready)"
+                            IsEnabled="False"
+                            SuggestionChosen="TeamsFinder_SuggestionChosen">
+                        <controls:TokenizingTextBox.SuggestedItemTemplate>
+                            <DataTemplate x:DataType="model:TeamsDTO">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{x:Bind TeamName}" Padding="4,0,0,0"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </controls:TokenizingTextBox.SuggestedItemTemplate>
+                        <controls:TokenizingTextBox.TokenItemTemplate>
+                            <DataTemplate x:DataType="model:TeamsDTO">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{x:Bind TeamName}" Padding="4,0,0,0"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </controls:TokenizingTextBox.TokenItemTemplate>
+                    </controls:TokenizingTextBox>
+                </Border>
                 <TextBox x:Name="Role" 
                          Header="Role" 
                          PlaceholderText="Fullstack dev, Manager, etc..."
@@ -67,8 +89,8 @@
                             <EntranceThemeTransition IsStaggeringEnabled="True"  FromHorizontalOffset="1000"/>
                         </TransitionCollection>
                     </StackPanel.ChildrenTransitions>
-                    <ToggleButton x:Name="iDealogicToggle" Content="iDealogic" Click="iDealogicToggle_Click" Margin="5" Style="{StaticResource ToggleButtonRevealStyle}"/>
-                    <ToggleButton x:Name="DevinitionToggle" Content="Devinition" Click="DeviToggle_Click" Margin="0,5,5,5" Style="{StaticResource ToggleButtonRevealStyle}"/>
+                    <ToggleButton x:Name="iDealogicToggle" Width="100" Content="iDealogic" Click="iDealogicToggle_Click" Margin="5" Style="{StaticResource ToggleButtonRevealStyle}"/>
+                    <ToggleButton x:Name="DevinitionToggle" Width="100" Content="Devinition" Click="DeviToggle_Click" Margin="0,5,5,5" Style="{StaticResource ToggleButtonRevealStyle}"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                     <StackPanel.ChildrenTransitions>
@@ -78,12 +100,14 @@
                     </StackPanel.ChildrenTransitions>
                     <ToggleButton x:Name="BoyToggle" 
                                   Margin="5" 
+                                  Width="100"
                                   Style="{StaticResource ToggleButtonRevealStyle}" 
-                                  Content="Boy"/>
+                                  Content="Male"/>
                     <ToggleButton x:Name="GirlToggle" 
-                                  Margin="0,5,5,5" 
+                                  Margin="0,5,5,5"
+                                  Width="100"
                                   Style="{StaticResource ToggleButtonRevealStyle}" 
-                                  Content="Girl"/>
+                                  Content="Female"/>
                 </StackPanel>
                 <muxc:ProgressBar x:Name="WorkingBar" 
                                       Visibility="Collapsed" IsIndeterminate="True" Margin="5"/>

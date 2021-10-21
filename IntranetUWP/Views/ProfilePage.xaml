@@ -1,0 +1,390 @@
+﻿<Page
+    x:Class="IntranetUWP.Views.ProfilePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:IntranetUWP.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls" 
+    xmlns:models="using:IntranetUWP.Models" 
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    mc:Ignorable="d" Loaded="Page_Loaded"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Page.Resources>
+        <DataTemplate x:Key="SkillTemplate"
+                      x:DataType="models:SkillDTO">
+            <StackPanel>
+                <TextBlock FontWeight="Bold"
+                           Text="{x:Bind Name}"
+                           Margin="5"/>
+                <ProgressBar x:Name="SkillValueBar"
+                             Value="{x:Bind SkillValue}" 
+                             Margin="0,0,0,10" CornerRadius="2"/>
+            </StackPanel>
+        </DataTemplate>
+        <DataTemplate x:Key="TeamFlipViewCard"
+                      x:DataType="models:TeamsDTO">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="3*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock HorizontalAlignment="Center"
+                           VerticalAlignment="Top"
+                           Text="{x:Bind TeamName}"
+                           TextAlignment="Center"
+                           FontWeight="ExtraBold"
+                           FontSize="30"
+                           Grid.Row="0"/>
+                <PersonPicture HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Width="100"
+                               Grid.Row="1"
+                               ProfilePicture="{x:Bind local:ProfilePage.GetUserInfo(TechLead, (models:TeamsDTO)), Mode=OneWay}"/>
+                <muxc:ItemsRepeater ItemsSource="{x:Bind Members, Mode=OneWay}"
+                                    Grid.Row="2"
+                                    VerticalAlignment="Bottom"
+                                    HorizontalAlignment="Center">
+                    <muxc:ItemsRepeater.Layout>
+                        <muxc:StackLayout Orientation="Horizontal"/>
+                    </muxc:ItemsRepeater.Layout>
+                    <muxc:ItemsRepeater.ItemTemplate>
+                        <DataTemplate x:DataType="models:UserDTO">
+                            <PersonPicture ProfilePicture="{x:Bind profilePic, Mode=OneWay}"
+                                           Width="40" Margin="5,0,5,5"/>
+                        </DataTemplate>
+                    </muxc:ItemsRepeater.ItemTemplate>
+                </muxc:ItemsRepeater>
+            </Grid>
+        </DataTemplate>
+    </Page.Resources>
+
+    <Grid x:Name="MainPage">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.8*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="0.7*"/>
+        </Grid.ColumnDefinitions>
+
+        <ListView x:Name="SkillsList" 
+                  Margin="15"
+                  CornerRadius="3"
+                  ItemTemplate="{StaticResource SkillTemplate}"
+                  Background="{ThemeResource SystemAltHighColor}"
+                  ItemsSource="{x:Bind User.skills, Mode=TwoWay}">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.ItemContainerTransitions>
+                <TransitionCollection>
+                    <EntranceThemeTransition IsStaggeringEnabled="True" 
+                                             FromVerticalOffset="450"/>
+                    <AddDeleteThemeTransition/>
+                </TransitionCollection>
+            </ListView.ItemContainerTransitions>
+            <ListView.Header>
+                <TextBlock Text="Skills"
+                           TextDecorations="Underline"
+                           FontWeight="Bold"
+                           FontSize="30"
+                           Margin="15,5,5,5"/>
+            </ListView.Header>
+            <ListView.Footer>
+                <Button Grid.Row="1"
+                        VerticalAlignment="Stretch"
+                        HorizontalAlignment="Stretch"
+                        Margin="5,5,5,10"
+                        Click="AddSkill_Click"
+                        CornerRadius="3"
+                        Background="{StaticResource SystemAccentColor}">
+                    <SymbolIcon x:Name="SkillsSymbol" Symbol="Add" />
+                </Button>
+            </ListView.Footer>
+        </ListView>
+        <ScrollViewer
+              Grid.Row="1"
+              CornerRadius="3"
+              Margin="15,0,15,15"
+              Background="{ThemeResource SystemAltHighColor}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="0.2*"/>
+                </Grid.RowDefinitions>
+                <StackPanel Padding="5">
+                    <TextBlock
+                       Text="Bio"
+                       FontWeight="Bold"
+                       FontSize="30"
+                       TextDecorations="Underline"
+                       Margin="5,5,5,0"/>
+                    <TextBlock x:Name="Bio"
+                               TextWrapping="Wrap" 
+                               Margin="5,5,5,0"
+                               Text="{x:Bind User.bio, Mode=OneWay}"/>
+                </StackPanel>
+                <Button Grid.Row="1"
+                        HorizontalAlignment="Stretch"
+                        Margin="5,0,5,5"
+                        Click="BioEdit_Click"
+                        CornerRadius="3"
+                        Background="{StaticResource SystemAccentColor}">
+                    <SymbolIcon x:Name="BioSymbol" Symbol="Add" />
+                </Button>
+            </Grid>
+        </ScrollViewer>
+        <Grid Grid.Row="2">
+            <StackPanel Background="{ThemeResource SystemAltHighColor}"
+                        CornerRadius="3"
+                        Padding="5"
+                        Margin="15,0,15,15">
+                <TextBlock FontWeight="Bold"
+                           FontSize="30"
+                           TextDecorations="Underline"
+                           Text="Equiqments"
+                           Margin="5"/>
+            </StackPanel>
+            <TextBlock Text="&#xE72E;"
+                       FontFamily="Segoe MDL2 Assets"
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Top"
+                       Margin="0,15,30,0" FontSize="20"
+                       Foreground="{StaticResource SystemAccentColor}"
+                       ToolTipService.ToolTip="Only IT-Desk can be able to edit these infomation"/>
+        </Grid>
+        <Grid Grid.Column="1"
+              Grid.RowSpan="2"
+              CornerRadius="3"
+              Margin="0,15,0,15"
+              Background="{ThemeResource SystemAltHighColor}">
+            <StackPanel VerticalAlignment="Center"
+                        Padding="5">
+                <Grid>
+                    <controls:RadialProgressBar
+                        x:Name="ProgressBar"
+                        Maximum="100"
+                        Minimum="0"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        Thickness="15"
+                        Height="250"
+                        Width="250">
+                        <controls:RadialProgressBar.Triggers>
+                            <EventTrigger>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="ProgressBar"
+                                                         Storyboard.TargetProperty="Value"
+                                                         EnableDependentAnimation="True"
+                                                         From="0" Duration="0:0:5"
+                                                         To="80">
+                                            <DoubleAnimation.EasingFunction>
+                                                <CubicEase/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </controls:RadialProgressBar.Triggers>
+                    </controls:RadialProgressBar>
+                    <StackPanel HorizontalAlignment="Center"
+                                VerticalAlignment="Center">
+                        <TextBlock Text="&#x1F44D;"
+                                   FontFamily="Segoe UI Emoji"
+                                   HorizontalAlignment="Center"
+                                   FontSize="80"
+                                   Foreground="{StaticResource SystemAccentColor}"/>
+                        <TextBlock HorizontalAlignment="Center"
+                                   FontSize="35" FontWeight="ExtraBold">
+                            <Run Text="{x:Bind ProgressBar.Value, Mode=OneWay
+                                             , Converter={StaticResource DoubleToPercentConverter}}"/>
+                        </TextBlock>
+                    </StackPanel>
+                </Grid>
+                <TextBlock Text="THE STAYING LATE"
+                           TextAlignment="Center"
+                           FontSize="35"
+                           Margin="5,0,5,15"
+                           TextDecorations="Underline"
+                           FontWeight="ExtraBold"
+                           HorizontalAlignment="Center"/>
+                <TextBlock FontSize="20"
+                           Margin="5,5,0,5"
+                           VerticalAlignment="Bottom"
+                           HorizontalAlignment="Center">
+                        <Run Text="&#xE821;" FontFamily="Segoe MDL2 Assets"/>
+                        <Run Text="Role: "/>
+                        <Run Text="{x:Bind User.role, Mode=OneWay}"/>
+                </TextBlock>
+                <TextBlock HorizontalAlignment="Center"
+                               VerticalAlignment="Bottom"
+                               FontSize="20">
+                        <Run Text="&#xECA7;" FontFamily="Segoe MDL2 Assets"/>
+                        <Run Text="Level: "/>
+                        <Run Text="{x:Bind User.level, Mode=OneWay}"/>
+                </TextBlock>
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Center"
+                            Margin="5">
+                    <StackPanel.ChildrenTransitions>
+                        <TransitionCollection>
+                            <EntranceThemeTransition IsStaggeringEnabled="True"  
+                                                         FromVerticalOffset="500"/>
+                        </TransitionCollection>
+                    </StackPanel.ChildrenTransitions>
+                    <Button Margin="0,0,5,0">
+                        <TextBlock>
+                            <Run Text="&#x1F917;" FontFamily="Segoe UI Emoji"/>
+                            <Run Text="Friendly:"/>
+                            <Run Text="30"/>
+                        </TextBlock>
+                    </Button>
+                    <Button Margin="0,0,5,0">
+                        <TextBlock>
+                            <Run Text="&#x1F923;" FontFamily="Segoe UI Emoji"/>
+                            <Run Text="Funny: "/>
+                            <Run Text="44"/>
+                        </TextBlock>
+                    </Button>
+                    <Button>
+                        <TextBlock>
+                            <Run Text="&#x1F64C;" FontFamily="Segoe UI Emoji"/>
+                            <Run Text="Enthusiastic:"/>
+                            <Run Text="10"/>
+                        </TextBlock>
+                    </Button>
+                </StackPanel>
+            </StackPanel>
+            <TextBlock Text="&#xE72E;"
+                       FontFamily="Segoe MDL2 Assets"
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Top"
+                       Margin="15" FontSize="20"
+                       Foreground="{StaticResource SystemAccentColor}"
+                       ToolTipService.ToolTip="Only HR can be able to edit these infomation"/>
+        </Grid>
+        <Grid Grid.Row="2"
+              Grid.Column="1"
+              Padding="5"
+              Margin="0,0,0,15"
+              CornerRadius="3"
+              Background="{ThemeResource SystemAltHighColor}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <TextBlock HorizontalAlignment="Center"
+                       Text="TEAMS"
+                       TextAlignment="Center"
+                       TextDecorations="Underline"
+                       FontWeight="ExtraBold"
+                       FontSize="25"/>
+            <FlipView x:Name="TeamsCards"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"
+                      CornerRadius="2"
+                      Grid.Row="1"
+                      Margin="5,0,5,5"
+                      ItemTemplate="{StaticResource TeamFlipViewCard}"/>
+        </Grid>
+        <Border Grid.RowSpan="3"
+                Grid.Column="2"
+                Margin="15"
+                CornerRadius="3"
+                Background="{ThemeResource SystemAltHighColor}"/>
+        <Grid  Grid.Column="2"
+               Grid.RowSpan="2"
+               CornerRadius="3"
+               Margin="25">
+            <Image x:Name="ProfileImage"
+                   VerticalAlignment="Stretch"
+                   HorizontalAlignment="Stretch"
+                   Stretch="UniformToFill"
+                   Source="{x:Bind User.profilePic,
+                            Mode=OneWay, 
+                            Converter={StaticResource StringToImageSourceConverter}}"/>
+            <Border VerticalAlignment="Bottom"
+                    HorizontalAlignment="Stretch">
+                <StackPanel Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}">
+                    <TextBlock FontSize="30"
+                       FontWeight="Bold"
+                       TextAlignment="Center"
+                       TextDecorations="Underline"
+                       Margin="0,0,0,5">
+                        <Run Text="{x:Bind User.lastName, Mode=OneWay}"/>
+                        <Run Text="{x:Bind User.middleName, Mode=OneWay}"/>
+                        <Run Text="{x:Bind User.firstName, Mode=OneWay}"/>
+                    </TextBlock>
+                    <TextBlock Text="{x:Bind User.dateOfBirth, Mode=OneWay,
+                                      Converter={StaticResource FullDateToDateConverter}}"
+                               FontWeight="Bold"
+                               TextAlignment="Center"
+                               HorizontalAlignment="Center"
+                               Margin="0,0,0,5"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+        <Grid Grid.Column="2"
+              Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="0.2*"/>
+            </Grid.RowDefinitions>
+            <ScrollViewer>
+                <StackPanel CornerRadius="2"
+                        Padding="5,0,5,5"
+                        Margin="15,0,15,15">
+                    <TextBox Header="Phone Number 📱"
+                             PlaceholderText="+84 9999 9999 999"
+                             Text="{x:Bind User.phoneNumber, Mode=TwoWay}"
+                             Margin="5"/>
+                    <TextBox Header="Where are you from 🌍 ?"
+                             PlaceholderText="Ex: Viet Nam, Ireland"
+                             Text="{x:Bind User.country,Mode=TwoWay}"
+                             Margin="5,0,5,5"/>
+                    <TextBox Header="Where did you used to work 💼 ?"
+                             PlaceholderText="Ex: Worked at Ceres, Hochiminh City, Viet Nam"
+                             Text="{x:Bind User.former, Mode=TwoWay}"
+                             Margin="5,0,5,5"/>
+                    <TextBox Header="Your relationship status ❤️ ?"
+                             PlaceholderText="Ex: Single, In Relationship, Married"
+                             Text="{x:Bind User.relationship, Mode=TwoWay}"
+                             Margin="5,0,5,5"/>
+                    <TextBox Header="What are your hobbies ⚽ ?"
+                             PlaceholderText="Ex: 🎮Games, ⚖️Politic, 📖Reading, ⚽Soccer"
+                             Text="{x:Bind User.hobby, Mode=TwoWay}"
+                             Margin="5,0,5,5"/>
+                    <PasswordBox Header="Change your password" 
+                                 Margin="5,0,5,5" IsEnabled="False"/>
+                </StackPanel>
+            </ScrollViewer>
+            <Button Background="{StaticResource SystemAccentColor}"
+                    Click="UpdateInfo_Click"
+                    HorizontalAlignment="Center"
+                    Grid.Row="1">
+                <StackPanel Orientation="Horizontal">
+                    <FontIcon FontFamily="Segoe MDL2 Assets" 
+                              Glyph="&#xE13D;"
+                              Margin="5"/>
+                    <TextBlock Text="Update your information"
+                               Margin="5"/>
+                </StackPanel>
+            </Button>
+        </Grid>
+        <muxc:InfoBar x:Name="PageStatus"
+                      IsOpen="False"
+                      IsIconVisible="True"
+                      IsClosable="True"
+                      HorizontalAlignment="Center"
+                      Grid.ColumnSpan="3"
+                      Margin="25"/>
+    </Grid>
+</Page>

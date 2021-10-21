@@ -1,6 +1,7 @@
 ﻿using IntranetUWP.Models;
 using Newtonsoft.Json;
 using System;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -38,7 +39,7 @@ namespace IntranetUWP.ViewModels.PagesViewModel
 				var response = await httpClient.PostAsync(loginUrl, content);
 				var result = await response.Content.ReadAsStringAsync();
 				_ = response.EnsureSuccessStatusCode();
-				if (response.StatusCode.ToString() == "OK")
+				if (response.StatusCode == HttpStatusCode.OK)
 				{
 					var userInfo = JsonConvert.DeserializeObject<UserDTO>(result);
 					if (RemainSignIn == true)

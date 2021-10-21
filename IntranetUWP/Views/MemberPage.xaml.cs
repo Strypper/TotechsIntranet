@@ -17,13 +17,13 @@ namespace IntranetUWP.Views
             MemberMainFrame.Navigate(typeof(iDealogicMemberPage));
         }
 
-        private void NavigationViewPanel_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
+        private void NavigationViewPanel_SelectionChanged(Microsoft.UI.Xaml.Controls.NavigationView sender, Microsoft.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs args)
         {
-            NavigationViewItem item = args.SelectedItem as NavigationViewItem;
+            var item = args.SelectedItem as Microsoft.UI.Xaml.Controls.NavigationViewItem;
             NavView_Navigate(item);
         }
 
-        private void NavView_Navigate(NavigationViewItem item)
+        private void NavView_Navigate(Microsoft.UI.Xaml.Controls.NavigationViewItem item)
         {
             switch (item.Name)
             {

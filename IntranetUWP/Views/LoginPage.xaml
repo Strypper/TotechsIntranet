@@ -73,11 +73,15 @@
 								 Header="Username"
 								 Text="{x:Bind ViewModel.Username}" />
 
-						<PasswordBox MinWidth="360"
+                        <PasswordBox MinWidth="360"
 									 HorizontalAlignment="Center"
 									 d:Header="Password"
 									 Header="Password"
-									 Password="{x:Bind ViewModel.Password}" />
+									 Password="{x:Bind ViewModel.Password}" >
+                            <PasswordBox.KeyboardAccelerators>
+                                <KeyboardAccelerator Key="Enter" Invoked="PasswordEnter_Click" />
+                            </PasswordBox.KeyboardAccelerators>
+                        </PasswordBox>
 
 						<CheckBox d:Content="Remain sign-in"
 								  d:IsChecked="True"

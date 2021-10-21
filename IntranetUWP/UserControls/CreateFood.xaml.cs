@@ -38,6 +38,7 @@ namespace IntranetUWP.UserControls
             this.InitializeComponent();
             DefaultOption.IsChecked = true;
         }
+
         private void ContentDialog_Loaded(object sender, RoutedEventArgs e)
         {
             if(Food != null && Food.itemNo != 0)
@@ -118,7 +119,9 @@ namespace IntranetUWP.UserControls
                 UnavaibleButton.IsChecked = Food.IsUnavailable;
             }
         }
+
         public event PropertyChangedEventHandler PropertyChanged;
+
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
         private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)

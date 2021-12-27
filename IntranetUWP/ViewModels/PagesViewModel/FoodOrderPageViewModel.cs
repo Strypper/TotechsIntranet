@@ -106,7 +106,7 @@ namespace IntranetUWP.ViewModels.PagesViewModel
             editFoodCommand = new RelayCommand(async () => await EditFood());
             getUserCommand = new RelayCommand(async () => await GetUserFoodsData());
             getFoodFromClipboard = new RelayCommand(async () => await PasteFoodFromClipboard());
-            notifyTeamCommand = new RelayCommand(async () => NotifyTeam());
+            notifyTeamCommand = new RelayCommand(() => NotifyTeam());
             generateWordDocument = new RelayCommand(async () => await GenerateWordDocument());
         }
         private async Task GetAllFood() 

@@ -8,8 +8,8 @@
 	  xmlns:local="using:IntranetUWP.Views"
 	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	  xmlns:media="using:Microsoft.UI.Xaml.Media"
-	  xmlns:winui="using:Microsoft.UI.Xaml.Controls"
-	  Loaded="Page_Loaded"
+	  xmlns:winui="using:Microsoft.UI.Xaml.Controls" xmlns:usercontrols="using:IntranetUWP.UserControls"
+      Loaded="Page_Loaded"
 	  NavigationCacheMode="Enabled"
 	  mc:Ignorable="d">
 
@@ -43,105 +43,72 @@
 		<SplitView x:Name="splitViewPane"
 				   Margin="5"
 				   HorizontalAlignment="Stretch"
-				   CompactPaneLength="55"
 				   CornerRadius="5"
-				   DisplayMode="CompactInline"
+				   DisplayMode="Inline"
 				   IsPaneOpen="True"
 				   PaneBackground="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
 				   PanePlacement="Left">
 			<SplitView.Pane>
-				<StackPanel HorizontalAlignment="Stretch" 
-                            Background="{StaticResource AcrylicInAppFillColorDefaultBrush}">
-					<controls:DockPanel HorizontalAlignment="Stretch"
+				<Grid HorizontalAlignment="Stretch" 
+                      Background="{StaticResource AcrylicInAppFillColorDefaultBrush}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <controls:DockPanel HorizontalAlignment="Stretch"
 										VerticalAlignment="Top"
 										LastChildFill="True">
-						<Button Margin="5"
-								HorizontalAlignment="Right"
-								VerticalAlignment="Center"
-								controls:DockPanel.Dock="Left"
-								Background="Transparent"
-								Click="HamburgerButton_Click"
-								FontFamily="Segoe MDL2 Assets"
-								FontSize="25">
-							<SymbolIcon Symbol="Comment" />
-						</Button>
-						<TextBlock Margin="5"
-								   VerticalAlignment="Center"
-								   controls:DockPanel.Dock="Right"
-								   FontWeight="Bold"
-								   Text="Chat Hub (beta)" />
-					</controls:DockPanel>
-					<controls:DockPanel HorizontalAlignment="Stretch"
-										VerticalAlignment="Top"
-										LastChildFill="True">
-						<Button x:Name="AddChannel"
-								Margin="5"
-								HorizontalAlignment="Right"
-								VerticalAlignment="Center"
-								controls:DockPanel.Dock="Left"
-								Background="{ThemeResource SystemAccentColor}"
-								Click="AddChannel_Click"
-								FontFamily="Segoe MDL2 Assets"
-                                IsEnabled="False"
-								FontSize="25">
-							<SymbolIcon Symbol="Add" />
-						</Button>
-						<TextBlock Margin="5"
-								   VerticalAlignment="Center"
-								   controls:DockPanel.Dock="Right"
-								   Text="Create Channel" />
-					</controls:DockPanel>
-					<winui:TreeView x:Name="sampleTreeView"
-									HorizontalAlignment="Stretch"
-									AllowDrop="False"
-									CanDrag="False"
-									CanDragItems="False"
-									CanReorderItems="False"
-                                    IsEnabled="False"
-									ItemsSource="{x:Bind DataSource}">
-						<winui:TreeView.ItemContainerTransitions>
-							<TransitionCollection>
-								<ContentThemeTransition />
-								<AddDeleteThemeTransition />
-							</TransitionCollection>
-						</winui:TreeView.ItemContainerTransitions>
-						<winui:TreeView.ItemTemplate>
-							<DataTemplate x:DataType="local:ExplorerItem">
-								<winui:TreeViewItem Grid.Column="0"
-													HorizontalAlignment="Stretch"
-													AutomationProperties.Name="{x:Bind Name}"
-													IsExpanded="True"
-													ItemsSource="{x:Bind Children}">
-									<StackPanel Orientation="Horizontal">
-										<Button Background="Transparent"
-												BorderBrush="Transparent"
-												Click="Emoji_Click"
-												Content="{x:Bind IconProp}"
-												FontFamily="{ThemeResource SymbolThemeFontFamily}"
-												FontSize="18"
-												Foreground="{x:Bind Color}">
-											<Button.Flyout>
-												<Flyout>
-													<StackPanel>
-														<Button Margin="5">
-															<SymbolIcon Symbol="Setting" />
-														</Button>
-														<Button Margin="5">
-															<SymbolIcon Symbol="PostUpdate" />
-														</Button>
-													</StackPanel>
-												</Flyout>
-											</Button.Flyout>
-										</Button>
-										<TextBlock VerticalAlignment="Center"
-												   controls:DockPanel.Dock="Left"
-												   Text="{x:Bind Name}" />
-									</StackPanel>
-								</winui:TreeViewItem>
-							</DataTemplate>
-						</winui:TreeView.ItemTemplate>
-					</winui:TreeView>
-				</StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Grid>
+                                <PersonPicture Margin="5"
+											   Width="60"
+                                               VerticalAlignment="Center"
+                                               HorizontalAlignment="Center"/>
+                                <FontIcon FontFamily="Segoe UI Emoji" Glyph="&#x1F7E2;" 
+                                          VerticalAlignment="Bottom"
+                                          HorizontalAlignment="Right"
+                                          Margin="0,0,5,5"/>
+                            </Grid>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="Strypper"/>
+                                <TextBlock Text="Senior Developer"
+                                           Margin="0,10,0,0"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </controls:DockPanel>
+                    <Pivot Grid.Row="1"
+                           VerticalAlignment="Stretch">
+                        <PivotItem>
+                            <PivotItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <FontIcon Glyph="&#xE169;" Margin="0,0,5,0"/>
+                                    <TextBlock Text="Channels" FontSize="14"
+                                               VerticalAlignment="Bottom"/>
+                                </StackPanel>
+                            </PivotItem.Header>
+                            <usercontrols:ChannelChatUserControl/>
+                        </PivotItem>
+                        <PivotItem>
+                            <PivotItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <FontIcon Glyph="&#xE15F;" Margin="0,0,5,0"/>
+                                    <TextBlock Text="Recent" FontSize="14"
+                                               VerticalAlignment="Bottom"/>
+                                </StackPanel>
+                            </PivotItem.Header>
+                            <usercontrols:RecentChat/>
+                        </PivotItem>
+                        <PivotItem>
+                            <PivotItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <FontIcon Glyph="&#xE716;" Margin="0,0,5,0"/>
+                                    <TextBlock Text="Members" FontSize="14"
+                                               VerticalAlignment="Bottom"/>
+                                </StackPanel>
+                            </PivotItem.Header>
+                        </PivotItem>
+                    </Pivot>
+                </Grid>
 			</SplitView.Pane>
 			<SplitView.Content>
 				<Grid MaxWidth="1000">
@@ -160,30 +127,42 @@
 							</ItemsPanelTemplate>
 						</ListView.ItemsPanel>
 						<ListView.Header>
-							<TextBlock Margin="5"
+                            <StackPanel Orientation="Horizontal">
+                                <Button Margin="5"
+										HorizontalAlignment="Right"
+										VerticalAlignment="Center"
+										controls:DockPanel.Dock="Left"
+										Background="Transparent"
+										Click="HamburgerButton_Click"
+										FontFamily="Segoe MDL2 Assets"
+										FontSize="25" CornerRadius="1">
+                                    <SymbolIcon Symbol="Comment" />
+                                </Button>
+                                <TextBlock Margin="5"
 									   FontSize="25"
 									   FontWeight="Bold"
 									   Text="IDev General Chat">
-								<TextBlock.RenderTransform>
-									<TranslateTransform x:Name="TranslateTitle" />
-								</TextBlock.RenderTransform>
-								<TextBlock.Triggers>
-									<EventTrigger>
-										<BeginStoryboard>
-											<Storyboard>
-												<DoubleAnimation Storyboard.TargetName="TranslateTitle"
+                                    <TextBlock.RenderTransform>
+                                        <TranslateTransform x:Name="TranslateTitle" />
+                                    </TextBlock.RenderTransform>
+                                    <TextBlock.Triggers>
+                                        <EventTrigger>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation Storyboard.TargetName="TranslateTitle"
 																 Storyboard.TargetProperty="Y"
 																 From="-200"
 																 To="0">
-													<DoubleAnimation.EasingFunction>
-														<CircleEase EasingMode="EaseInOut" />
-													</DoubleAnimation.EasingFunction>
-												</DoubleAnimation>
-											</Storyboard>
-										</BeginStoryboard>
-									</EventTrigger>
-								</TextBlock.Triggers>
-							</TextBlock>
+                                                        <DoubleAnimation.EasingFunction>
+                                                            <CircleEase EasingMode="EaseInOut" />
+                                                        </DoubleAnimation.EasingFunction>
+                                                    </DoubleAnimation>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </EventTrigger>
+                                    </TextBlock.Triggers>
+                                </TextBlock>
+                            </StackPanel>
 						</ListView.Header>
 						<ListView.ItemTemplate>
 							<DataTemplate x:DataType="DTO:ChatMessageDTO">

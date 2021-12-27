@@ -11,13 +11,11 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using Windows.UI;
 using Windows.UI.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Media.Imaging;
 
 namespace IntranetUWP.Views
@@ -301,7 +299,7 @@ namespace IntranetUWP.Views
             EditFood.IsEnabled = false; 
             DeleteFood.IsEnabled = false; 
         }
-        private async void FoodCard_DeleteSwipe(int foodId)
+        private void FoodCard_DeleteSwipe(int foodId)
         {
             var food = vm.Foods.Where(f => f.id == foodId).FirstOrDefault();
             vm.SelectedFood = food;

@@ -15,6 +15,7 @@ using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Background;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation.Collections;
+using Windows.System.Profile;
 using Windows.UI;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -33,6 +34,10 @@ namespace IntranetUWP
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
+            if(AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Xbox")
+            {
+                ApplicationViewScaling.TrySetDisableLayoutScaling(true);
+            }
         }
 
         //Active by Toast

@@ -167,6 +167,7 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\BaseDTO.cs" />
+    <Compile Include="Models\ChannelDTO.cs" />
     <Compile Include="Models\ChatMessageDTO.cs" />
     <Compile Include="Models\FoodDTO.cs" />
     <Compile Include="Models\LoginModel.cs" />
@@ -179,6 +180,9 @@
     <Compile Include="Ultils\FoodImageDictionaries.cs" />
     <Compile Include="UserControls\AvatarUploadImage.xaml.cs">
       <DependentUpon>AvatarUploadImage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\ChannelChatUserControl.xaml.cs">
+      <DependentUpon>ChannelChatUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\CreateFood.xaml.cs">
       <DependentUpon>CreateFood.xaml</DependentUpon>
@@ -204,6 +208,9 @@
     <Compile Include="UserControls\Dialogs\SkillDialog.xaml.cs">
       <DependentUpon>SkillDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\Dialogs\TextPlayerContentDialog.xaml.cs">
+      <DependentUpon>TextPlayerContentDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\FoodCard.xaml.cs">
       <DependentUpon>FoodCard.xaml</DependentUpon>
     </Compile>
@@ -227,6 +234,9 @@
     </Compile>
     <Compile Include="UserControls\PreviewAvatarsGroup.xaml.cs">
       <DependentUpon>PreviewAvatarsGroup.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\RecentChat.xaml.cs">
+      <DependentUpon>RecentChat.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\TeamCard.xaml.cs">
       <DependentUpon>TeamCard.xaml</DependentUpon>
@@ -390,6 +400,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UserControls\ChannelChatUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UserControls\CreateFood.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -422,6 +436,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UserControls\Dialogs\TextPlayerContentDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UserControls\FoodCard.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -451,6 +469,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\PreviewAvatarsGroup.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\RecentChat.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -509,46 +531,46 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="DocumentFormat.OpenXml">
-      <Version>2.14.0-beta0001</Version>
+      <Version>2.15.0</Version>
     </PackageReference>
     <PackageReference Include="MaterialLibs">
       <Version>0.1.31</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client">
-      <Version>6.0.0-rc.2.21480.10</Version>
+      <Version>6.0.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.13</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit">
-      <Version>7.1.0</Version>
+      <Version>7.1.2</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp">
-      <Version>7.1.0</Version>
+      <Version>7.1.2</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications">
-      <Version>7.1.0</Version>
+      <Version>7.1.2</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.UI">
-      <Version>7.1.0</Version>
+      <Version>7.1.2</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Animations">
-      <Version>7.1.0</Version>
+      <Version>7.1.2</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Behaviors">
-      <Version>7.1.0</Version>
+      <Version>7.1.2</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Controls">
-      <Version>7.1.0</Version>
+      <Version>7.1.2</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Controls.Media">
-      <Version>7.1.0</Version>
+      <Version>7.1.2</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Lottie">
       <Version>7.1.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Media">
-      <Version>7.1.0</Version>
+      <Version>7.1.2</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.UI.Xaml">
       <Version>2.8.0-prerelease.210927001</Version>
@@ -561,6 +583,9 @@
     </PackageReference>
     <PackageReference Include="QueryString.NET">
       <Version>1.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="TextBlockFX.Win2D.UWP">
+      <Version>1.0.2</Version>
     </PackageReference>
     <PackageReference Include="WindowsAzure.Storage">
       <Version>9.3.3</Version>

@@ -211,6 +211,25 @@
                             </TextBlock.RenderTransform>
 
                         </TextBlock>
+                        <TextBlock x:Name="DragInstruction"
+                                   Text="Drag food from the right bar"
+                                   HorizontalAlignment="Center">
+                        <animations:Implicit.ShowAnimations>
+                            <animations:TranslationAnimation Duration="0:0:1" To="0, 0, 0"/>
+                            <animations:OpacityAnimation Duration="0:0:1" To="1.0"/>
+                        </animations:Implicit.ShowAnimations>
+                        <animations:Implicit.HideAnimations>
+                            <animations:ScalarAnimation Target="Opacity" 
+                                                            Duration="0:0:1" 
+                                                            To="0.0"/>
+                            <animations:ScalarAnimation Target="Translation.Y" 
+                                                            Duration="0:0:1" 
+                                                            To="-50">
+                                <animations:ScalarKeyFrame Key="0.1" Value="30"/>
+                                <animations:ScalarKeyFrame Key="0.5" Value="0.0"/>
+                            </animations:ScalarAnimation>
+                        </animations:Implicit.HideAnimations>
+                        </TextBlock>
                     </Grid>
                     <GridView x:Name="SecondaryFoodGrid"
                               Grid.Column="1"

@@ -13,6 +13,9 @@ using System.Threading.Tasks;
 using System.Linq;
 using Windows.ApplicationModel.Email;
 using Windows.ApplicationModel.DataTransfer;
+using TextBlockFX.Win2D.UWP;
+using TextBlockFX.Win2D.UWP.Effects;
+using IntranetUWP.UserControls.Dialogs;
 
 namespace IntranetUWP.Views.MemberChildPages
 {
@@ -33,7 +36,6 @@ namespace IntranetUWP.Views.MemberChildPages
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             CompanyImageBorder.Translation = new Vector3(0, 0, 0);
-
 
             var compositor = this.Visual().Compositor;
 
@@ -157,6 +159,12 @@ namespace IntranetUWP.Views.MemberChildPages
             {
                 PageStatus.IsOpen = false;
             }
+        }
+
+        private async void TextPlayerPopup_Click(object sender, RoutedEventArgs e)
+        {
+            TextPlayerContentDialog dialog = new TextPlayerContentDialog();
+            await dialog.ShowAsync();
         }
     }
 }

@@ -116,6 +116,30 @@
                 </Border>
             </StackPanel>
         </DataTemplate>
+        <DataTemplate x:Key="UserFoodListviewItemTemplate"
+                      x:DataType="data:UserFoodDTO">
+            <usercontrols:MemberCard UserId="{x:Bind user.id}" 
+                                     EmployeeName="{x:Bind user.firstName}"
+                                     ProfilePictureUrl="{x:Bind user.profilePic}" 
+                                     Company="{x:Bind user.company}"
+                                     FoodList="{x:Bind foodList, Mode=TwoWay}"
+                                     SelectedFood="{x:Bind food.id,Mode=TwoWay}"
+                                     ClearSelection="MemberCard_ClearSelection"
+                                     DisableUser="MemberCard_DisableUser"/>
+        </DataTemplate>
+
+        <Style x:Key="StretchListViewItemTemplate"
+               TargetType="ListViewItem">
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        </Style>
+
+        <TransitionCollection x:Key="ListViewLoadAnimationTemplate">
+            <EntranceThemeTransition IsStaggeringEnabled="True" 
+                                     FromVerticalOffset="450"/>
+            <AddDeleteThemeTransition/>
+        </TransitionCollection>
     </Page.Resources>
 
     <Grid x:Name="MainFrame">
@@ -373,33 +397,10 @@
                            Width="100" Height="50"/>
                 </PivotItem.Header>
                 <ListView ItemsSource="{x:Bind vm.iDealogicUsersFood, Mode=TwoWay}" 
+                          ItemContainerStyle="{StaticResource StretchListViewItemTemplate}"
+                          ItemContainerTransitions="{StaticResource ListViewLoadAnimationTemplate}"
+                          ItemTemplate="{StaticResource UserFoodListviewItemTemplate}"
                           SelectionMode="Single">
-                    <ListView.ItemContainerStyle>
-                        <Style TargetType="ListViewItem">
-                            <Setter Property="Margin" Value="0"/>
-                            <Setter Property="Padding" Value="0"/>
-                            <Setter Property="HorizontalAlignment" Value="Stretch"/>
-                        </Style>
-                    </ListView.ItemContainerStyle>
-                    <ListView.ItemContainerTransitions>
-                        <TransitionCollection>
-                            <EntranceThemeTransition IsStaggeringEnabled="True" 
-                                                     FromVerticalOffset="450"/>
-                            <AddDeleteThemeTransition/>
-                        </TransitionCollection>
-                    </ListView.ItemContainerTransitions>
-                    <ListView.ItemTemplate>
-                        <DataTemplate x:DataType="data:UserFoodDTO">
-                            <usercontrols:MemberCard UserId="{x:Bind user.id}" 
-                                                     EmployeeName="{x:Bind user.firstName}"
-                                                     ProfilePictureUrl="{x:Bind user.profilePic}" 
-                                                     Company="{x:Bind user.company}"
-                                                     FoodList="{x:Bind foodList, Mode=TwoWay}"
-                                                     SelectedFood="{x:Bind food.id,Mode=TwoWay}"
-                                                     ClearSelection="MemberCard_ClearSelection"
-                                                     DisableUser="MemberCard_DisableUser"/>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
                     <ListView.Footer>
                         <Rectangle Height="40"/>
                     </ListView.Footer>
@@ -411,36 +412,10 @@
                            Width="100" Height="50"/>
                 </PivotItem.Header>
                 <ListView ItemsSource="{x:Bind vm.DevinitionUsersFood, Mode=TwoWay}" 
+                          ItemContainerStyle="{StaticResource StretchListViewItemTemplate}"
+                          ItemContainerTransitions="{StaticResource ListViewLoadAnimationTemplate}"
+                          ItemTemplate="{StaticResource UserFoodListviewItemTemplate}"
                           SelectionMode="Single">
-                    <ListView.ItemContainerStyle>
-                        <Style TargetType="ListViewItem">
-                            <Setter Property="Margin" 
-                                    Value="0"/>
-                            <Setter Property="Padding" 
-                                    Value="0"/>
-                            <Setter Property="HorizontalAlignment" 
-                                    Value="Stretch"/>
-                        </Style>
-                    </ListView.ItemContainerStyle>
-                    <ListView.ItemContainerTransitions>
-                        <TransitionCollection>
-                            <EntranceThemeTransition IsStaggeringEnabled="True"
-                                                     FromVerticalOffset="450"/>
-                            <AddDeleteThemeTransition/>
-                        </TransitionCollection>
-                    </ListView.ItemContainerTransitions>
-                    <ListView.ItemTemplate>
-                        <DataTemplate x:DataType="data:UserFoodDTO">
-                            <usercontrols:MemberCard UserId="{x:Bind user.id}" 
-                                                     EmployeeName="{x:Bind user.firstName}"
-                                                     ProfilePictureUrl="{x:Bind user.profilePic}" 
-                                                     Company="{x:Bind user.company}"
-                                                     FoodList="{x:Bind foodList, Mode=TwoWay}"
-                                                     SelectedFood="{x:Bind food.id,Mode=TwoWay}"
-                                                     ClearSelection="MemberCard_ClearSelection"
-                                                     DisableUser="MemberCard_DisableUser"/>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
                     <ListView.Footer>
                         <Rectangle Height="40"/>
                     </ListView.Footer>
@@ -503,17 +478,8 @@
                             Margin="0,5,0,5">
                         <Button.Flyout>
                             <Flyout>
-                                <ListView ItemsSource="{x:Bind vm.NonSelectedUser, Mode=TwoWay}">
-                                    <ListView.ItemContainerStyle>
-                                        <Style TargetType="ListViewItem">
-                                            <Setter Property="Margin" 
-                                                    Value="0"/>
-                                            <Setter Property="Padding" 
-                                                    Value="0"/>
-                                            <Setter Property="HorizontalAlignment" 
-                                                    Value="Stretch"/>
-                                        </Style>
-                                    </ListView.ItemContainerStyle>
+                                <ListView ItemsSource="{x:Bind vm.NonSelectedUser, Mode=TwoWay}"
+                                          ItemContainerStyle="{StaticResource StretchListViewItemTemplate}">
                                     <ListView.ItemContainerTransitions>
                                         <TransitionCollection>
                                             <EntranceThemeTransition IsStaggeringEnabled="True" 
@@ -585,7 +551,7 @@
                 </AppBarButton.KeyboardAccelerators>
             </AppBarButton>
             <AppBarButton x:Name="NotifyTeam" 
-                          Label="Notified the team" 
+                          Label="Notify all members" 
                           Command="{x:Bind vm.notifyTeamCommand}"
                           Style="{ThemeResource AppBarButtonRevealStyle}">
                 <AppBarButton.Icon>

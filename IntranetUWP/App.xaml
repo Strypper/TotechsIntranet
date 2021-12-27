@@ -10,21 +10,21 @@
             <Style TargetType="TextBlock">
                 <Setter Property="FontFamily" Value="Trebuchet MS"/>
             </Style>
-            <toolkitconverters:BoolToObjectConverter x:Key="ReverseBoolToVisibilityConverter"
-													 FalseValue="Visible"
-													 TrueValue="Collapsed" />
+            <toolkitconverters:BoolToObjectConverter          x:Key="ReverseBoolToVisibilityConverter"
+													          FalseValue="Visible"
+													          TrueValue="Collapsed" />
 
-			<converters:StringToImageSourceConverter x:Key="StringToImageSourceConverter" />
-			<converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
-			<converters:CountToVisibilityConverter x:Key="CountToVisibilityConverter" />
-            <converters:CountToCollapseConverter x:Key="CountToCollapseConverter" />
-			<converters:BoolToFrameworkAlignmentConverter x:Key="BoolToFrameworkAlignmentConverter" />
-			<converters:BoolToCompanyConverter x:Key="BoolToCompanyConverter" />
-            <converters:CompanyBoolToColorConverter x:Key="CompanyBoolToColorConverter" />
-			<converters:DoubleToPercentConverter x:Key="DoubleToPercentConverter" />
+			<converters:StringToImageSourceConverter          x:Key="StringToImageSourceConverter" />
+			<converters:BoolToVisibilityConverter             x:Key="BoolToVisibilityConverter" />
+			<converters:CountToVisibilityConverter            x:Key="CountToVisibilityConverter" />
+            <converters:CountToCollapseConverter              x:Key="CountToCollapseConverter" />
+			<converters:BoolToFrameworkAlignmentConverter     x:Key="BoolToFrameworkAlignmentConverter" />
+			<converters:BoolToCompanyConverter                x:Key="BoolToCompanyConverter" />
+            <converters:CompanyBoolToColorConverter           x:Key="CompanyBoolToColorConverter" />
+			<converters:DoubleToPercentConverter              x:Key="DoubleToPercentConverter" />
             <converters:TechLeadIdToFullTechLeadInfoConverter x:Key="TechLeadIdToFullTechLeadInfoConverter" />
-            <converters:BoolToCompanyImageSourceConverter x:Key="BoolToCompanyImageSourceConverter"/>
-            <converters:FullDateToDateConverter x:Key="FullDateToDateConverter"/>
+            <converters:BoolToCompanyImageSourceConverter     x:Key="BoolToCompanyImageSourceConverter"/>
+            <converters:FullDateToDateConverter               x:Key="FullDateToDateConverter"/>
 
             <x:Double x:Key="ContentDialogMaxWidth">1800</x:Double>
             <x:Double x:Key="ContentDialogMaxHeight">2000</x:Double>

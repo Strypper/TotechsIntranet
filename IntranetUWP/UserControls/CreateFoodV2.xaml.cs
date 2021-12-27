@@ -87,6 +87,7 @@ namespace IntranetUWP.UserControls
                 {
                     SecondaryFoodGrid.IsEnabled = false;
                     SecondaryFoodGrid.Visibility = Visibility.Collapsed;
+                    DragInstruction.Visibility = Visibility.Collapsed;
                     FoodImage.SetValue(Grid.ColumnSpanProperty, 2);
                     DropIconOut.Begin();
                     DropIconOut.Completed += (s, a) =>
@@ -101,6 +102,7 @@ namespace IntranetUWP.UserControls
                 {
                     SecondaryFoodGrid.IsEnabled = true;
                     SecondaryFoodGrid.Visibility = Visibility.Visible;
+                    DragInstruction.Visibility = Visibility.Visible;
                     FoodImage.SetValue(Grid.ColumnSpanProperty, 1);
 
                     Food.secondaryIcon = null;

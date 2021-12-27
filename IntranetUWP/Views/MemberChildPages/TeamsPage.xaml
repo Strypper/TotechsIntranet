@@ -47,21 +47,21 @@
                                   FontSize="28"
                                   VerticalAlignment="Center"/>
                         <TextBlock Text="TEAMS"
-                           TextAlignment="Center"
-                           FontSize="28"
-                           FontWeight="ExtraBold"
-                           Margin="5"/>
+                                   TextAlignment="Center"
+                                   FontSize="28"
+                                   FontWeight="ExtraBold"
+                                   Margin="5"/>
                     </StackPanel>
                     <AutoSuggestBox x:Name="FilterTeamSearchBox"
-                                Margin="0,0,15,0"
-                                MinWidth="400"
-                                MaxWidth="600"
-                                FontSize="18"
-                                QueryIcon="Find"
-                                FontWeight="Bold"
-                                PlaceholderText="Type to seach team"
-                                TextChanged="TeamsFilter_TextChanged"
-                                HorizontalAlignment="Stretch"/>
+                                    Margin="0,0,15,0"
+                                    MinWidth="400"
+                                    MaxWidth="600"
+                                    FontSize="18"
+                                    QueryIcon="Find"
+                                    FontWeight="Bold"
+                                    PlaceholderText="Type to seach team"
+                                    TextChanged="TeamsFilter_TextChanged"
+                                    HorizontalAlignment="Stretch"/>
                 </StackPanel>
             </GridView.Header>
             <GridView.ItemContainerTransitions>

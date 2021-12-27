@@ -8,7 +8,9 @@
     xmlns:lottie="using:Microsoft.Toolkit.Uwp.UI.Lottie"
     xmlns:model="using:IntranetUWP.Models" 
     xmlns:local="using:IntranetUWP.Views.MemberChildPages"
-    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls" 
+    xmlns:tbfx="using:TextBlockFX.Win2D.UWP"
+    xmlns:effects="using:TextBlockFX.Win2D.UWP.Effects"
     mc:Ignorable="d" Loaded="Page_Loaded"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Page.Resources>
@@ -359,14 +361,23 @@
                             </StackPanel>
                         </ToggleButton>
                     </Grid>
-                    <TextBlock x:Name="SpecialRole"
+                    <tbfx:TextBlockFX x:Name="SpecialRole"
                            Text="{x:Bind User.specialAward, Mode=OneWay}"
                            TextAlignment="Center"
-                           TextDecorations="Underline"
                            FontSize="35"
                            Margin="5,0,5,15"
                            FontWeight="ExtraBold"
-                           HorizontalAlignment="Center"/>
+                           Foreground="White"
+                           HorizontalAlignment="Center">
+                        <tbfx:TextBlockFX.TextEffect>
+                            <effects:Blur/>
+                        </tbfx:TextBlockFX.TextEffect>
+                    </tbfx:TextBlockFX>
+                    <tbfx:TextBlockFX Text="Your text here">
+                        <tbfx:TextBlockFX.TextEffect>
+                            <effects:Default/>
+                        </tbfx:TextBlockFX.TextEffect>
+                    </tbfx:TextBlockFX>
                     <StackPanel HorizontalAlignment="Center" 
                                 Orientation="Horizontal"
                                 Margin="5">
@@ -405,7 +416,8 @@
                                                          FromVerticalOffset="500"/>
                             </TransitionCollection>
                         </StackPanel.ChildrenTransitions>
-                        <Button Margin="0,0,5,0">
+                        <Button Margin="0,0,5,0"
+                                Click="TextPlayerPopup_Click">
                             <TextBlock>
                             <Run Text="&#x1F917;" FontFamily="Segoe UI Emoji"/>
                             <Run Text="Friendly:"/>

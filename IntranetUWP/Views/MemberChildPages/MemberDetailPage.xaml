@@ -12,7 +12,7 @@
     xmlns:tbfx="using:TextBlockFX.Win2D.UWP"
     xmlns:effects="using:TextBlockFX.Win2D.UWP.Effects"
     mc:Ignorable="d" Loaded="Page_Loaded"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    muxc:BackdropMaterial.ApplyToRootOrPageBackground="True">
     <Page.Resources>
         <SwipeItems x:Key="left" Mode="Execute">
             <SwipeItem Text="Back" Background="Gray" 
@@ -245,7 +245,7 @@
               CornerRadius="2"
               Margin="15">
                 <StackPanel Padding="5"
-                            Background="{ThemeResource SystemAltHighColor}">
+                            Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}">
                         <TextBlock
                             x:Name="BioHeader"
                             FontWeight="Bold"
@@ -266,7 +266,7 @@
                   HorizontalAlignment="Stretch"
                   ItemsSource="{x:Bind User.skills}"
                   ItemTemplate="{StaticResource SkillTemplate}"
-                  Background="{ThemeResource SystemAltHighColor}">
+                  Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}">
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
                         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -312,7 +312,7 @@
               Grid.RowSpan="2"
               CornerRadius="2"
               Margin="0,15,0,15"
-              Background="{ThemeResource SystemAltHighColor}">
+              Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}">
                 <StackPanel VerticalAlignment="Center"
                             Padding="5">
                     <Grid>
@@ -364,16 +364,11 @@
                     <tbfx:TextBlockFX x:Name="SpecialRole"
                            Text="{x:Bind User.specialAward, Mode=OneWay}"
                            TextAlignment="Center"
-                           FontSize="35"
-                           Margin="5,0,5,15"
-                           FontWeight="ExtraBold"
                            Foreground="White"
-                           HorizontalAlignment="Center">
-                        <tbfx:TextBlockFX.TextEffect>
-                            <effects:Blur/>
-                        </tbfx:TextBlockFX.TextEffect>
-                    </tbfx:TextBlockFX>
-                    <tbfx:TextBlockFX Text="Your text here">
+                           FontSize="36"
+                           Height="30"
+                           Margin="5,10,5,15"
+                           FontWeight="ExtraBold">
                         <tbfx:TextBlockFX.TextEffect>
                             <effects:Default/>
                         </tbfx:TextBlockFX.TextEffect>
@@ -448,7 +443,7 @@
                   Padding="5"
                   Margin="0,0,0,15"
                   CornerRadius="2"
-                  Background="{ThemeResource SystemAltHighColor}">
+                  Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="*"/>
@@ -473,7 +468,7 @@
                 Grid.Column="2"
                 Margin="15"
                 CornerRadius="2"
-                Background="{ThemeResource SystemAltHighColor}"/>
+                Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"/>
             <Grid x:Name="ThirdColumnImageGrid"
                   Grid.Column="2"
                   Grid.RowSpan="2"
@@ -504,9 +499,9 @@
                     </Image>
                 </Grid>
             </Grid>
-            <Grid x:Name="ThirdColumnUserInfoGrid"
-                  Grid.Column="2"
-                  Grid.Row="2">
+            <ScrollViewer x:Name="ThirdColumnUserInfoGrid"
+                          Grid.Column="2"
+                          Grid.Row="2">
                 <StackPanel 
                         VerticalAlignment="Bottom"
                         CornerRadius="2"
@@ -572,12 +567,12 @@
                         </TextBlock>
                         <TextBlock x:Name="Age"
                            Text="{x:Bind User.age, Mode=OneWay}"
-                           FontSize="50"
+                           FontSize="45"
                            FontWeight="Bold"
                            HorizontalAlignment="Right"/>
                     </StackPanel>
                 </StackPanel>
-            </Grid>
+            </ScrollViewer>
             <muxc:InfoBar x:Name="PageStatus" 
                           HorizontalAlignment="Center"
                           VerticalAlignment="Top"

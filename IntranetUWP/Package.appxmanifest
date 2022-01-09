@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
-  <Identity Name="47268StrypperVandelJason.IntranetiDev" Publisher="CN=C5255E29-81AE-4129-9BC3-9E2C461A195A" Version="1.0.22.0" />
+  <Identity Name="47268StrypperVandelJason.IntranetiDev" Publisher="CN=StrypperJason" Version="1.0.31.0" />
   <mp:PhoneIdentity PhoneProductId="737d4430-dddb-47b0-ab9a-09235391ffa0" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>Intranet iDev</DisplayName>

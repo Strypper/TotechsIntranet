@@ -27,15 +27,15 @@ namespace IntranetUWP.ViewModels.PagesViewModel
 {
     public class FoodOrderPageViewModel : ViewModelBase
     {
-        public string getFoodsDataUrl = "Food/GetAll";
-        public string createFoodDataUrl = "Food/Create";
-        public string createFoodListUrl = "Food/CreateMultipleFood";
-        public string updateFoodDataUrl = "Food/Update";
-        public string deleteFoodDataUrl = "Food/Delete";
-        public string deleteAllFoodDataUrl = "Food/DeleteAll";
-        public string getUsersDataUrl = "User/GetAll";
+        public string getFoodsDataUrl            = "Food/GetAll";
+        public string createFoodDataUrl          = "Food/Create";
+        public string createFoodListUrl          = "Food/CreateMultipleFood";
+        public string updateFoodDataUrl          = "Food/Update";
+        public string deleteFoodDataUrl          = "Food/Delete";
+        public string deleteAllFoodDataUrl       = "Food/DeleteAll";
+        public string getUsersDataUrl            = "User/GetAll";
         public string getUserSelectedFoodDataUrl = "UserFood/GetAll";
-        public string deleteUserFoodDataUrl = "UserFood/Delete";
+        public string deleteUserFoodDataUrl      = "UserFood/Delete";
         private IntranetHttpHelper httpHelper = new IntranetHttpHelper();
         public ICommand getAllFoodCommand { get; set; }
         public ICommand createFoodCommand { get; set; }

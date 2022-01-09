@@ -8,7 +8,7 @@
 	<Application.Resources>
         <ResourceDictionary>
             <Style TargetType="TextBlock">
-                <Setter Property="FontFamily" Value="Trebuchet MS"/>
+                <Setter Property="FontFamily" Value="Bahnschrift"/>
             </Style>
             <toolkitconverters:BoolToObjectConverter          x:Key="ReverseBoolToVisibilityConverter"
 													          FalseValue="Visible"

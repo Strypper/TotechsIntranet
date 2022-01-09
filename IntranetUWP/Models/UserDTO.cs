@@ -20,7 +20,19 @@ namespace IntranetUWP.Models
         public string country { get; set; } = String.Empty;
         public string former { get; set; } = String.Empty;
         public string hobby { get; set; } = String.Empty;
-        public string specialAward { get; set; } = String.Empty;
+
+        private string _specialAward;
+
+        public string specialAward
+        {
+            get { return _specialAward; }
+            set 
+            { 
+                _specialAward = value;
+                OnPropertyChanged();
+            }
+        }
+
         public string relationship { get; set; } = String.Empty;
         public int? like { get; set; }
         public int? friendly { get; set; }

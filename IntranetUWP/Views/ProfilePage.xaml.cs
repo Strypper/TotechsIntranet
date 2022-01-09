@@ -34,8 +34,8 @@ namespace IntranetUWP.Views
             }
         }
 
-        public string getUserDataUrl = "User/Get";
-        public readonly string updateUserDataUrl = "User/Update";
+        public readonly string getUserDataUrl       = "User/Get";
+        public readonly string updateUserDataUrl    = "User/Update";
         public readonly string getAllTeamWithMember = "Team/GetAllTeamsWithMembers";
 
         private IntranetHttpHelper httpHelper = new IntranetHttpHelper();

@@ -8,21 +8,72 @@
 	  xmlns:local="using:IntranetUWP.Views"
 	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	  xmlns:media="using:Microsoft.UI.Xaml.Media"
-	  xmlns:winui="using:Microsoft.UI.Xaml.Controls" xmlns:usercontrols="using:IntranetUWP.UserControls"
+	  xmlns:winui="using:Microsoft.UI.Xaml.Controls" 
+      xmlns:usercontrols="using:IntranetUWP.UserControls" 
+      xmlns:ui="using:Microsoft.Toolkit.Uwp.UI"
+      xmlns:toolkitmedia="using:Microsoft.Toolkit.Uwp.UI.Media"
       Loaded="Page_Loaded"
 	  NavigationCacheMode="Enabled"
 	  mc:Ignorable="d">
 
-	<Page.Resources>
-		<ResourceDictionary>
-			<media:AcrylicBrush x:Key="CustomAcrylicInAppLuminosity"
+    <Page.Resources>
+        <media:AcrylicBrush x:Key="CustomAcrylicInAppLuminosity"
 								BackgroundSource="Backdrop"
 								FallbackColor="{ThemeResource SystemAltHighColor}"
 								TintColor="{ThemeResource SystemAltHighColor}"
 								TintLuminosityOpacity="0.270000012824312"
 								TintOpacity="0" />
-		</ResourceDictionary>
-	</Page.Resources>
+
+            <DataTemplate x:Key="UserItemTemplate"
+                      x:DataType="DTO:UserDTO">
+                <Grid MinWidth="280">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                <Grid Grid.RowSpan="2"
+                        Padding="0"
+                        Width="50"
+                        Height="50"
+                      Margin="0,10,0,10">
+                    <PersonPicture Width="50"
+							   VerticalAlignment="Center"
+                               HorizontalAlignment="Center"
+							   ProfilePicture="{x:Bind profilePic, Converter={StaticResource StringToImageSourceConverter}}"/>
+                    <Ellipse Width="15" 
+                             Height="15"
+                             Fill="#16c60c"
+                             VerticalAlignment="Bottom"
+                             HorizontalAlignment="Right"/>
+                </Grid>
+                <TextBlock Grid.Column="1"
+                           Grid.Row="0"
+                           Margin="5,0,0,0"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Stretch"
+                           FontWeight="Bold"
+                           Text="{x:Bind userName, Mode=OneWay}"/>
+                <StackPanel Grid.Row="1"
+                            Grid.Column="1"
+                            VerticalAlignment="Bottom"
+                            Orientation="Horizontal">
+                    <Button BorderBrush="Transparent"
+                            Background="Transparent">
+                        <FontIcon Glyph="&#xE8F2;" />
+                    </Button>
+                    <Button BorderBrush="Transparent"
+                            Background="Transparent">
+                        <FontIcon Glyph="&#xE119;" />
+                    </Button>
+                </StackPanel>
+            </Grid>
+            </DataTemplate>
+    </Page.Resources>
 
 	<Grid>
 		<Image x:Name="BackgroundImage" Stretch="UniformToFill">
@@ -41,7 +92,7 @@
 			</Image.Triggers>
 		</Image>
 		<SplitView x:Name="splitViewPane"
-				   Margin="5"
+                   Margin="5"
 				   HorizontalAlignment="Stretch"
 				   CornerRadius="5"
 				   DisplayMode="Inline"
@@ -63,15 +114,16 @@
                                 <PersonPicture Margin="5"
 											   Width="60"
                                                VerticalAlignment="Center"
-                                               HorizontalAlignment="Center"/>
+                                               HorizontalAlignment="Center"
+                                               ProfilePicture="{x:Bind vm.User.profilePic, Mode=OneWay, Converter={StaticResource StringToImageSourceConverter}}"/>
                                 <FontIcon FontFamily="Segoe UI Emoji" Glyph="&#x1F7E2;" 
                                           VerticalAlignment="Bottom"
                                           HorizontalAlignment="Right"
                                           Margin="0,0,5,5"/>
                             </Grid>
                             <StackPanel VerticalAlignment="Center">
-                                <TextBlock Text="Strypper"/>
-                                <TextBlock Text="Senior Developer"
+                                <TextBlock Text="{x:Bind vm.User.userName, Mode=OneWay}"/>
+                                <TextBlock Text="{x:Bind vm.User.level, Mode=OneWay}"
                                            Margin="0,10,0,0"/>
                             </StackPanel>
                         </StackPanel>
@@ -106,27 +158,33 @@
                                                VerticalAlignment="Bottom"/>
                                 </StackPanel>
                             </PivotItem.Header>
+                            <ListView x:Name="MembersList"
+                                      ItemsSource="{x:Bind vm.Users, Mode=OneWay}"
+                                      ItemTemplate="{StaticResource UserItemTemplate}"
+                                      SelectionChanged="Member_SelectionChanged"
+                                      Padding="0,0,10,0"/>
                         </PivotItem>
                     </Pivot>
                 </Grid>
 			</SplitView.Pane>
 			<SplitView.Content>
-				<Grid MaxWidth="1000">
-					<Grid.RowDefinitions>
-						<RowDefinition Height="*" />
-						<RowDefinition Height="auto" />
-					</Grid.RowDefinitions>
-					<ListView x:Name="ChatList"
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+                    <ListView x:Name="ChatList"
 							  ItemsSource="{x:Bind vm.ChatMessages, Mode=TwoWay}"
 							  LostFocus="ChatList_LostFocus"
-							  SelectionMode="Extended">
-						<ListView.ItemsPanel>
-							<ItemsPanelTemplate>
-								<ItemsStackPanel VerticalAlignment="Bottom" 
+							  SelectionMode="Extended"
+                              MaxWidth="1100">
+                        <ListView.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <ItemsStackPanel VerticalAlignment="Bottom" 
                                                  ItemsUpdatingScrollMode="KeepLastItemInView" />
-							</ItemsPanelTemplate>
-						</ListView.ItemsPanel>
-						<ListView.Header>
+                            </ItemsPanelTemplate>
+                        </ListView.ItemsPanel>
+                        <ListView.Header>
                             <StackPanel Orientation="Horizontal">
                                 <Button Margin="5"
 										HorizontalAlignment="Right"
@@ -163,63 +221,65 @@
                                     </TextBlock.Triggers>
                                 </TextBlock>
                             </StackPanel>
-						</ListView.Header>
-						<ListView.ItemTemplate>
-							<DataTemplate x:DataType="DTO:ChatMessageDTO">
-								<ListViewItem Margin="5"
+                        </ListView.Header>
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="DTO:ChatMessageDTO">
+                                <ListViewItem Margin="5"
 											  HorizontalAlignment="{x:Bind IsFromSelf, Converter={StaticResource BoolToFrameworkAlignmentConverter}}"
 											  HorizontalContentAlignment="Left">
-									<StackPanel Margin="0,10,0,10"
+                                    <StackPanel Margin="0,10,0,10"
 												Background="{ThemeResource CustomAcrylicInAppLuminosity}"
 												CornerRadius="5"
 												Orientation="Horizontal">
-										<PersonPicture Width="50"
+                                        <PersonPicture Width="50"
 													   Margin="5"
 													   VerticalAlignment="Top"
 													   ProfilePicture="{x:Bind ProfilePic, Converter={StaticResource StringToImageSourceConverter}}"
 													   Visibility="{x:Bind IsFromSelf, Converter={StaticResource ReverseBoolToVisibilityConverter}}" />
-										<StackPanel VerticalAlignment="Center">
-											<TextBlock Margin="5,5,5,0"
+                                        <StackPanel VerticalAlignment="Center">
+                                            <TextBlock Margin="5,5,5,0"
 													   HorizontalAlignment="{x:Bind IsFromSelf, Converter={StaticResource BoolToFrameworkAlignmentConverter}}"
 													   FontWeight="Bold"
 													   Text="{x:Bind UserName}"
 													   TextDecorations="Underline" />
-											<TextBlock MaxWidth="700"
+                                            <TextBlock MaxWidth="700"
 													   Margin="5,5,5,0"
 													   HorizontalAlignment="{x:Bind IsFromSelf, Converter={StaticResource BoolToFrameworkAlignmentConverter}}"
 													   IsTextSelectionEnabled="True"
 													   Text="{x:Bind MessageContent}"
 													   TextWrapping="WrapWholeWords" />
-											<StackPanel HorizontalAlignment="{x:Bind IsFromSelf, Converter={StaticResource BoolToFrameworkAlignmentConverter}}" Orientation="Horizontal">
-												<SymbolIcon Margin="5"
+                                            <StackPanel HorizontalAlignment="{x:Bind IsFromSelf, Converter={StaticResource BoolToFrameworkAlignmentConverter}}" Orientation="Horizontal">
+                                                <SymbolIcon Margin="5"
 															VerticalAlignment="Bottom"
 															Symbol="Clock" />
-												<TextBlock Margin="0,5,5,5"
+                                                <TextBlock Margin="0,5,5,5"
 														   VerticalAlignment="Bottom"
 														   Text="{x:Bind SentTime}" />
-											</StackPanel>
-										</StackPanel>
-										<PersonPicture Width="50"
+                                            </StackPanel>
+                                        </StackPanel>
+                                        <PersonPicture Width="50"
 													   Margin="5"
 													   VerticalAlignment="Top"
 													   ProfilePicture="{x:Bind ProfilePic, Converter={StaticResource StringToImageSourceConverter}}"
 													   Visibility="{x:Bind IsFromSelf, Converter={StaticResource BoolToVisibilityConverter}}" />
-									</StackPanel>
-								</ListViewItem>
-							</DataTemplate>
-						</ListView.ItemTemplate>
-					</ListView>
-                    <Grid Grid.Row="1"
+                                    </StackPanel>
+                                </ListViewItem>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    <Grid x:Name="MessageInputArea"
+                          Grid.Row="1"
 						  HorizontalAlignment="Stretch"
 						  VerticalAlignment="Bottom"
                           CornerRadius="3"
                           Padding="5"
+                          MaxWidth="1100"
                           Background="{StaticResource AcrylicInAppFillColorDefaultBrush}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
-						<TextBox x:Name="MessageTextBox"
+                        <TextBox x:Name="MessageTextBox"
 								 Margin="5"
 								 HorizontalAlignment="Stretch"
 								 VerticalAlignment="Stretch"
@@ -228,11 +288,11 @@
 								 PlaceholderText="Type a new message"
                                  CornerRadius="3"
 								 Text="{x:Bind vm.MessContent, Mode=TwoWay}">
-							<TextBox.KeyboardAccelerators>
-								<KeyboardAccelerator Key="Enter" 
+                            <TextBox.KeyboardAccelerators>
+                                <KeyboardAccelerator Key="Enter" 
                                                      Invoked="KeyboardAccelerator_Invoked" />
-							</TextBox.KeyboardAccelerators>
-						</TextBox>
+                            </TextBox.KeyboardAccelerators>
+                        </TextBox>
                         <Button x:Name="SendMessageButton"
 								Grid.Row="1"
                                 Width="80"
@@ -249,8 +309,8 @@
                                     <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" 
                                               Glyph="&#xE122;" />
                                 </StackPanel>
-							</Button.Content>
-						</Button>
+                            </Button.Content>
+                        </Button>
                         <StackPanel Orientation="Horizontal"
                                     Grid.Row="1">
                             <Button Margin="5,5,25,0"
@@ -268,9 +328,20 @@
                                     FontSize="18"
                                     Padding="0"/>
                         </StackPanel>
-					</Grid>
-				</Grid>
-			</SplitView.Content>
+                    </Grid>
+                    <Frame x:Name="MemberDetailFrame"
+                           Margin="5,0,0,0"
+                           CornerRadius="5"
+                           Grid.RowSpan="2"/>
+                    <Button HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            Click="HamburgerButton_Click"
+                            Background="{StaticResource SystemAccentColor}"
+                            Margin="30">
+                        <FontIcon Glyph="&#xE1D9;" Foreground="Black"/>
+                    </Button>
+                </Grid>
+            </SplitView.Content>
 		</SplitView>
 	</Grid>
 </Page>

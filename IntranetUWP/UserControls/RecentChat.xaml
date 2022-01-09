@@ -28,7 +28,7 @@
                     <TextBlock Text="{x:Bind MessageContent}"
                                TextWrapping="Wrap"
                                TextTrimming="CharacterEllipsis"
-                               Height="15"
+                               Height="20"
                                Margin="5,0,5,5"/>
                 </StackPanel>
                 <TextBlock Grid.Column="2"

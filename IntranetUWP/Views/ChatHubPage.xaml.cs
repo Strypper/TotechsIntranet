@@ -1,5 +1,6 @@
 ﻿using IntranetUWP.Helpers;
 using IntranetUWP.ViewModels.PagesViewModel;
+using IntranetUWP.Views.MemberChildPages;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Toolkit.Uwp.UI.Helpers;
 using System;
@@ -63,7 +64,7 @@ namespace IntranetUWP.Views
             ChatList.SelectedItem = null;
         }
 
-        private void Page_Loaded(object sender, RoutedEventArgs e)
+        private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
             var currentTheme = Application.Current.RequestedTheme;
             AdaptiveTheme(currentTheme);
@@ -71,6 +72,8 @@ namespace IntranetUWP.Views
             //Detect theme change
             var Listener = new ThemeListener();
             Listener.ThemeChanged += Listener_ThemeChanged;
+
+            await vm.InitDefaultValue();
         }
         private void Listener_ThemeChanged(ThemeListener sender)
         {
@@ -91,6 +94,13 @@ namespace IntranetUWP.Views
                 default:
                     break;
             }
+        }
+
+        private void Member_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ChatList.Visibility         = Visibility.Collapsed;
+            MessageInputArea.Visibility = Visibility.Collapsed;
+            MemberDetailFrame.Navigate(typeof(MemberDetailPage), MembersList.SelectedItem);
         }
     }
 }

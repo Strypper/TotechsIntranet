@@ -63,7 +63,9 @@
                             VerticalAlignment="Bottom"
                             Orientation="Horizontal">
                     <Button BorderBrush="Transparent"
-                            Background="Transparent">
+                            Background="Transparent"
+                            CommandParameter="{x:Bind}"
+                            Click="StartConversation_Click">
                         <FontIcon Glyph="&#xE8F2;" />
                     </Button>
                     <Button BorderBrush="Transparent"
@@ -115,15 +117,15 @@
 											   Width="60"
                                                VerticalAlignment="Center"
                                                HorizontalAlignment="Center"
-                                               ProfilePicture="{x:Bind vm.User.profilePic, Mode=OneWay, Converter={StaticResource StringToImageSourceConverter}}"/>
+                                               ProfilePicture="{x:Bind vm.CurrentUser.profilePic, Mode=OneWay, Converter={StaticResource StringToImageSourceConverter}}"/>
                                 <FontIcon FontFamily="Segoe UI Emoji" Glyph="&#x1F7E2;" 
                                           VerticalAlignment="Bottom"
                                           HorizontalAlignment="Right"
                                           Margin="0,0,5,5"/>
                             </Grid>
                             <StackPanel VerticalAlignment="Center">
-                                <TextBlock Text="{x:Bind vm.User.userName, Mode=OneWay}"/>
-                                <TextBlock Text="{x:Bind vm.User.level, Mode=OneWay}"
+                                <TextBlock Text="{x:Bind vm.CurrentUser.userName, Mode=OneWay}"/>
+                                <TextBlock Text="{x:Bind vm.CurrentUser.level, Mode=OneWay}"
                                            Margin="0,10,0,0"/>
                             </StackPanel>
                         </StackPanel>

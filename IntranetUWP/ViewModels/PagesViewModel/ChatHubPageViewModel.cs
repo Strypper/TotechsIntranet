@@ -4,6 +4,7 @@ using IntranetUWP.ViewModels.Commands;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -11,9 +12,10 @@ namespace IntranetUWP.ViewModels.PagesViewModel
 {
     public class ChatHubPageViewModel : ViewModelBase
     {   
-        public readonly string getUserDataUrl         = "User/Get";
-        public readonly string getAllUsersDataUrl     = "User/GetAll";
-        public readonly string getConversationDataUrl = "Conversation/Get";
+        public readonly string getUserDataUrl            = "User/Get";
+        public readonly string getAllUsersDataUrl        = "User/GetAll";
+        public readonly string getConversationDataUrl    = "Conversation/Get";
+        public readonly string createConversationDataUrl = "Conversation/Create";
         public  ObservableCollection<ChatMessageDTO> ChatMessages       { get; set; }
         public  ObservableCollection<UserDTO>        Users              { get; set; }
         private IntranetSignalRHelper                signalRHelper      { get; set; }
@@ -27,13 +29,22 @@ namespace IntranetUWP.ViewModels.PagesViewModel
             set { messContent = value; OnPropertyChanged("MessContent"); }
         }
 
-        private UserDTO user;
+        private UserDTO currentUser;
 
-        public UserDTO User
+        public UserDTO CurrentUser
             {
-            get { return user; }
-            set { user = value; OnPropertyChanged("User"); }
+            get { return currentUser; }
+            set { currentUser = value; OnPropertyChanged("CurrentUser"); }
         }
+
+        private ConversationDTO selectedConversation;
+
+        public ConversationDTO SelectedConversation
+        {
+            get { return selectedConversation; }
+            set { selectedConversation = value; OnPropertyChanged("User"); }
+        }
+
 
         private ObservableCollection<ConversationDTO> conversations;
 
@@ -75,23 +86,47 @@ namespace IntranetUWP.ViewModels.PagesViewModel
 
         public async Task InitDefaultValue()
         {
-            User          = await httpHelper
-                                  .GetByIdAsync<UserDTO>(getUserDataUrl, (int)App.localSettings.Values["UserId"]);
+            CurrentUser             = await httpHelper
+                                            .GetByIdAsync<UserDTO>(getUserDataUrl, (int)App.localSettings.Values["UserId"]);
 
             var usersResult         = await httpHelper
                                             .GetAsync<List<UserDTO>>(getAllUsersDataUrl);
-            if(usersResult != null) usersResult.ForEach(user => Users.Add(user));   
+            if(usersResult != null)          usersResult.Where(u => u.id != currentUser.id)
+                                                        .ToList()
+                                                        .ForEach(user => Users.Add(user));   
 
             var conversationsResult = await httpHelper
                                             .GetAsync<List<ConversationDTO>>(getConversationDataUrl);
-            if (conversationsResult != null) conversationsResult.ForEach(conversation => Conversations.Add(conversation));
+            if(conversationsResult != null) conversationsResult.ForEach(conversation => Conversations.Add(conversation));
 
         }
 
         public async Task SendMessage(ChatMessageDTO messContent)
         {
-            await signalRHelper.SendMessageAsync(messContent.MessageContent, (int)App.localSettings.Values["UserId"]);
+            await signalRHelper.SendMessageAsync(messContent.MessageContent, SelectedConversation.id);
             MessContent = "";
+        }
+
+        public async Task CreateConversation(UserDTO targetUser)
+        {
+            IsBusy = true;
+            if (CurrentUser != null)
+            {
+                var conversation = new ConversationDTO()
+                {
+                    Users = new List<UserDTO>()
+                                          {   
+                                              currentUser,
+                                              targetUser
+                                          }
+                };
+                var createResult = await httpHelper.CreateAsync<ConversationDTO>(createConversationDataUrl, conversation);
+                if (createResult != null)
+                {
+                    Conversations.Add(createResult);
+                }
+                IsBusy = false;
+            }
         }
 
         private void ChatMessReceived(ChatMessageDTO chatMessage)

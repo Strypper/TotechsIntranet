@@ -26,9 +26,9 @@ namespace IntranetUWP
 {
     sealed partial class App : Application
     {
-        HttpClient httpClient = new HttpClient();
-        private IntranetHttpHelper httpHelper = new IntranetHttpHelper();
-        public readonly string LoginUrl = "https://intranetapi.azurewebsites.net/api/User/Login";
+        HttpClient httpClient                                                = new HttpClient();
+        private IntranetHttpHelper httpHelper                                = new IntranetHttpHelper();
+        public readonly string LoginUrl                                      = "https://intranetapi.azurewebsites.net/api/User/Login";
         public static Windows.Storage.ApplicationDataContainer localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
         public App()
         {
@@ -204,10 +204,10 @@ namespace IntranetUWP
                     .AddText("Deadline: 12:00PM Thursday noon ⏰")
                     .AddHeroImage(new Uri("ms-appx:///Assets/FoodAssets/FoodToast.png"))
                     .AddComboBox("foodList", "1", ("1", "Chicken rice"),
-                                                     ("2", "Pork noodle"),
-                                                     ("3", "Salmon fish rice"),
-                                                     ("4", "Pizza"),
-                                                     ("5", "Hamburger"))
+                                                  ("2", "Pork noodle"),
+                                                  ("3", "Salmon fish rice"),
+                                                  ("4", "Pizza"),
+                                                  ("5", "Hamburger"))
                     .AddButton(new ToastButton("Order", "order"))
                     .Show();
                 }

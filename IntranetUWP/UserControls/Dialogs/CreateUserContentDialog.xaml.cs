@@ -1,65 +1,66 @@
 ﻿using IntranetUWP.Helpers;
 using IntranetUWP.Models;
+using Microsoft.Toolkit.Uwp.UI.Controls;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Net.Http;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Foundation;
+using Windows.Graphics.Imaging;
 using Windows.Media.Capture;
 using Windows.Storage;
+using Windows.Storage.Pickers;
+using Windows.Storage.Streams;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
-
-// The Content Dialog item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
 namespace IntranetUWP.UserControls.Dialogs
 {
     public sealed partial class CreateUserContentDialog : ContentDialog
     {
         public readonly string RegisterUrl = "https://intranetapi.azurewebsites.net/api/User/Create";
-        public string getTeamsDataUrl = "Team/GetAll";
+        public string getProjectsDataUrl = "Project/GetAll";
         HttpClient httpClient = new HttpClient();
         private IntranetHttpHelper httpHelper = new IntranetHttpHelper();
-        private StorageFile userPhoto;
-        private string AzureProfileImageUrl;
+        private StorageFile userPhoto, cardPhoto;
+        private string AzureProfileImageUrl, ProfileCardImageUrl;
         public CreateUserContentDialog()
         {
             this.InitializeComponent();
         }
         private async void ContentDialog_Loaded(object sender, RoutedEventArgs e)
         {
-            var teams = await httpHelper.GetAsync<IList<TeamsDTO>>(getTeamsDataUrl);
-            TeamsFinder.SuggestedItemsSource = teams;
+            var projects = await httpHelper.GetAsync<IList<ProjectDTO>>(getProjectsDataUrl);
+            ProjectsFinder.SuggestedItemsSource = projects;
         }
 
         private async void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-            WorkingBar.ShowError = false;
+            WorkingBar.ShowError  = false;
             WorkingBar.Visibility = Visibility.Visible;
-            await saveUserPhoto(userPhoto);
+            AzureProfileImageUrl = await saveCroppedImage(userPhoto, AvatarCropper, true);
+            ProfileCardImageUrl  = await saveCroppedImage(cardPhoto, CardCropper, false);
             RegistingModel signUpInfo = new RegistingModel()
             {
-                userName = UserName.Text,
-                password = "Welkom112!!@",
-                company = iDealogicToggle.IsChecked == true ? true : false,
-                firstName = FirstName.Text,
-                middleName = MiddleName.Text,
-                lastName = LastName.Text,
-                role = Role.Text,
-                dateOfBirth = DateOfBirthPicker.Date.DateTime,
-                gender = BoyToggle.IsChecked == true ? true : false,
-                profilePic = AzureProfileImageUrl,
-                level = Level.Text
+                UserName       = UserName.Text,
+                Password       = "Welkom112!!@",
+                FirstName      = FirstName.Text,
+                MiddleName     = MiddleName.Text,
+                LastName       = LastName.Text,
+                DateOfBirth    = DateOfBirthPicker.Date.DateTime,
+                Gender         = BoyToggle.IsChecked == true ? true : false,
+                ProfilePic     = AzureProfileImageUrl,
             };
             var content = new StringContent(JsonConvert.SerializeObject(signUpInfo), Encoding.UTF8, "application/json");
             var response = await httpClient.PostAsync(RegisterUrl, content);
-            var result = await response.Content.ReadAsStringAsync();
             if (response.StatusCode.ToString() == "Created")
             {
                 this.Hide();
@@ -73,18 +74,6 @@ namespace IntranetUWP.UserControls.Dialogs
 
         private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-        }
-
-        private void iDealogicToggle_Click(object sender, RoutedEventArgs e)
-        {
-            iDealogicToggle.IsChecked = true;
-            DevinitionToggle.IsChecked = false;
-        }
-
-        private void DeviToggle_Click(object sender, RoutedEventArgs e)
-        {
-            DevinitionToggle.IsChecked = true;
-            iDealogicToggle.IsChecked = false;
         }
 
         private async void AvatarUploadImage_OpenCameraEventHandler(object sender, RoutedEventArgs e)
@@ -102,47 +91,53 @@ namespace IntranetUWP.UserControls.Dialogs
             }
             else
             {
-                var filestream = await userPhoto.OpenAsync(FileAccessMode.Read);
-                BitmapImage bitmapImage = new BitmapImage();
-                bitmapImage.SetSource(filestream);
-                Avatar.AvatarImage = bitmapImage;
+ 
             }
         }
 
         private async void AvatarUploadImage_OpenFileEventHandler(object sender, RoutedEventArgs e)
         {
-            var picker = new Windows.Storage.Pickers.FileOpenPicker();
-            picker.ViewMode = Windows.Storage.Pickers.PickerViewMode.Thumbnail;
+            var picker = new FileOpenPicker();
+            picker.ViewMode = PickerViewMode.Thumbnail;
             picker.FileTypeFilter.Add(".jpg");
             picker.FileTypeFilter.Add(".jpeg");
             picker.FileTypeFilter.Add(".png");
 
             userPhoto = await picker.PickSingleFileAsync();
+            cardPhoto = userPhoto;
             if (userPhoto != null)
             {
-                var filestream = await userPhoto.OpenAsync(FileAccessMode.Read);
-                BitmapImage bitmapImage = new BitmapImage();
-                bitmapImage.SetSource(filestream);
-                Avatar.AvatarImage = bitmapImage;
+                await CardCropper.LoadImageFromFile(cardPhoto);
+                await AvatarCropper.LoadImageFromFile(userPhoto);
             }
         }
 
-        private async Task saveUserPhoto(StorageFile photo)
+        private async Task<string> saveCroppedImage(StorageFile storageFile, ImageCropper imageCropper, bool isAvatar)
+        {
+            using (var fileStream = await storageFile.OpenAsync(FileAccessMode.ReadWrite, StorageOpenOptions.None))
+            {
+                await imageCropper.SaveAsync(fileStream, BitmapFileFormat.Png);
+            }
+            return await saveUserPhoto(storageFile, isAvatar);
+        }
+
+        private async Task<string> saveUserPhoto(StorageFile photo, bool isAvatar)
         {
             if (photo == null)
             {
                 Debug.WriteLine("No Photo Attach");
                 this.Title = "\uE114";
+                return null;
             }
             else
             {
                 CloudStorageAccount storageAccount = createStorageAccountFromConnectionString();
-                CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
-                CloudBlobContainer container = blobClient.GetContainerReference("avatarstorage");
+                CloudBlobClient blobClient         = storageAccount.CreateCloudBlobClient();
+                CloudBlobContainer container       = blobClient.GetContainerReference(isAvatar ? "avatarstorage" : "cardpics");
                 await container.CreateIfNotExistsAsync();
                 CloudBlockBlob blob = container.GetBlockBlobReference(photo.Name);
                 await blob.UploadFromFileAsync(photo);
-                AzureProfileImageUrl = blob.Uri.AbsoluteUri;
+                return blob.Uri.AbsoluteUri;
             }
         }
 
@@ -167,7 +162,7 @@ namespace IntranetUWP.UserControls.Dialogs
             return storageAccount;
         }
 
-        private void TeamsFinder_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
+        private void ProjectsFinder_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
         {
 
         }

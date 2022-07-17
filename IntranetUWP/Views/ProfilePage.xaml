@@ -8,6 +8,7 @@
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls" 
     xmlns:models="using:IntranetUWP.Models" 
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:toolkit="using:Microsoft.Toolkit.Uwp.UI" xmlns:chart="using:Syncfusion.UI.Xaml.Charts"
     mc:Ignorable="d" Loaded="Page_Loaded"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Page.Resources>
@@ -22,8 +23,8 @@
                              Margin="0,0,0,10" CornerRadius="2"/>
             </StackPanel>
         </DataTemplate>
-        <DataTemplate x:Key="TeamFlipViewCard"
-                      x:DataType="models:TeamsDTO">
+        <DataTemplate x:Key="ProjectFlipViewCard"
+                      x:DataType="models:ProjectDTO">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
@@ -32,7 +33,7 @@
                 </Grid.RowDefinitions>
                 <TextBlock HorizontalAlignment="Center"
                            VerticalAlignment="Top"
-                           Text="{x:Bind TeamName}"
+                           Text="{x:Bind ProjectName}"
                            TextAlignment="Center"
                            FontWeight="ExtraBold"
                            FontSize="30"
@@ -41,7 +42,7 @@
                                VerticalAlignment="Center"
                                Width="100"
                                Grid.Row="1"
-                               ProfilePicture="{x:Bind local:ProfilePage.GetUserInfo(TechLead, (models:TeamsDTO)), Mode=OneWay}"/>
+                               ProfilePicture="{x:Bind local:ProfilePage.GetUserInfo(TechLeadGuid, (models:ProjectDTO)), Mode=OneWay}"/>
                 <muxc:ItemsRepeater ItemsSource="{x:Bind Members, Mode=OneWay}"
                                     Grid.Row="2"
                                     VerticalAlignment="Bottom"
@@ -51,7 +52,7 @@
                     </muxc:ItemsRepeater.Layout>
                     <muxc:ItemsRepeater.ItemTemplate>
                         <DataTemplate x:DataType="models:UserDTO">
-                            <PersonPicture ProfilePicture="{x:Bind profilePic, Mode=OneWay}"
+                            <PersonPicture ProfilePicture="{x:Bind ProfilePic, Mode=OneWay, Converter={StaticResource StringToImageSourceConverter}}"
                                            Width="40" Margin="5,0,5,5"/>
                         </DataTemplate>
                     </muxc:ItemsRepeater.ItemTemplate>
@@ -60,7 +61,7 @@
         </DataTemplate>
     </Page.Resources>
 
-    <Grid x:Name="MainPage">
+    <Grid x:Name="MainGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
@@ -72,12 +73,12 @@
             <ColumnDefinition Width="0.7*"/>
         </Grid.ColumnDefinitions>
 
-        <ListView x:Name="SkillsList" 
-                  Margin="15"
-                  CornerRadius="3"
-                  ItemTemplate="{StaticResource SkillTemplate}"
-                  Background="{ThemeResource SystemAltHighColor}"
-                  ItemsSource="{x:Bind User.skills, Mode=TwoWay}">
+        <ListView x:Name       = "SkillsList" 
+                  Margin       = "15"
+                  CornerRadius = "3"
+                  ItemTemplate = "{StaticResource SkillTemplate}"
+                  Background   = "{ThemeResource SystemAltHighColor}"
+                  ItemsSource  = "{x:Bind User.Skills, Mode=TwoWay}">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -129,7 +130,7 @@
                     <TextBlock x:Name="Bio"
                                TextWrapping="Wrap" 
                                Margin="5,5,5,0"
-                               Text="{x:Bind User.bio, Mode=OneWay}"/>
+                               Text="{x:Bind User.Bio, Mode=OneWay}"/>
                 </StackPanel>
                 <Button Grid.Row="1"
                         HorizontalAlignment="Stretch"
@@ -168,46 +169,20 @@
             <StackPanel VerticalAlignment="Center"
                         Padding="5">
                 <Grid>
-                    <controls:RadialProgressBar
-                        x:Name="ProgressBar"
-                        Maximum="100"
-                        Minimum="0"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Center"
-                        Thickness="15"
-                        Height="250"
-                        Width="250">
-                        <controls:RadialProgressBar.Triggers>
-                            <EventTrigger>
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <DoubleAnimation Storyboard.TargetName="ProgressBar"
-                                                         Storyboard.TargetProperty="Value"
-                                                         EnableDependentAnimation="True"
-                                                         From="0" Duration="0:0:5"
-                                                         To="80">
-                                            <DoubleAnimation.EasingFunction>
-                                                <CubicEase/>
-                                            </DoubleAnimation.EasingFunction>
-                                        </DoubleAnimation>
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </EventTrigger>
-                        </controls:RadialProgressBar.Triggers>
-                    </controls:RadialProgressBar>
-                    <StackPanel HorizontalAlignment="Center"
-                                VerticalAlignment="Center">
-                        <TextBlock Text="&#x1F44D;"
-                                   FontFamily="Segoe UI Emoji"
-                                   HorizontalAlignment="Center"
-                                   FontSize="80"
-                                   Foreground="{StaticResource SystemAccentColor}"/>
-                        <TextBlock HorizontalAlignment="Center"
-                                   FontSize="35" FontWeight="ExtraBold">
-                            <Run Text="{x:Bind ProgressBar.Value, Mode=OneWay
-                                             , Converter={StaticResource DoubleToPercentConverter}}"/>
-                        </TextBlock>
-                    </StackPanel>
+                    <chart:SfChart Grid.Row="1"
+                                   Margin="5">
+                        <chart:RadarSeries ItemsSource       = "{x:Bind User.Skills, Mode=OneWay}" 
+                                           AnimationDuration = "00:00:02" 
+                                           EnableAnimation   = "True"
+                                           DrawType          = "Line"
+                                           XBindingPath      = "Name"
+                                           YBindingPath      = "SkillValue"
+                                           ShowTooltip       = "True">
+                            <chart:RadarSeries.YAxis>
+                                <chart:NumericalAxis Minimum="0" Maximum="100"/>
+                            </chart:RadarSeries.YAxis>
+                        </chart:RadarSeries>
+                    </chart:SfChart>
                 </Grid>
                 <TextBlock Text="THE STAYING LATE"
                            TextAlignment="Center"
@@ -216,21 +191,21 @@
                            TextDecorations="Underline"
                            FontWeight="ExtraBold"
                            HorizontalAlignment="Center"/>
-                <TextBlock FontSize="20"
+                <!--<TextBlock FontSize="20"
                            Margin="5,5,0,5"
                            VerticalAlignment="Bottom"
                            HorizontalAlignment="Center">
                         <Run Text="&#xE821;" FontFamily="Segoe MDL2 Assets"/>
                         <Run Text="Role: "/>
-                        <Run Text="{x:Bind User.role, Mode=OneWay}"/>
-                </TextBlock>
-                <TextBlock HorizontalAlignment="Center"
+                        <Run Text="{x:Bind User.Role, Mode=OneWay}"/>
+                </TextBlock>-->
+                <!--<TextBlock HorizontalAlignment="Center"
                                VerticalAlignment="Bottom"
                                FontSize="20">
                         <Run Text="&#xECA7;" FontFamily="Segoe MDL2 Assets"/>
                         <Run Text="Level: "/>
-                        <Run Text="{x:Bind User.level, Mode=OneWay}"/>
-                </TextBlock>
+                        <Run Text="{x:Bind User.Level, Mode=OneWay}"/>
+                </TextBlock>-->
                 <StackPanel Orientation="Horizontal"
                             HorizontalAlignment="Center"
                             Margin="5">
@@ -282,18 +257,18 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <TextBlock HorizontalAlignment="Center"
-                       Text="TEAMS"
+                       Text="PROJECTS"
                        TextAlignment="Center"
                        TextDecorations="Underline"
                        FontWeight="ExtraBold"
                        FontSize="25"/>
-            <FlipView x:Name="TeamsCards"
+            <FlipView x:Name="ProjectsCards"
                       HorizontalAlignment="Center"
                       VerticalAlignment="Center"
                       CornerRadius="2"
                       Grid.Row="1"
                       Margin="5,0,5,5"
-                      ItemTemplate="{StaticResource TeamFlipViewCard}"/>
+                      ItemTemplate="{StaticResource ProjectFlipViewCard}"/>
         </Grid>
         <Border Grid.RowSpan="3"
                 Grid.Column="2"
@@ -308,22 +283,19 @@
                    VerticalAlignment="Stretch"
                    HorizontalAlignment="Stretch"
                    Stretch="UniformToFill"
-                   Source="{x:Bind User.profilePic,
+                   Source="{x:Bind User.CardPic,
                             Mode=OneWay, 
                             Converter={StaticResource StringToImageSourceConverter}}"/>
             <Border VerticalAlignment="Bottom"
                     HorizontalAlignment="Stretch">
                 <StackPanel Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}">
                     <TextBlock FontSize="30"
-                       FontWeight="Bold"
-                       TextAlignment="Center"
-                       TextDecorations="Underline"
-                       Margin="0,0,0,5">
-                        <Run Text="{x:Bind User.lastName, Mode=OneWay}"/>
-                        <Run Text="{x:Bind User.middleName, Mode=OneWay}"/>
-                        <Run Text="{x:Bind User.firstName, Mode=OneWay}"/>
-                    </TextBlock>
-                    <TextBlock Text="{x:Bind User.dateOfBirth, Mode=OneWay,
+                               FontWeight="Bold"
+                               TextAlignment="Center"
+                               TextDecorations="Underline"
+                               Margin="0,0,0,5"
+                               Text="{x:Bind User.FullName, Mode=OneWay}"/>
+                    <TextBlock Text="{x:Bind User.DateOfBirth, Mode=OneWay,
                                       Converter={StaticResource FullDateToDateConverter}}"
                                FontWeight="Bold"
                                TextAlignment="Center"
@@ -344,26 +316,27 @@
                         Margin="15,0,15,15">
                     <TextBox Header="Phone Number 📱"
                              PlaceholderText="+84 9999 9999 999"
-                             Text="{x:Bind User.phoneNumber, Mode=TwoWay}"
+                             Text="{x:Bind User.PhoneNumber, Mode=TwoWay}"
                              Margin="5"/>
-                    <TextBox Header="Where are you from 🌍 ?"
+                    <!--<TextBox Header="Where are you from 🌍 ?"
                              PlaceholderText="Ex: Viet Nam, Ireland"
-                             Text="{x:Bind User.country,Mode=TwoWay}"
-                             Margin="5,0,5,5"/>
+                             Text="{x:Bind User.Country,Mode=TwoWay}"
+                             Margin="5,0,5,5"/>-->
                     <TextBox Header="Where did you used to work 💼 ?"
                              PlaceholderText="Ex: Worked at Ceres, Hochiminh City, Viet Nam"
-                             Text="{x:Bind User.former, Mode=TwoWay}"
+                             Text="{x:Bind User.Former, Mode=TwoWay}"
                              Margin="5,0,5,5"/>
                     <TextBox Header="Your relationship status ❤️ ?"
                              PlaceholderText="Ex: Single, In Relationship, Married"
-                             Text="{x:Bind User.relationship, Mode=TwoWay}"
+                             Text="{x:Bind User.Relationship, Mode=TwoWay}"
                              Margin="5,0,5,5"/>
                     <TextBox Header="What are your hobbies ⚽ ?"
                              PlaceholderText="Ex: 🎮Games, ⚖️Politic, 📖Reading, ⚽Soccer"
-                             Text="{x:Bind User.hobby, Mode=TwoWay}"
+                             Text="{x:Bind User.Hobby, Mode=TwoWay}"
                              Margin="5,0,5,5"/>
-                    <PasswordBox Header="Change your password" 
-                                 Margin="5,0,5,5" IsEnabled="False"/>
+                    <PasswordBox x:Name="ChangePasswordBox" 
+                                 Header="Change your password" 
+                                 Margin="5,0,5,5" IsEnabled="true"/>
                 </StackPanel>
             </ScrollViewer>
             <Button Background="{StaticResource SystemAccentColor}"

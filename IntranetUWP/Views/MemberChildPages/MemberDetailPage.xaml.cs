@@ -13,19 +13,15 @@ using System.Threading.Tasks;
 using System.Linq;
 using Windows.ApplicationModel.Email;
 using Windows.ApplicationModel.DataTransfer;
-using TextBlockFX.Win2D.UWP;
-using TextBlockFX.Win2D.UWP.Effects;
 using IntranetUWP.UserControls.Dialogs;
+using Windows.System;
 
 namespace IntranetUWP.Views.MemberChildPages
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
     public sealed partial class MemberDetailPage : Page
     {
         private IntranetHttpHelper httpHelper = new IntranetHttpHelper();
-        public string getAllTeamWithMember = "Team/GetAllTeamsWithMembers";
+        public string getAllProjectWithMember = "Project/GetAllProjectsWithMembers";
         public string getUserById = "User/Get";
         public UserDTO User { get; set; } = new UserDTO();
 
@@ -102,7 +98,7 @@ namespace IntranetUWP.Views.MemberChildPages
                 anim.TryStart(Avatar, new UIElement[] { FullName });
             }
 
-            await GetTeamsInfo(User);
+            await GetProjectsInfo(User);
         }
 
         private void SwipeItem_Invoked(SwipeItem sender, SwipeItemInvokedEventArgs args)
@@ -111,22 +107,22 @@ namespace IntranetUWP.Views.MemberChildPages
                            new SlideNavigationTransitionInfo() {  Effect = SlideNavigationTransitionEffect.FromLeft });
         }
 
-        private async Task GetTeamsInfo(UserDTO userInfo)
+        private async Task GetProjectsInfo(UserDTO userInfo)
         {
-            var teams = await httpHelper.GetAsync<ObservableCollection<TeamsDTO>>(getAllTeamWithMember);
-            TeamsCards.ItemsSource = teams.Where(t => t.Members.Any(m => m.id == userInfo.id));
+            var projects = await httpHelper.GetAsync<ObservableCollection<ProjectDTO>>(getAllProjectWithMember);
+            ProjectsCards.ItemsSource = projects.Where(t => t.Members.Any(m => m.Guid == userInfo.Guid));
         }
 
         private void NavigateBackToMembers_Click(object sender, RoutedEventArgs e)
            => Frame.Navigate(typeof(iDealogicMemberPage), null,
                            new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromLeft });
 
-        public static BitmapImage GetUserInfo(int userInfo, TeamsDTO team)
+        public static BitmapImage GetUserInfo(string userGuid, ProjectDTO project)
         {
-            if (userInfo != 0)
+            if (!string.IsNullOrEmpty(userGuid))
             {
-                var user = team.Members.FirstOrDefault(u => u.id == userInfo);
-                return new BitmapImage(new Uri(user.profilePic));
+                var user = project.Members.FirstOrDefault(u => u.Guid == userGuid);
+                return new BitmapImage(new Uri(user.ProfilePic));
             }
             else return null;
         }
@@ -137,7 +133,7 @@ namespace IntranetUWP.Views.MemberChildPages
             emailMessage.Subject = "This is a subject";
             emailMessage.Body = "Hello, this is sample email body.";
 
-            var emailRecipient = new EmailRecipient(User.userName);
+            var emailRecipient = new EmailRecipient(User.UserName);
             emailMessage.To.Add(emailRecipient);
 
             await EmailManager.ShowComposeNewEmailAsync(emailMessage);
@@ -146,11 +142,11 @@ namespace IntranetUWP.Views.MemberChildPages
         private async void CopyEmail_Click(object sender, RoutedEventArgs e)
         {
             DataPackage dataPackage = new DataPackage();
-            dataPackage.SetText(User.userName);
+            dataPackage.SetText(User.UserName);
             Clipboard.SetContent(dataPackage);
 
             PageStatus.Title = "Copied Email:";
-            PageStatus.Message = $"{User.userName} is now in your clipboard";
+            PageStatus.Message = $"{User.UserName} is now in your clipboard";
             PageStatus.Severity = Microsoft.UI.Xaml.Controls.InfoBarSeverity.Success;
             PageStatus.IconSource = new Microsoft.UI.Xaml.Controls.SymbolIconSource() { Symbol = Symbol.Copy };
             PageStatus.IsOpen = true;
@@ -165,6 +161,11 @@ namespace IntranetUWP.Views.MemberChildPages
         {
             TextPlayerContentDialog dialog = new TextPlayerContentDialog();
             await dialog.ShowAsync();
+        }
+
+        private async void CallPhoneNumber_Click(object sender, RoutedEventArgs e)
+        {
+            await Launcher.LaunchUriAsync(new Uri("tel:" + User.PhoneNumber));
         }
     }
 }

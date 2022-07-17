@@ -21,11 +21,9 @@ namespace IntranetUWP.ViewModels.Commands
 
         public async void Execute(object parameter)
         {
-             var chatMessage = new ChatMessageDTO() { 
-                MessageContent = parameter as String, 
-                UserName = App.localSettings.Values["UserName"] as String
-             };
-            await ViewModel.SendMessage(chatMessage);
+            //App.localSettings.Values["UserName"] as String
+            var messageRequest = parameter as SendMessageDTO;
+            await ViewModel.SendMessage(messageRequest);
         }
     }
 }

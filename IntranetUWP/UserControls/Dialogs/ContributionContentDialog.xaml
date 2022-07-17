@@ -1,0 +1,64 @@
+﻿<ContentDialog
+    x:Class="IntranetUWP.UserControls.Dialogs.ContributionContentDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:IntranetUWP.UserControls.Dialogs"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    mc:Ignorable="d"
+    CornerRadius="5"
+    Loaded="ContentDialog_Loaded"
+    PrimaryButtonText="Add"
+    SecondaryButtonText="Cancel"
+    IsPrimaryButtonEnabled="False"
+    DefaultButton="Primary"
+    PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
+    SecondaryButtonClick="ContentDialog_SecondaryButtonClick">
+
+    <Grid>
+        <StackPanel>
+            <muxc:InfoBar IsOpen="True"
+                          Severity="Informational"
+                          Title="GIMME UR FUCKING MONEY"
+                          IsClosable="False"
+                          Margin="0,5,5,5"
+                          MaxWidth="450"
+                          Message="Contribute money for weekend party or meeting at SECTOR 7 to prepare FOODS, SNACK 🍕 and DRINKS 🥤" />
+            <Border x:Name="ContentBorder"
+                    Background="Green"
+                    Padding="5,10,10,10"
+                    CornerRadius="5">
+                <StackPanel>
+                    <TextBlock Text="ADMIN: TO HOANG VIET"/>
+                    <TextBlock x:Name="PaymentMethodContent"/>
+                </StackPanel>
+            </Border>
+            <muxc:RadioButtons x:Name="PaymentMethodOptions" 
+                               SelectedIndex="0"  
+                               MaxColumns="3" 
+                               Header="Payment method" 
+                               SelectionChanged="PaymentMethodOptions_SelectionChanged">
+                <x:String>Cash</x:String>
+                <x:String>Momo</x:String>
+                <x:String>Bank</x:String>
+            </muxc:RadioButtons>
+            <StackPanel Orientation="Horizontal"
+                        Margin="0,5,5,5">
+                <muxc:NumberBox x:Name="MoneyAmountNumberBox"
+                                SmallChange="10"
+                                LargeChange="100"
+                                Value="20"
+                                VerticalAlignment="Bottom"
+                                SpinButtonPlacementMode="Compact"/>
+                <TextBlock Text=",000 VNĐ"
+                           FontSize="20"
+                           VerticalAlignment="Bottom"/>
+                <NavigationViewItemSeparator/>
+                <CalendarDatePicker x:Name="DonateOnDatePicker"
+                                    PlaceholderText="Contribute on ?"
+                                    DateChanged="DonateOnDatePicker_DateChanged"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</ContentDialog>

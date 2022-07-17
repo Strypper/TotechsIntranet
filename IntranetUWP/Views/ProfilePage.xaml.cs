@@ -1,25 +1,26 @@
-﻿using IntranetUWP.Helpers;
+﻿using IntranetUWP.Contracts;
+using IntranetUWP.Helpers;
 using IntranetUWP.Models;
+using IntranetUWP.RefitInterfaces;
 using IntranetUWP.UserControls.Dialogs;
 using Microsoft.Toolkit.Uwp.UI.Helpers;
 using Microsoft.UI.Xaml.Controls;
+using Newtonsoft.Json;
+using Refit;
 using System;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Runtime.CompilerServices;
+using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
 
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
 namespace IntranetUWP.Views
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
     public sealed partial class ProfilePage : Page, INotifyPropertyChanged
     {
         private UserDTO user;
@@ -27,36 +28,36 @@ namespace IntranetUWP.Views
         public UserDTO User
         {
             get { return user; }
-            set 
-            { 
+            set
+            {
                 user = value;
                 OnPropertyChanged();
             }
         }
 
-        public readonly string getUserDataUrl       = "User/Get";
-        public readonly string updateUserDataUrl    = "User/Update";
-        public readonly string getAllTeamWithMember = "Team/GetAllTeamsWithMembers";
-
-        private IntranetHttpHelper httpHelper = new IntranetHttpHelper();
+        private readonly IUserData    userData    = RestService.For<IUserData>(App.BaseUrl);
+        private readonly IProjectData projectData = RestService.For<IProjectData>(App.BaseUrl);
+        private ILocalUsersService localUsersService;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         public ProfilePage()
-            => this.InitializeComponent();
-
+        {
+            this.InitializeComponent();
+            localUsersService = MainPage.Context.GetRequiredService<ILocalUsersService>();
+        }
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            if (App.localSettings.Values["UserId"] != null)
+            if (App.localSettings.Values["UserGuid"] != null)
             {
-                User = await httpHelper
-                             .GetByIdAsync<UserDTO>(getUserDataUrl, (int)App.localSettings.Values["UserId"]);
-                var teams = await httpHelper.GetAsync<ObservableCollection<TeamsDTO>>(getAllTeamWithMember);
-                TeamsCards.ItemsSource = teams.Where(t => t.Members.Any(m => m.id == User.id));
-            }
+                User         = await localUsersService.GetLocalUserAsync(App.localSettings.Values["UserGuid"].ToString());
+
+                var projects = await projectData.GetAllProjectsWithMembers();
+                ProjectsCards.ItemsSource = projects.Where(t => t.Members.Any(m => m.Guid == User.Guid));
+                BioSymbol.Symbol = String.IsNullOrEmpty(User.Bio) ? Symbol.Add : Symbol.Edit;
+            } 
 
             SkillsSymbol.Symbol = SkillsList.Items.Count > 0 ? Symbol.Edit : Symbol.Add;
-            BioSymbol.Symbol = String.IsNullOrEmpty(User.bio) ? Symbol.Add : Symbol.Edit;
 
             var currentTheme = Application.Current.RequestedTheme;
             AdaptiveTheme(currentTheme);
@@ -89,7 +90,7 @@ namespace IntranetUWP.Views
 
         private async void BioEdit_Click(object sender, RoutedEventArgs e)
         {
-            var bioDialog = new BioDialog() { Content = User.bio };
+            var bioDialog = new BioDialog() { Content = User.Bio };
             bioDialog.PrimaryButtonClick += BioDialog_PrimaryButtonClick;
             await bioDialog.ShowAsync();    
         }
@@ -97,55 +98,75 @@ namespace IntranetUWP.Views
         private void BioDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
             Bio.Text = (sender as BioDialog).Content;
-            User.bio = Bio.Text;
+            User.Bio = Bio.Text;
         }
 
         private async void AddSkill_Click(object sender, RoutedEventArgs e)
         {
             var skillsDialog = new SkillDialog();
-            foreach (var user in User.skills)
-            {
-                skillsDialog.Skills.Add(user);
-            }
             skillsDialog.PrimaryButtonClick += SkillsDialog_PrimaryButtonClick;
             await skillsDialog.ShowAsync();
         }
         private void SkillsDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
             var updatedSkills = (sender as SkillDialog).Skills;
-            User.skills.Clear();
+            User.Skills.Clear();
             foreach (var skill in updatedSkills)
             {
-                User.skills.Add(skill);
+                User.Skills.Add(skill);
             }
         }
 
         private async void UpdateInfo_Click(object sender, RoutedEventArgs e)
         {
-            var updateResult = await httpHelper.UpdateAsync(updateUserDataUrl, User);
-            if (updateResult == true)
+            if(string.IsNullOrEmpty(ChangePasswordBox.Password))
             {
-                PageStatus.Message = "Your info successfully updated";
-                PageStatus.Title = "Update Status";
-                PageStatus.Severity = InfoBarSeverity.Success;
-                PageStatus.IsOpen = true;
+                var updateResult = await userData.Update(User);
+                if (updateResult.StatusCode == HttpStatusCode.NoContent)
+                {
+                    PageStatus.Message = "Your info successfully updated";
+                    PageStatus.Title = "Update Status";
+                    PageStatus.Severity = InfoBarSeverity.Success;
+                    PageStatus.IsOpen = true;
+                }
+                else
+                {
+                    PageStatus.Message = "Your info still not updated";
+                    PageStatus.Title = "Update Status";
+                    PageStatus.Severity = InfoBarSeverity.Error;
+                    PageStatus.IsOpen = true;
+                    Debug.WriteLine("Create operation error");
+                }
             }
             else
             {
-                PageStatus.Message = "Your info still not updated";
-                PageStatus.Title = "Update Status";
-                PageStatus.Severity = InfoBarSeverity.Error;
-                PageStatus.IsOpen = true;
-                Debug.WriteLine("Create operation error");
+                User.Password = ChangePasswordBox.Password;
+                var updateResult = await userData.UpdatePassword(User);
+                if (updateResult.StatusCode == HttpStatusCode.NoContent)
+                {
+                    PageStatus.Message         = "Your info with new password successfully updated, please logout and relogin again";
+                    PageStatus.Title           = "Update Status";
+                    PageStatus.Severity        = InfoBarSeverity.Success;
+                    PageStatus.IsOpen          = true;
+                    ChangePasswordBox.Password = String.Empty;
+                }
+                else
+                {
+                    PageStatus.Message = "Your info still not updated";
+                    PageStatus.Title = "Update Status";
+                    PageStatus.Severity = InfoBarSeverity.Error;
+                    PageStatus.IsOpen = true;
+                    Debug.WriteLine("Create operation error");
+                }
             }
         }
 
-        public static BitmapImage GetUserInfo(int userInfo, TeamsDTO team)
+        public static BitmapImage GetUserInfo(string userGuid, ProjectDTO team)
         {
-            if (userInfo != 0)
+            if (!String.IsNullOrEmpty(userGuid))
             {
-                var user = team.Members.FirstOrDefault(u => u.id == userInfo);
-                return new BitmapImage(new Uri(user.profilePic));
+                var user = team.Members.FirstOrDefault(u => u.Guid == userGuid);
+                return new BitmapImage(new Uri(user.ProfilePic));
             }
             else return null;
         }

@@ -1,11 +1,16 @@
-﻿using IntranetUWP.Helpers;
+﻿using IntranetUWP.Constanst;
+using IntranetUWP.Helpers;
 using IntranetUWP.Models;
 using IntranetUWP.Views;
+using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.QueryStringDotNET;
+using Microsoft.Toolkit.Mvvm.DependencyInjection;
 using Microsoft.Toolkit.Uwp.Helpers;
 using Microsoft.Toolkit.Uwp.Notifications;
 using Newtonsoft.Json;
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -26,15 +31,22 @@ namespace IntranetUWP
 {
     sealed partial class App : Application
     {
-        HttpClient httpClient                                                = new HttpClient();
-        private IntranetHttpHelper httpHelper                                = new IntranetHttpHelper();
-        public readonly string LoginUrl                                      = "https://intranetapi.azurewebsites.net/api/User/Login";
+        HttpClient httpClient = new HttpClient();
+        private IntranetHttpHelper httpHelper = new IntranetHttpHelper();
+        public static readonly string BaseUrl = "https://intranetapi.azurewebsites.net/api";
+        public readonly string LoginUrl = BaseUrl + "/User/Login";
         public static Windows.Storage.ApplicationDataContainer localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+
+        public IntranetSignalRHelper signalRHelper { get; set; }
+
         public App()
         {
+            Syncfusion.Licensing
+                      .SyncfusionLicenseProvider
+                      .RegisterLicense(SyncFusionConstants.Key);
             this.InitializeComponent();
             this.Suspending += OnSuspending;
-            if(AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Xbox")
+            if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Xbox")
             {
                 ApplicationViewScaling.TrySetDisableLayoutScaling(true);
             }
@@ -67,14 +79,14 @@ namespace IntranetUWP
                 ApplicationViewTitleBar titleBar = AppView.TitleBar;
                 switch (RequestedTheme)
                 {
-                    case ApplicationTheme.Light:
-                        titleBar.ButtonForegroundColor = Colors.Black;
-                        titleBar.BackgroundColor = Color.FromArgb(255, 230, 230, 230);
-                        break;
-                    case ApplicationTheme.Dark:
-                        titleBar.BackgroundColor = Color.FromArgb(255, 31, 31, 31);
-                        titleBar.ButtonForegroundColor = Colors.White;
-                        break;
+                case ApplicationTheme.Light:
+                    titleBar.ButtonForegroundColor = Colors.Black;
+                    titleBar.BackgroundColor = Color.FromArgb(255, 230, 230, 230);
+                    break;
+                case ApplicationTheme.Dark:
+                    titleBar.BackgroundColor = Color.FromArgb(255, 31, 31, 31);
+                    titleBar.ButtonForegroundColor = Colors.White;
+                    break;
                 }
                 if (localSettings.Values != null)
                 {
@@ -100,15 +112,15 @@ namespace IntranetUWP
                         {
                             switch (args["action"])
                             {
-                                case "viewFoodPage":
+                            case "viewFoodPage":
 
-                                    //If we're already viewing that page, do nothing
-                                    if (rootFrame.Content is MainPage)
-                                        break;
-
-                                    // Otherwise navigate to view it
-                                    rootFrame.Navigate(typeof(MainPage));
+                                //If we're already viewing that page, do nothing
+                                if (rootFrame.Content is MainPage)
                                     break;
+
+                                // Otherwise navigate to view it
+                                rootFrame.Navigate(typeof(MainPage));
+                                break;
                             }
                         }
                     }
@@ -147,18 +159,16 @@ namespace IntranetUWP
 
 
                     ApplicationViewTitleBar titleBar = AppView.TitleBar;
-                    //titleBar.ButtonBackgroundColor = Colors.Transparent;
-                    //titleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
                     switch (RequestedTheme)
                     {
-                        case ApplicationTheme.Light:
-                            titleBar.ButtonForegroundColor = Colors.Black;
-                            titleBar.BackgroundColor = Color.FromArgb(255, 230, 230, 230);
-                            break;
-                        case ApplicationTheme.Dark:
-                            titleBar.BackgroundColor = Color.FromArgb(255, 31, 31, 31);
-                            titleBar.ButtonForegroundColor = Colors.White;
-                            break;
+                    case ApplicationTheme.Light:
+                        titleBar.ButtonForegroundColor = Colors.Black;
+                        titleBar.BackgroundColor = Color.FromArgb(255, 230, 230, 230);
+                        break;
+                    case ApplicationTheme.Dark:
+                        titleBar.BackgroundColor = Color.FromArgb(255, 31, 31, 31);
+                        titleBar.ButtonForegroundColor = Colors.White;
+                        break;
                     }
                     if (localSettings.Values != null)
                     {
@@ -174,7 +184,6 @@ namespace IntranetUWP
                         else rootFrame.Navigate(typeof(LoginPage), e.Arguments);
                     }
                 }
-                // Ensure the current window is active
                 Window.Current.Activate();
             }
         }
@@ -188,27 +197,21 @@ namespace IntranetUWP
             //TODO: Save application state and stop any background activity
             deferral.Complete();
         }
-
         protected override void OnBackgroundActivated(BackgroundActivatedEventArgs args)
         {
             var currentTime = DateTime.Now;
             if (currentTime.DayOfWeek == DayOfWeek.Thursday)
             {
-                if(currentTime.Hour < 12)
+                if (currentTime.Hour < 12)
                 {
                     //Fire toast
                     new ToastContentBuilder()
                     .SetToastScenario(ToastScenario.Reminder)
-                    .AddText("🍱 It's Thursday my friend!!!!")
-                    .AddText("There are 12 dishes 🍽 this week")
-                    .AddText("Deadline: 12:00PM Thursday noon ⏰")
-                    .AddHeroImage(new Uri("ms-appx:///Assets/FoodAssets/FoodToast.png"))
-                    .AddComboBox("foodList", "1", ("1", "Chicken rice"),
-                                                  ("2", "Pork noodle"),
-                                                  ("3", "Salmon fish rice"),
-                                                  ("4", "Pizza"),
-                                                  ("5", "Hamburger"))
-                    .AddButton(new ToastButton("Order", "order"))
+                    .AddText("🎮 It's Thursday my friend!!!!")
+                    .AddText("RALLY UP AT SECTOR 7 THIS WEEKEND WE GONNA START UP A COMPANY")
+                    .AddHeroImage(new Uri("ms-appx:///Assets/DemoPurpose/Others/Games.png"))
+                    .AddButton(new ToastButton("Im in", "checkin"))
+                    .AddButton(new ToastButton("This week I'm busy", "cancel"))
                     .Show();
                 }
             }
@@ -226,6 +229,5 @@ namespace IntranetUWP
                 BackgroundTaskHelper.Unregister(name);
             // Easy where to put this method : where you need it?
         }
-
     }
 }

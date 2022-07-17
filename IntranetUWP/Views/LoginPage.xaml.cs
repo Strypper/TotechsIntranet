@@ -23,8 +23,8 @@ namespace IntranetUWP.Views
 
 			try
 			{
-				await ViewModel.LoginAsync();
-				_ = Frame.Navigate(typeof(MainPage));
+				var userInfo = await ViewModel.LoginAsync();
+				_ = Frame.Navigate(typeof(MainPage), userInfo);
 			}
 			catch (Exception e)
 			{
@@ -41,8 +41,8 @@ namespace IntranetUWP.Views
 			NavigateMainFrameButton.IsEnabled = false;
 			try
 			{
-				await ViewModel.LoginAsync();
-				_ = Frame.Navigate(typeof(MainPage));
+				var identityUserInfo = await ViewModel.LoginAsync();
+				Frame.Navigate(typeof(MainPage), identityUserInfo);
 			}
 			catch (Exception e)
 			{

@@ -10,9 +10,7 @@ namespace IntranetUWP.Helpers
     public class IntranetHttpHelper : HttpClient
     {
         private HttpMessageHandler _handler;
-
         public IntranetHttpHelper(string baseAddress = "https://intranetapi.azurewebsites.net/api/") : this(baseAddress, new HttpClientHandler()) {}
-
         public IntranetHttpHelper(string baseAddress, HttpMessageHandler handler) : base(handler)
         {
             _handler = handler;
@@ -47,6 +45,14 @@ namespace IntranetUWP.Helpers
         {
             string finalGetByIdUrl(int entityId) => $"{url}/{entityId}";
             var response = await GetAsync(finalGetByIdUrl(id));
+            var result = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<T>(result);
+        }
+
+        public async Task<T> GetByGuidAsync<T>(string url, string guid)
+        {
+            string finalGetByIdUrl(string entityId) => $"{url}/{entityId}";
+            var response = await GetAsync(finalGetByIdUrl(guid));
             var result = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<T>(result);
         }

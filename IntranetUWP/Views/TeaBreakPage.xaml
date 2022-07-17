@@ -12,8 +12,8 @@
 
     <ScrollViewer>
 
-        <winui:WebView2 Source="https://teams.microsoft.com/" 
-                        VerticalAlignment="Stretch"/>
+        <!--<winui:WebView2 Source="https://teams.microsoft.com/" 
+                        VerticalAlignment="Stretch"/>-->
         <!--<StackPanel>
             --><!--<StackPanel.ChildrenTransitions>
                 <TransitionCollection>

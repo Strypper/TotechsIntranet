@@ -13,7 +13,7 @@ namespace IntranetUWP.Converters
         public object Convert(object value, Type targetType, object parameter, string language)
         {
             var user = httpHelper.GetByIdAsync<UserDTO>(getUserById, (int)value).GetAwaiter().GetResult();
-            return user.profilePic;
+            return user.ProfilePic;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)

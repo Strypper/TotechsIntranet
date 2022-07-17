@@ -3,9 +3,11 @@
 	  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	  xmlns:local="using:IntranetUWP"
+      Loaded="Page_Loaded"
 	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	  xmlns:usercontrols="using:IntranetUWP.UserControls"
-	  xmlns:winui="using:Microsoft.UI.Xaml.Controls" xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+	  xmlns:winui="using:Microsoft.UI.Xaml.Controls" 
+      xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
       winui:BackdropMaterial.ApplyToRootOrPageBackground="True"
 	  mc:Ignorable="d">
 
@@ -36,9 +38,9 @@
 					</Image.Source>
 				</Image>
 				<TextBlock VerticalAlignment="Center"
-						   d:Text="IntranetUWP"
+						   d:Text="Totechs Corp"
 						   FontSize="12"
-						   Text="IntranetUWP" />
+						   Text="Totechs Corp" />
 
 			</StackPanel>
 		</usercontrols:TitleBarControl>
@@ -52,47 +54,52 @@
 							  PaneDisplayMode="Auto"
                               IsPaneOpen="False"
 							  SelectionChanged="NavigationViewPanel_SelectionChanged">
-			<winui:NavigationView.PaneHeader>
-				<Image Width="90"
-					   Height="30"
-					   HorizontalAlignment="Left"
-					   Source="/Assets/iDealogic.png" />
-			</winui:NavigationView.PaneHeader>
+            <winui:NavigationView.PaneHeader>
+                <TextBlock Text="Totechs Corp" VerticalAlignment="Center"
+                           FontWeight="Bold" FontSize="20"/>
+            </winui:NavigationView.PaneHeader>
 			<winui:NavigationView.MenuItems>
-				<winui:NavigationViewItem x:Name="LunchOrder"
-										  Content="Lunch order - Đặt đồ ăn trưa"
-										  IsSelected="True">
+                <winui:NavigationViewItem x:Name="Meeting"
+                                          Icon="Calendar"
+                                          Content="Teams Meeting"/>
+                <!--<winui:NavigationViewItem x:Name="LunchOrder"
+										  Content="Party Food">
 					<winui:NavigationViewItem.Icon>
-						<FontIcon FontFamily="Segoe UI Emoji" Glyph="&#x1F371;" />
-					</winui:NavigationViewItem.Icon>
-				</winui:NavigationViewItem>
+                        <FontIcon Glyph="&#xED56;" />
+                    </winui:NavigationViewItem.Icon>
+				</winui:NavigationViewItem>-->
 				<!--<winui:NavigationViewItem x:Name="TeaBreak" Content="Tea break - Nghỉ ngơi thứ 5">
 					<winui:NavigationViewItem.Icon>
 						<FontIcon FontFamily="Segoe UI Emoji" Glyph="&#x2615;" />
 					</winui:NavigationViewItem.Icon>
 				</winui:NavigationViewItem>-->
-				<!--<winui:NavigationViewItem x:Name="PlayTime" Content="Play time - Tìm bạn chơi">
+				<winui:NavigationViewItem x:Name="PlayTime" Content="Gaming">
                 <winui:NavigationViewItem.Icon>
-                    <FontIcon FontFamily="Segoe UI Emoji" Glyph="&#x2694;" />
-                </winui:NavigationViewItem.Icon>
-            </winui:NavigationViewItem>-->
+                        <FontIcon Glyph="&#xE990;" />
+                    </winui:NavigationViewItem.Icon>
+            </winui:NavigationViewItem>
 				<winui:NavigationViewItem x:Name="ChatHub" Content="Chat hub">
                     <winui:NavigationViewItem.InfoBadge>
                         <winui:InfoBadge x:Name="ChatHubBadge" Value="17" />
                     </winui:NavigationViewItem.InfoBadge>
                     <winui:NavigationViewItem.Icon>
-						<FontIcon FontFamily="Segoe UI Emoji" Glyph="&#x1F4AC;" />
-					</winui:NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE8F2;" />
+                    </winui:NavigationViewItem.Icon>
 				</winui:NavigationViewItem>
-				<winui:NavigationViewItem x:Name="Member" Content="Members">
+				<winui:NavigationViewItem x:Name="Members" Content="Members">
                     <winui:NavigationViewItem.InfoBadge>
 						<winui:InfoBadge x:Name="MemberBadge" Value="5" />
                     </winui:NavigationViewItem.InfoBadge>
                     <winui:NavigationViewItem.Icon>
-						<FontIcon FontFamily="Segoe UI Emoji" Glyph="&#x1F603;" />
-					</winui:NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xEBDA;" />
+                    </winui:NavigationViewItem.Icon>
 				</winui:NavigationViewItem>
-			</winui:NavigationView.MenuItems>
+                <winui:NavigationViewItem x:Name="Projects" Content="Projects">
+                    <winui:NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xEBD2;" />
+                    </winui:NavigationViewItem.Icon>
+                </winui:NavigationViewItem>
+            </winui:NavigationView.MenuItems>
             <winui:NavigationView.FooterMenuItems>
                 <winui:NavigationViewItem x:Name="Profile">
                     <controls:DockPanel>
@@ -100,10 +107,13 @@
                                     controls:DockPanel.Dock="Left">
                             <PersonPicture x:Name="ProfilePicture"
                                        Width="25" Margin="0,0,0,0"
-                                       ProfilePicture="{x:Bind ProfileImage, Mode=OneWay}"/>
+                                       ProfilePicture="{x:Bind User.ProfilePic, 
+															   Mode=OneWay,
+															   Converter={StaticResource StringToImageSourceConverter}}"/>
                             <TextBlock x:Name="PersonalName"
-								   Margin="10,0,0,0"
-								   VerticalAlignment="Center" />
+									   Margin="10,0,0,0"
+									   VerticalAlignment="Center"
+                                       Text="{x:Bind User.FullName, Mode=OneWay}"/>
                         </StackPanel>
                         <Button x:Name="LogoutButton"
 								HorizontalAlignment="Right"

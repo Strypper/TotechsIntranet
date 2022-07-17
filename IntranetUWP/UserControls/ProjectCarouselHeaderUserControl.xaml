@@ -1,0 +1,45 @@
+﻿<UserControl
+    x:Class="IntranetUWP.UserControls.ProjectCarouselHeaderUserControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:IntranetUWP.UserControls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:toolkit="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400">
+
+    <Grid Height="300">
+        <Image Source="{x:Bind ProjectCarousel.SelectedItem, 
+                               Mode=OneWay,
+                               Converter={StaticResource StringToImageSourceConverter}}"
+               VerticalAlignment="Stretch"
+               HorizontalAlignment="Stretch"
+               Stretch="UniformToFill"/>
+        <Border VerticalAlignment="Stretch"
+                HorizontalAlignment="Stretch"
+                Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"/>
+        <toolkit:Carousel x:Name="ProjectCarousel" 
+                          VerticalAlignment="Center" 
+                          HorizontalAlignment="Center"
+                          ItemMargin="30" 
+                          ItemDepth="100" 
+                          ItemRotationY="0" 
+                          TransitionDuration="500"
+                          SelectedIndex="2"
+                          ItemsSource="{x:Bind CarouselPhotos, Mode=OneWay}">
+            <toolkit:Carousel.EasingFunction>
+                <CubicEase EasingMode="EaseOut" />
+            </toolkit:Carousel.EasingFunction>
+            <toolkit:Carousel.ItemTemplate>
+                <DataTemplate x:DataType="x:String">
+                    <Border CornerRadius="5">
+                        <Image Source="{x:Bind Converter={StaticResource StringToImageSourceConverter}}"
+                               Height="250"/>
+                    </Border>
+                </DataTemplate>
+            </toolkit:Carousel.ItemTemplate>
+        </toolkit:Carousel>
+    </Grid>
+</UserControl>

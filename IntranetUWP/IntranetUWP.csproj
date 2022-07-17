@@ -17,19 +17,18 @@
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WindowsXamlEnableOverview>true</WindowsXamlEnableOverview>
-    <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
+    <AppxPackageSigningEnabled>False</AppxPackageSigningEnabled>
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
-    <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
+    <AppxBundlePlatforms>x64</AppxBundlePlatforms>
     <PackageCertificateThumbprint>2F8673EB58E769AD7469E2061C78FCA57454E1E3</PackageCertificateThumbprint>
-    <PackageCertificateKeyFile>
-    </PackageCertificateKeyFile>
     <AppInstallerUpdateFrequency>0</AppInstallerUpdateFrequency>
     <AppInstallerCheckForUpdateFrequency>OnApplicationRun</AppInstallerCheckForUpdateFrequency>
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
     <GenerateTestArtifacts>True</GenerateTestArtifacts>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
+    <GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -52,7 +51,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
-    <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
+    <UseDotNetNativeToolchain>false</UseDotNetNativeToolchain>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
     <DebugSymbols>true</DebugSymbols>
@@ -123,6 +122,7 @@
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
     <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
+    <Use64Bitcompiler>true</Use64Bitcompiler>
   </PropertyGroup>
   <PropertyGroup>
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
@@ -131,11 +131,16 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Constanst\Constants.cs" />
+    <Compile Include="Contracts\ILocalUsersService.cs" />
     <Compile Include="Converters\BoolToCompanyConverter.cs" />
     <Compile Include="Converters\BoolToCompanyImageSourceConverter.cs" />
     <Compile Include="Converters\BoolToFrameworkAlignmentConverter.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
+    <Compile Include="Converters\ChartPieAdornmentToLabelConverter.cs" />
     <Compile Include="Converters\CompanyBoolToColorConverter.cs" />
+    <Compile Include="Converters\DecimalToVNDConverter.cs" />
+    <Compile Include="Converters\UserListToTargetUserConverter.cs" />
     <Compile Include="Converters\CountToCollapseConverter.cs" />
     <Compile Include="Converters\CountToVisibilityConverter.cs" />
     <Compile Include="Converters\DoubleToPercentConverter.cs" />
@@ -163,24 +168,40 @@
     <Compile Include="Helpers\IntranetSignalRHelper.cs" />
     <Compile Include="Helpers\OpenXMLWordHelper.cs" />
     <Compile Include="Helpers\OrangeSpotLight.cs" />
+    <Compile Include="Helpers\UserSerializer.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\BaseDTO.cs" />
     <Compile Include="Models\ChannelDTO.cs" />
     <Compile Include="Models\ChatMessageDTO.cs" />
+    <Compile Include="Models\ContributionDTO.cs" />
     <Compile Include="Models\ConversationDTO.cs" />
     <Compile Include="Models\FoodDTO.cs" />
     <Compile Include="Models\LoginModel.cs" />
+    <Compile Include="Models\MeetingScheduleDTO.cs" />
+    <Compile Include="Models\MixModels\ConversationWithViewModel.cs" />
+    <Compile Include="Models\RecentChatDTO.cs" />
     <Compile Include="Models\SkillDTO.cs" />
-    <Compile Include="Models\TeamsDTO.cs" />
+    <Compile Include="Models\ProjectDTO.cs" />
     <Compile Include="Models\UserDTO.cs" />
     <Compile Include="Models\UserFoodDTO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RefitInterfaces\IContributionData.cs" />
+    <Compile Include="RefitInterfaces\IConversationData.cs" />
+    <Compile Include="RefitInterfaces\IFoodData.cs" />
+    <Compile Include="RefitInterfaces\IProjectData.cs" />
+    <Compile Include="RefitInterfaces\ITotechsIdentity.cs" />
+    <Compile Include="RefitInterfaces\IUserData.cs" />
+    <Compile Include="Services\StorageFileServices.cs" />
+    <Compile Include="Services\ToolkitObjectStorageServices.cs" />
     <Compile Include="Ultils\DateToAgeHelper.cs" />
     <Compile Include="Ultils\FoodImageDictionaries.cs" />
     <Compile Include="UserControls\AvatarUploadImage.xaml.cs">
       <DependentUpon>AvatarUploadImage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\BudgeListItemTemplate.xaml.cs">
+      <DependentUpon>BudgeListItemTemplate.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\ChannelChatUserControl.xaml.cs">
       <DependentUpon>ChannelChatUserControl.xaml</DependentUpon>
@@ -197,11 +218,17 @@
     <Compile Include="UserControls\Dialogs\BioDialog.xaml.cs">
       <DependentUpon>BioDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\Dialogs\ContributionContentDialog.xaml.cs">
+      <DependentUpon>ContributionContentDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\Dialogs\CreateFoodDialog.xaml.cs">
       <DependentUpon>CreateFoodDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\Dialogs\CreateTeamDialog.xaml.cs">
-      <DependentUpon>CreateTeamDialog.xaml</DependentUpon>
+    <Compile Include="UserControls\Dialogs\CreateMeetingContentDialog.xaml.cs">
+      <DependentUpon>CreateMeetingContentDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\Dialogs\CreateProjectDialog.xaml.cs">
+      <DependentUpon>CreateProjectDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\Dialogs\CreateUserContentDialog.xaml.cs">
       <DependentUpon>CreateUserContentDialog.xaml</DependentUpon>
@@ -236,11 +263,14 @@
     <Compile Include="UserControls\PreviewAvatarsGroup.xaml.cs">
       <DependentUpon>PreviewAvatarsGroup.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\ProjectCarouselHeaderUserControl.xaml.cs">
+      <DependentUpon>ProjectCarouselHeaderUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\RecentChat.xaml.cs">
       <DependentUpon>RecentChat.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\TeamCard.xaml.cs">
-      <DependentUpon>TeamCard.xaml</DependentUpon>
+    <Compile Include="UserControls\ProjectCard.xaml.cs">
+      <DependentUpon>ProjectCard.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\TitleBarControl.xaml.cs">
       <DependentUpon>TitleBarControl.xaml</DependentUpon>
@@ -255,11 +285,20 @@
     <Compile Include="Views\ChatHubPage.xaml.cs">
       <DependentUpon>ChatHubPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\DirectChatPage.xaml.cs">
+      <DependentUpon>DirectChatPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\FoodOrderPage.xaml.cs">
       <DependentUpon>FoodOrderPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MeetingDaysPage.xaml.cs">
+      <DependentUpon>MeetingDaysPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MeetingPage.xaml.cs">
+      <DependentUpon>MeetingPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MemberChildPages\iDealogicMemberPage.xaml.cs">
       <DependentUpon>iDealogicMemberPage.xaml</DependentUpon>
@@ -267,8 +306,8 @@
     <Compile Include="Views\MemberChildPages\MemberDetailPage.xaml.cs">
       <DependentUpon>MemberDetailPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\MemberChildPages\TeamsPage.xaml.cs">
-      <DependentUpon>TeamsPage.xaml</DependentUpon>
+    <Compile Include="Views\MemberChildPages\ProjectsPage.xaml.cs">
+      <DependentUpon>ProjectsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MemberPage.xaml.cs">
       <DependentUpon>MemberPage.xaml</DependentUpon>
@@ -293,6 +332,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\AppAudio\clearly-602.mp3" />
+    <Content Include="Assets\AppAudio\swiftly-610.mp3" />
     <Content Include="Assets\AppLogoAssets\BadgeLogo.scale-100.png" />
     <Content Include="Assets\AppLogoAssets\BadgeLogo.scale-125.png" />
     <Content Include="Assets\AppLogoAssets\BadgeLogo.scale-150.png" />
@@ -303,6 +343,7 @@
     <Content Include="Assets\AppLogoAssets\LargeTile.scale-150.png" />
     <Content Include="Assets\AppLogoAssets\LargeTile.scale-200.png" />
     <Content Include="Assets\AppLogoAssets\LargeTile.scale-400.png" />
+    <Content Include="Assets\AppLogoAssets\PlayStationLogo.png" />
     <Content Include="Assets\AppLogoAssets\SmallTile.scale-100.png" />
     <Content Include="Assets\AppLogoAssets\SmallTile.scale-125.png" />
     <Content Include="Assets\AppLogoAssets\SmallTile.scale-150.png" />
@@ -318,6 +359,11 @@
     <Content Include="Assets\AppLogoAssets\Square150x150Logo.scale-150.png" />
     <Content Include="Assets\AppLogoAssets\Square150x150Logo.scale-200.png" />
     <Content Include="Assets\AppLogoAssets\Square150x150Logo.scale-400.png" />
+    <Content Include="Assets\AppLogoAssets\Square44x44Logo.altform-lightunplated_targetsize-16.png" />
+    <Content Include="Assets\AppLogoAssets\Square44x44Logo.altform-lightunplated_targetsize-24.png" />
+    <Content Include="Assets\AppLogoAssets\Square44x44Logo.altform-lightunplated_targetsize-256.png" />
+    <Content Include="Assets\AppLogoAssets\Square44x44Logo.altform-lightunplated_targetsize-32.png" />
+    <Content Include="Assets\AppLogoAssets\Square44x44Logo.altform-lightunplated_targetsize-48.png" />
     <Content Include="Assets\AppLogoAssets\Square44x44Logo.altform-unplated_targetsize-16.png" />
     <Content Include="Assets\AppLogoAssets\Square44x44Logo.altform-unplated_targetsize-24.png" />
     <Content Include="Assets\AppLogoAssets\Square44x44Logo.altform-unplated_targetsize-256.png" />
@@ -338,12 +384,26 @@
     <Content Include="Assets\AppLogoAssets\StoreLogo.scale-150.png" />
     <Content Include="Assets\AppLogoAssets\StoreLogo.scale-200.png" />
     <Content Include="Assets\AppLogoAssets\StoreLogo.scale-400.png" />
+    <Content Include="Assets\AppLogoAssets\Totechs.svg" />
     <Content Include="Assets\AppLogoAssets\Wide310x150Logo.scale-100.png" />
     <Content Include="Assets\AppLogoAssets\Wide310x150Logo.scale-125.png" />
     <Content Include="Assets\AppLogoAssets\Wide310x150Logo.scale-150.png" />
     <Content Include="Assets\AppLogoAssets\Wide310x150Logo.scale-200.png" />
     <Content Include="Assets\AppLogoAssets\Wide310x150Logo.scale-400.png" />
-    <Content Include="Assets\Boy.png" />
+    <Content Include="Assets\DemoPurpose\Others\Fifa.png" />
+    <Content Include="Assets\DemoPurpose\Others\ForzaHorizon5.jpg" />
+    <Content Include="Assets\DemoPurpose\Others\Games.png" />
+    <Content Include="Assets\DemoPurpose\Others\HaloInfinite.png" />
+    <Content Include="Assets\DemoPurpose\Others\MeetingVector.jpg" />
+    <Content Include="Assets\DemoPurpose\Others\MK11.jpg" />
+    <Content Include="Assets\DemoPurpose\Others\Projects\ChatHub.png" />
+    <Content Include="Assets\DemoPurpose\Others\Projects\FoodPicker.png" />
+    <Content Include="Assets\DemoPurpose\Others\Projects\GamePage.png" />
+    <Content Include="Assets\DemoPurpose\Others\Projects\MemberDetail.png" />
+    <Content Include="Assets\DemoPurpose\Others\Projects\MemberPage.png" />
+    <Content Include="Assets\DemoPurpose\Others\Projects\WelcomePage.png" />
+    <Content Include="Assets\DemoPurpose\Others\Xbox.jpg" />
+    <Content Include="Assets\AppLogoAssets\XboxLogo.png" />
     <Content Include="Assets\DemoPurpose\Others\blisslike.png" />
     <Content Include="Assets\DemoPurpose\Others\gradient.png" />
     <Content Include="Assets\DemoPurpose\Others\rosyhill.png" />
@@ -359,24 +419,20 @@
     <Content Include="Assets\DemoPurpose\Users\MenHair7.jpg" />
     <Content Include="Assets\DemoPurpose\Users\MenHair8.jpg" />
     <Content Include="Assets\DemoPurpose\Users\MenHair9.jpg" />
-    <Content Include="Assets\Devinition.png" />
     <Content Include="Assets\FoodAssets\Bread.png" />
     <Content Include="Assets\FoodAssets\Chicken.png" />
     <Content Include="Assets\FoodAssets\Egg.png" />
     <Content Include="Assets\FoodAssets\Falafel.png" />
+    <Content Include="Assets\FoodAssets\Fish.png" />
     <Content Include="Assets\FoodAssets\FoodToast.png" />
     <Content Include="Assets\FoodAssets\LunchFood.png" />
     <Content Include="Assets\FoodAssets\Meat.png" />
     <Content Include="Assets\FoodAssets\Noodle.png" />
     <Content Include="Assets\FoodAssets\Rice.png" />
     <Content Include="Assets\FoodAssets\Shrimp.png" />
+    <Content Include="Assets\FoodAssets\Soup.png" />
     <Content Include="Assets\FoodAssets\Spagheti.png" />
     <Content Include="Assets\FoodAssets\FoodCover.png" />
-    <Content Include="Assets\Girl.png" />
-    <Content Include="Assets\iDealogic.png" />
-    <Content Include="Assets\AppLogoAssets\WordLogo.png" />
-    <Content Include="Assets\AppLogoAssets\WordLogo.svg" />
-    <None Include="IntranetUWP_TemporaryKey.pfx" />
     <None Include="Package.StoreAssociation.xml" />
     <Content Include="Properties\Default.rd.xml" />
   </ItemGroup>
@@ -401,6 +457,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UserControls\BudgeListItemTemplate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UserControls\ChannelChatUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -421,11 +481,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UserControls\Dialogs\ContributionContentDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UserControls\Dialogs\CreateFoodDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserControls\Dialogs\CreateTeamDialog.xaml">
+    <Page Include="UserControls\Dialogs\CreateMeetingContentDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\Dialogs\CreateProjectDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -473,11 +541,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UserControls\ProjectCarouselHeaderUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UserControls\RecentChat.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserControls\TeamCard.xaml">
+    <Page Include="UserControls\ProjectCard.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -489,6 +561,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\DirectChatPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\FoodOrderPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -496,6 +572,14 @@
     <Page Include="Views\LoginPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\MeetingDaysPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MeetingPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\MemberChildPages\iDealogicMemberPage.xaml">
       <SubType>Designer</SubType>
@@ -505,7 +589,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\MemberChildPages\TeamsPage.xaml">
+    <Page Include="Views\MemberChildPages\ProjectsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -531,19 +615,28 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Common">
+      <Version>7.1.2</Version>
+    </PackageReference>
     <PackageReference Include="DocumentFormat.OpenXml">
-      <Version>2.15.0</Version>
+      <Version>2.17.1</Version>
     </PackageReference>
     <PackageReference Include="MaterialLibs">
       <Version>0.1.31</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client">
-      <Version>6.0.1</Version>
+      <Version>7.0.0-preview.3.22178.4</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Azure.NotificationHubs">
+      <Version>4.1.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.13</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit">
+      <Version>7.1.2</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Toolkit.Mvvm">
       <Version>7.1.2</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp">
@@ -567,14 +660,17 @@
     <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Controls.Media">
       <Version>7.1.2</Version>
     </PackageReference>
+    <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Controls.Primitives">
+      <Version>7.1.2</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Lottie">
-      <Version>7.1.0</Version>
+      <Version>7.1.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Media">
       <Version>7.1.2</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.UI.Xaml">
-      <Version>2.8.0-prerelease.220118001</Version>
+      <Version>2.7.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Xaml.Behaviors.Uwp.Managed">
       <Version>2.0.1</Version>
@@ -585,14 +681,29 @@
     <PackageReference Include="QueryString.NET">
       <Version>1.0.0</Version>
     </PackageReference>
+    <PackageReference Include="Refit">
+      <Version>6.3.2</Version>
+    </PackageReference>
+    <PackageReference Include="Syncfusion.SfBusyIndicator.UWP">
+      <Version>20.2.0.36</Version>
+    </PackageReference>
+    <PackageReference Include="Syncfusion.SfChart.UWP">
+      <Version>20.2.0.36</Version>
+    </PackageReference>
     <PackageReference Include="System.ObjectModel">
       <Version>4.3.0</Version>
     </PackageReference>
     <PackageReference Include="TextBlockFX.Win2D.UWP">
       <Version>1.0.3</Version>
     </PackageReference>
+    <PackageReference Include="WindowsAzure.Messaging.Managed">
+      <Version>0.1.7.9</Version>
+    </PackageReference>
     <PackageReference Include="WindowsAzure.Storage">
       <Version>9.3.3</Version>
+    </PackageReference>
+    <PackageReference Include="WinRTXamlToolkit.Controls.DataVisualization.UWP">
+      <Version>2.3.0</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

@@ -2,7 +2,8 @@
 					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 					xmlns:local="using:IntranetUWP.UserControls">
 
-	<Style x:Key="TitleBarControlStyle" TargetType="local:TitleBarControl">
+	<Style x:Key="TitleBarControlStyle" 
+           TargetType="local:TitleBarControl">
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="local:TitleBarControl">
@@ -38,5 +39,6 @@
 		</Setter>
 	</Style>
 
-	<Style BasedOn="{StaticResource TitleBarControlStyle}" TargetType="local:TitleBarControl" />
+	<Style BasedOn="{StaticResource TitleBarControlStyle}" 
+           TargetType="local:TitleBarControl" />
 </ResourceDictionary>

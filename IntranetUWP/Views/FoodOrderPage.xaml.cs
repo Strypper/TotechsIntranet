@@ -1,16 +1,22 @@
 ﻿using IntranetUWP.Helpers;
 using IntranetUWP.Models;
+using IntranetUWP.RefitInterfaces;
 using IntranetUWP.UserControls;
+using IntranetUWP.UserControls.Dialogs;
 using IntranetUWP.ViewModels.Commands;
 using IntranetUWP.ViewModels.PagesViewModel;
 using Microsoft.Toolkit.Uwp.Helpers;
 using Microsoft.UI.Xaml.Controls;
+using Refit;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
+using Windows.Media.Core;
+using Windows.Media.Playback;
 using Windows.UI;
 using Windows.UI.Text;
 using Windows.UI.Xaml;
@@ -25,9 +31,12 @@ namespace IntranetUWP.Views
         public FoodOrderPageViewModel vm = new FoodOrderPageViewModel();
         private IntranetHttpHelper httpHelper = new IntranetHttpHelper();
         private UserDTO personalData = new UserDTO();
+        MediaPlayer mediaPlayerElement = new MediaPlayer();
         private int usersFoodData;
         private int FirstClick = 0;
 
+        private readonly IFoodData foodData                 = RestService.For<IFoodData>(App.BaseUrl);
+        private readonly IContributionData contributionData = RestService.For<IContributionData>(App.BaseUrl);
         public FoodOrderPage()
         {
             this.InitializeComponent();
@@ -37,13 +46,13 @@ namespace IntranetUWP.Views
         {
             await vm.GetUserFoodsData();
             var userFoodData = await httpHelper.GetAsync<ObservableCollection<UserFoodDTO>>(vm.getUserSelectedFoodDataUrl);
-            var foodData = await httpHelper.GetAsync<ObservableCollection<FoodDTO>>(vm.getFoodsDataUrl);
-            var usersData = await httpHelper.GetAsync<List<UserDTO>>(vm.getUsersDataUrl);
-            usersFoodData = userFoodData == null ? 0 : userFoodData.Count;
+            var foodData     = await httpHelper.GetAsync<ObservableCollection<FoodDTO>>(vm.getFoodsDataUrl);
+            var usersData    = await httpHelper.GetAsync<List<UserDTO>>(vm.getUsersDataUrl);
+            usersFoodData    = userFoodData == null ? 0 : userFoodData.Count;
             if (App.localSettings.Values["UserId"] != null)
             {
-                personalData = usersData.Where(u => u.id == (int)App
-                                        .localSettings.Values["UserId"]).FirstOrDefault();
+                personalData = usersData.Where(u => u.Guid == App
+                                        .localSettings.Values["UserId"].ToString()).FirstOrDefault();
             }
             //Init user local values
             if (App.localSettings.Values["FirstName"] != null)
@@ -106,7 +115,7 @@ namespace IntranetUWP.Views
 
                     vm.UserFoods
                         .Remove(vm.UserFoods
-                        .Where(uf => uf.user.id == personalData.id)
+                        .Where(uf => uf.user.Guid == personalData.Guid)
                         .FirstOrDefault());
 
                     //Add user food to iDealogic List
@@ -114,7 +123,7 @@ namespace IntranetUWP.Views
                     {
                         vm.iDealogicUsersFood
                             .Remove(vm.iDealogicUsersFood
-                            .Where(uf => uf.user.id == personalData.id)
+                            .Where(uf => uf.user.Guid == personalData.Guid)
                             .FirstOrDefault());
                     }
                     //Add user food to Devinition List
@@ -122,7 +131,7 @@ namespace IntranetUWP.Views
                     {
                         vm.DevinitionUsersFood
                             .Remove(vm.DevinitionUsersFood
-                            .Where(uf => uf.user.id == personalData.id)
+                            .Where(uf => uf.user.Guid == personalData.Guid)
                             .FirstOrDefault());
                     }
 
@@ -141,7 +150,7 @@ namespace IntranetUWP.Views
                         //Deselect current food
                         vm.UserFoods
                             .Remove(vm.UserFoods
-                            .Where(uf => uf.user.id == personalData.id)
+                            .Where(uf => uf.user.Guid == personalData.Guid)
                             .FirstOrDefault());
 
                         //If user is iDealogic then remove the UserFood of iDealogic
@@ -149,7 +158,7 @@ namespace IntranetUWP.Views
                         {
                             vm.iDealogicUsersFood
                                 .Remove(vm.iDealogicUsersFood
-                                .Where(uf => uf.user.id == personalData.id)
+                                .Where(uf => uf.user.Guid == personalData.Guid)
                                 .FirstOrDefault());
                         }
                         //If user is Devinition then remove the UserFood of Devinition
@@ -157,7 +166,7 @@ namespace IntranetUWP.Views
                         {
                             vm.DevinitionUsersFood
                                 .Remove(vm.DevinitionUsersFood
-                                .Where(uf => uf.user.id == personalData.id)
+                                .Where(uf => uf.user.Guid == personalData.Guid)
                                 .FirstOrDefault());
                         }
                         //Get the new selected food
@@ -268,10 +277,10 @@ namespace IntranetUWP.Views
                            App.localSettings.Values["FoodId"] = foodId;
                             vm.NumberOfFood++;
                             vm.NonSelectedUser.Remove(
-                                vm.NonSelectedUser.Where(u => u.id == personalData.id).FirstOrDefault());
+                                vm.NonSelectedUser.FirstOrDefault(u => u.Guid == personalData.Guid));
                         }
 
-                    var mainFood = vm.Foods.Where(f => f.id == foodId).FirstOrDefault();
+                    var mainFood = vm.Foods.FirstOrDefault(f => f.id == foodId);
                     PickedFoodText.Text = "You pick :";
                     FoodIndexText.Text = mainFood.itemNo.ToString();
                     FoodNameText.Text = mainFood.foodEnglishName;
@@ -366,9 +375,9 @@ namespace IntranetUWP.Views
             }
         }
         private void RefreshPage_Click(object sender, RoutedEventArgs e) => Frame.Navigate(this.GetType());
-        private async void MemberCard_ClearSelection(int userId)
+        private async void MemberCard_ClearSelection(string userGuid)
         {
-            var userFood = vm.UserFoods.Where(uf => uf.user.id == userId).FirstOrDefault();
+            var userFood = vm.UserFoods.Where(uf => uf.user.Guid == userGuid).FirstOrDefault();
             var deleteResult = await httpHelper.RemoveAsync(vm.deleteUserFoodDataUrl, userFood.id);
             if (deleteResult == true)
             {
@@ -395,7 +404,7 @@ namespace IntranetUWP.Views
                         else dto.Percentage = 0;
                     }
                     //Refactor this shit out
-                    if ((int)App.localSettings.Values["UserId"] == userId)
+                    if (App.localSettings.Values["UserId"].ToString() == userGuid)
                     {
                         dto.IsSelected = false;
                         App.localSettings.Values["FoodId"] = 0;
@@ -511,6 +520,54 @@ namespace IntranetUWP.Views
             await printHelper.ShowPrintUIAsync("Your physical paper");
         }
 
+        private async void AddMoney_Click(object sender, RoutedEventArgs e)
+        {
+            var contributionDialog = new ContributionContentDialog();
+            contributionDialog.PrimaryButtonClick += ContributionDialog_PrimaryButtonClick;
+            await contributionDialog.ShowAsync();
+        }
+
+        private async void ContributionDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        {
+            vm.IsBusy = true;
+            var contribution = (sender as ContributionContentDialog).Contribution;
+            if(contribution.Amount >= 20)
+            {
+                var createResult = await httpHelper.CreateAsync<ContributionDTO>(vm.createContributionDataUrl, contribution);
+                if (createResult != null)
+                {
+                    vm.Contributions.Add(contribution);
+                }
+                else Debug.WriteLine("Create operation error");
+            }
+            vm.IsBusy = false;
+        }
+
+        private async void BudgeListItemTemplate_ApproveContributionEvent(ContributionDTO contribution)
+        {
+            if(contribution.IsApproved == false)
+            {
+                var updateResult = await httpHelper.UpdateAsync(vm.updateContributionDataUrl, contribution);
+                contribution.IsApproved = updateResult;
+                vm.SumOfContribution += contribution.Amount;
+                mediaPlayerElement.Source = MediaSource.CreateFromUri(new Uri("ms-appx:///Assets/AppAudio/swiftly-610.mp3"));
+                mediaPlayerElement.Play();
+            }
+        }
+
+        private void Page_Unloaded(object sender, RoutedEventArgs e)
+        {
+            mediaPlayerElement.Dispose();
+        }
+
+        private async void DeleteAllContributionsButton_Click(object sender, RoutedEventArgs e)
+        {
+            var deleteResult = await contributionData.DeleteAll();
+            if (deleteResult.StatusCode == HttpStatusCode.NoContent)
+            {
+                vm.Contributions.ToList().All(i => vm.Contributions.Remove(i));
+            }
+        }
     }
 
     public class ExtendedFoodDTO : FoodDTO

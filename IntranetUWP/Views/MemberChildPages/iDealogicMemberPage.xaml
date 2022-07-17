@@ -33,9 +33,9 @@
                     </Grid.Transitions>
 
                     <Image Width="270" Height="380" 
-                                       VerticalAlignment="Center" 
-                                       Source="{x:Bind profilePic, Converter={StaticResource StringToImageSourceConverter}}"
-                                       Stretch="UniformToFill" />
+                           VerticalAlignment="Center" 
+                           Source="{x:Bind ProfilePic, Converter={StaticResource StringToImageSourceConverter}}"
+                           Stretch="UniformToFill" />
 
                     <Button x:Name="DetailButton" Click="NavigateToMemberDetail_Click" 
                                         Background="{ThemeResource SystemAccentColor}"
@@ -75,6 +75,25 @@
                 </ProgressBar>
             </StackPanel>
         </DataTemplate>
+
+
+        <animations:ImplicitAnimationSet x:Key="ShowAnimation">
+            <animations:TranslationAnimation Duration="0:0:0.5" To="0, 0, 0"/>
+            <animations:OpacityAnimation     Duration="0:0:0.5" To="1.0"/>
+        </animations:ImplicitAnimationSet>
+        <animations:ImplicitAnimationSet x:Key="HideAnimation">
+            <animations:ScalarAnimation Target="Opacity" 
+                                            Duration="0:0:1" 
+                                            To="0.0"/>
+            <animations:ScalarAnimation Target="Translation.Y" 
+                                            Duration="0:0:1" 
+                                            To="-200">
+                <animations:ScalarKeyFrame Key="0.1" 
+                                               Value="30"/>
+                <animations:ScalarKeyFrame Key="0.5" 
+                                               Value="0.0"/>
+            </animations:ScalarAnimation>
+        </animations:ImplicitAnimationSet>
     </Page.Resources>
 
     <Grid>
@@ -140,36 +159,22 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        
-        <StackPanel x:Name="DisableAndDeleteBar" Orientation="Horizontal">
-            <animations:Implicit.ShowAnimations>
-                <animations:TranslationAnimation Duration="0:0:0.5" To="0, 0, 0"/>
-                <animations:OpacityAnimation Duration="0:0:0.5" To="1.0"/>
-            </animations:Implicit.ShowAnimations>
 
-            <animations:Implicit.HideAnimations>
-                <animations:ScalarAnimation Target="Opacity" 
-                                            Duration="0:0:1" 
-                                            To="0.0"/>
-                <animations:ScalarAnimation Target="Translation.Y" 
-                                            Duration="0:0:1" 
-                                            To="-200">
-                    <animations:ScalarKeyFrame Key="0.1" 
-                                               Value="30"/>
-                    <animations:ScalarKeyFrame Key="0.5" 
-                                               Value="0.0"/>
-                </animations:ScalarAnimation>
-            </animations:Implicit.HideAnimations>
-            <Button Grid.Row="0" Content="&#xE25B;" FontFamily="Segoe MDL2 Assets" 
-                    VerticalAlignment="Top" HorizontalAlignment="Right" Margin="5"
-                    FontSize="20"/>
+        <StackPanel x:Name="DisableAndDeleteBar" Orientation="Horizontal"
+                    animations:Implicit.ShowAnimations="{StaticResource ShowAnimation}"
+                    animations:Implicit.HideAnimations="{StaticResource HideAnimation}">
             <Button Grid.Row="0" 
                     VerticalAlignment="Top" 
                     HorizontalAlignment="Right" 
                     Margin="5"
                     Background="Red"
                     Command="{x:Bind vm.askBeforeDeleteUserCommand}">
-                <SymbolIcon Symbol="Delete" />
+                <StackPanel Orientation="Horizontal">
+                    <SymbolIcon Symbol="Delete" Margin="5"/>
+                    <TextBlock Text="FUCK THIS GUY"
+                               Margin="0,5,0,0"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
             </Button>
         </StackPanel>
         <StackPanel Orientation="Horizontal" 
@@ -192,7 +197,7 @@
                           VerticalAlignment="Center"/>
                 <TextBlock FontSize="28" Margin="10"
                            VerticalAlignment="Center"
-                           Text="{x:Bind vm.Teams.Count, Mode=OneWay}"/>
+                           Text="{x:Bind vm.Projects.Count, Mode=OneWay}"/>
             </StackPanel>
         </StackPanel>
         <Button x:Name="AddNewMemberButton"
@@ -201,27 +206,9 @@
                 HorizontalAlignment="Right" 
                 Margin="5"
                 Background="{ThemeResource SystemAccentColor}" 
-                Command="{x:Bind vm.createNewUserCommand}">
-            <animations:Implicit.ShowAnimations>
-                <animations:TranslationAnimation Duration="0:0:0.5"
-                                                 To="0, 0, 0"/>
-                <animations:OpacityAnimation Duration="0:0:0.5" 
-                                             To="1.0"/>
-            </animations:Implicit.ShowAnimations>
-
-            <animations:Implicit.HideAnimations>
-                <animations:ScalarAnimation Target="Opacity"
-                                            Duration="0:0:1" 
-                                            To="0.0"/>
-                <animations:ScalarAnimation Target="Translation.Y" 
-                                            Duration="0:0:1" 
-                                            To="-200">
-                    <animations:ScalarKeyFrame Key="0.1" 
-                                               Value="30"/>
-                    <animations:ScalarKeyFrame Key="0.5" 
-                                               Value="0.0"/>
-                </animations:ScalarAnimation>
-            </animations:Implicit.HideAnimations>
+                Command="{x:Bind vm.createNewUserCommand}"
+                animations:Implicit.ShowAnimations="{StaticResource ShowAnimation}"
+                animations:Implicit.HideAnimations="{StaticResource HideAnimation}">
             <StackPanel Orientation="Horizontal">
                 <SymbolIcon Symbol="AddFriend"/>
                 <TextBlock Text="Add member"
@@ -268,28 +255,15 @@
 
             <StackPanel x:Name="PersonalInformationStack"
                         HorizontalAlignment="Center" 
-                        VerticalAlignment="Top">
+                        VerticalAlignment="Top"
+                        animations:Implicit.ShowAnimations="{StaticResource ShowAnimation}"
+                        animations:Implicit.HideAnimations="{StaticResource HideAnimation}">
                 <StackPanel.ChildrenTransitions>
                     <TransitionCollection>
                         <EntranceThemeTransition IsStaggeringEnabled="True"  
                                                  FromVerticalOffset="500"/>
                     </TransitionCollection>
                 </StackPanel.ChildrenTransitions>
-                <animations:Implicit.ShowAnimations>
-                    <animations:TranslationAnimation Duration="0:0:1" To="0, 0, 0"/>
-                    <animations:OpacityAnimation Duration="0:0:1" To="1.0"/>
-                </animations:Implicit.ShowAnimations>
-                <animations:Implicit.HideAnimations>
-                    <animations:ScalarAnimation Target="Opacity"
-                                                Duration="0:0:1" 
-                                                To="0.0"/>
-                    <animations:ScalarAnimation Target="Translation.X" 
-                                                Duration="0:0:1" 
-                                                To="-200">
-                        <animations:ScalarKeyFrame Key="0.1" Value="30"/>
-                        <animations:ScalarKeyFrame Key="0.5" Value="0.0"/>
-                    </animations:ScalarAnimation>
-                </animations:Implicit.HideAnimations>
 
                 <StackPanel Orientation="Horizontal"
                             HorizontalAlignment="Center">
@@ -311,9 +285,7 @@
                                VerticalAlignment="Center"
                                FontSize="20">
                     <Run Text="Name: "/>
-                    <Run Text="{x:Bind User.lastName, Mode=OneWay}"/>
-                    <Run Text="{x:Bind User.middleName, Mode=OneWay}"/>
-                    <Run Text="{x:Bind User.firstName, Mode=OneWay}"/>
+                    <Run Text="{x:Bind User.FullName, Mode=OneWay}"/>
                     </TextBlock>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal"
@@ -323,8 +295,8 @@
                               Margin="5"/>
                     <TextBlock VerticalAlignment="Center"
                                FontSize="20">
-                        <Run Text="Team: "/>
-                        <Run x:Name="Teams"/>
+                        <Run Text="Project: "/>
+                        <Run x:Name="Projects"/>
                     </TextBlock>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal"
@@ -335,7 +307,7 @@
                     <TextBlock VerticalAlignment="Center"
                                FontSize="20">
                         <Run Text="Role: "/>
-                        <Run Text="{x:Bind User.role, Mode=OneWay}"/>
+                        <!--<Run Text="{x:Bind User.role, Mode=OneWay}"/>-->
                     </TextBlock>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal"
@@ -346,7 +318,7 @@
                     <TextBlock VerticalAlignment="Center"
                                FontSize="20">
                         <Run Text="Level: "/>
-                        <Run Text="{x:Bind User.level, Mode=OneWay}"/>
+                        <!--<Run Text="{x:Bind User.level, Mode=OneWay}"/>-->
                     </TextBlock>
                 </StackPanel>
             </StackPanel>
@@ -354,18 +326,9 @@
             <StackPanel x:Name="PersonalSkillsStack"
                         HorizontalAlignment="Stretch" 
                         VerticalAlignment="Top" 
-                        Grid.Column="2">
-                <animations:Implicit.ShowAnimations>
-                    <animations:TranslationAnimation Duration="0:0:1" To="0, 0, 0"/>
-                    <animations:OpacityAnimation Duration="0:0:1" To="1.0"/>
-                </animations:Implicit.ShowAnimations>
-                <animations:Implicit.HideAnimations>
-                    <animations:ScalarAnimation Target="Opacity" Duration="0:0:1" To="0.0"/>
-                    <animations:ScalarAnimation Target="Translation.X" Duration="0:0:1" To="200">
-                        <animations:ScalarKeyFrame Key="0.1" Value="30"/>
-                        <animations:ScalarKeyFrame Key="0.5" Value="0.0"/>
-                    </animations:ScalarAnimation>
-                </animations:Implicit.HideAnimations>
+                        Grid.Column="2"
+                        animations:Implicit.ShowAnimations="{StaticResource ShowAnimation}"
+                        animations:Implicit.HideAnimations="{StaticResource HideAnimation}">
                 <StackPanel Orientation="Horizontal"
                             HorizontalAlignment="Center">
                     <FontIcon Glyph="&#xEC4A;" FontSize="28"
@@ -414,7 +377,7 @@
                            TextAlignment="Justify" 
                            TextWrapping="Wrap" 
                            TextTrimming="CharacterEllipsis"
-                           Text="{x:Bind User.bio, Mode=OneWay}"
+                           Text="{x:Bind User.Bio, Mode=OneWay}"
                            Margin="5" FontSize="18" Height="200"/>
             </StackPanel>
         </Grid>

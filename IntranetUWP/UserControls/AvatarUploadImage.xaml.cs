@@ -8,7 +8,6 @@ using System;
 using System.Numerics;
 using Windows.UI.Xaml.Media.Imaging;
 
-// The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
 namespace IntranetUWP.UserControls
 {

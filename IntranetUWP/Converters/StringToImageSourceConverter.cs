@@ -8,8 +8,11 @@ namespace IntranetUWP.Converters
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            var imageUrl = value as String;
-            return imageUrl != null ? imageUrl != "" ? new BitmapImage(new Uri(imageUrl)) : null : null;
+            if (string.IsNullOrEmpty(value as string))
+            {
+                return null;
+            }
+            else return new BitmapImage(new Uri(value as string, UriKind.Absolute));
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace IntranetUWP.Helpers.HttpHelperV2
 {
-    public class TeamUserHttp : HttpHelperV2<TeamsDTO>
+    public class TeamUserHttp : HttpHelperV2<ProjectDTO>
     {
 
     }

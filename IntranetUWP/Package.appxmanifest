@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
-  <Identity Name="47268StrypperVandelJason.IntranetiDev" Publisher="CN=Strypper Vandel Jason" Version="1.0.32.0" />
-  <mp:PhoneIdentity PhoneProductId="737d4430-dddb-47b0-ab9a-09235391ffa0" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
+<Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"  xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3" IgnorableNamespaces="uap mp uap3">
+	<Identity Name='47268StrypperVandelJason.IntranetiDev' Publisher='CN=C5255E29-81AE-4129-9BC3-9E2C461A195A'  Version="0.0.32.0" />
+  <mp:PhoneIdentity PhoneProductId="ee0f1d8f-c58a-4371-80a0-3c5d169ce027" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
-    <DisplayName>Intranet iDev</DisplayName>
+    <DisplayName>Totechs</DisplayName>
     <PublisherDisplayName>Strypper Vandel Jason</PublisherDisplayName>
     <Logo>Assets\AppLogoAssets\StoreLogo.png</Logo>
   </Properties>
@@ -15,7 +15,7 @@
   </Resources>
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="IntranetUWP.App">
-      <uap:VisualElements DisplayName="Intranet iDev" Square150x150Logo="Assets\AppLogoAssets\Square150x150Logo.png" Square44x44Logo="Assets\AppLogoAssets\Square44x44Logo.png" Description="Intranet internal app, use this for lunch food ordering, book room meeting, chat with other members of Intranet and browse company information" BackgroundColor="transparent">
+      <uap:VisualElements DisplayName="Totechs Intranet" Square150x150Logo="Assets\AppLogoAssets\Square150x150Logo.png" Square44x44Logo="Assets\AppLogoAssets\Square44x44Logo.png" Description="This is a project for the internal system of the Totechs Corp. It support Meeting Food ordering Project info and management Member information. It also embrace Totechs members knowledge to later build software to other companies" BackgroundColor="transparent">
         <uap:DefaultTile Square71x71Logo="Assets\AppLogoAssets\SmallTile.png" Square310x310Logo="Assets\AppLogoAssets\LargeTile.png" Wide310x150Logo="Assets\AppLogoAssets\Wide310x150Logo.png" ShortName="Intranet">
           <uap:ShowNameOnTiles>
             <uap:ShowOn Tile="square150x150Logo" />
@@ -39,6 +39,7 @@
     <Capability Name="internetClientServer" />
     <uap:Capability Name="chat" />
     <uap:Capability Name="phoneCall" />
+    <uap3:Capability Name="userNotificationListener"/>
     <DeviceCapability Name="webcam" />
     <DeviceCapability Name="microphone" />
   </Capabilities>

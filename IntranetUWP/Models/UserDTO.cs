@@ -1,76 +1,90 @@
 ﻿using IntranetUWP.Ultils;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace IntranetUWP.Models
 {
-    public class UserDTO : BaseDTO
+    public class UserDTO : UserIdentityDTO
     {
-        public string userName { get; set; }
-        public string firstName { get; set; } = String.Empty;
-        public string middleName { get; set; } = String.Empty;
-        public string lastName { get; set; } = String.Empty;
-        public string profilePic { get; set; }
-        public bool company { get; set; }
-        public string role { get; set; }
-        public string level { get; set; }
-        public string bio { get; set; }
-        public string phoneNumber { get; set; }
+        public string CardPic             { get; set; } = String.Empty;
+        public string Bio                 { get; set; }
+        public string Former              { get; set; } = String.Empty;
+        public string Hobby               { get; set; } = String.Empty;
+        public string SpecialAward        { get; set; }
+        public string Relationship        { get; set; } = String.Empty;
+        public string SignalRConnectionId { get; set; } = String.Empty;
+        public string ProfilePic          { get; set; } = String.Empty;
+        public int?   Like                { get; set; }
+        public int?   Friendly            { get; set; }
+        public int?   Funny               { get; set; }
+        public int?   Enthusiastic        { get; set; }
 
-        public string country { get; set; } = String.Empty;
-        public string former { get; set; } = String.Empty;
-        public string hobby { get; set; } = String.Empty;
 
-        private string _specialAward;
 
-        public string specialAward
-        {
-            get { return _specialAward; }
-            set 
-            { 
-                _specialAward = value;
-                OnPropertyChanged();
-            }
-        }
+        public ICollection<SkillDTO> Skills { get; set; } = new ObservableCollection<SkillDTO>();
 
-        public string relationship { get; set; } = String.Empty;
-        public int? like { get; set; }
-        public int? friendly { get; set; }
-        public int? funny { get; set; }
-        public int? enthusiastic { get; set; }
+    }
 
-        public DateTime? dateOfBirth { get; set; }
+    public class UserIdentityDTO
+    {
+        public string    Guid          { get; set; }
+        public string    UserName      { get; set; } = string.Empty;
+        public string    FirstName     { get; set; } = string.Empty;
+        public string    MiddleName    { get; set; } = string.Empty;
+        public string    LastName      { get; set; } = string.Empty;
+        public string    FullName                    => FirstName + MiddleName + LastName;
+        public string    Email         { get; set; } = string.Empty;
+        public string    PhoneNumber   { get; set; } = string.Empty;
+        public string    Password      { get; set; } = string.Empty;
+        public DateTime? DateOfBirth   { get; set; }
+        public int       Age           { get => DateOfBirth.GetAge();}
 
-        public ObservableCollection<SkillDTO> skills { get; set; }
+        //public CountryDTO Country { get; set; }
+        //public ICollection<string> Roles { get; set; } = Array.Empty<string>();
+    }
 
-        public int age
-        {
-            get => dateOfBirth.GetAge();
-        }
+    public class IdentityResultDTO
+    {
+        public DateTime        RequestAt    { get; set; }
+        //public int             ExpiresIn    { get; set; }
+        public string          AccessToken  { get; set; }
+        public string          RefreshToken { get; set; }
+        public UserIdentityDTO UserInfo     { get; set; }
     }
 
     public class RegistingModel : UserDTO
     {
-        public string password { get; set; }
-        public bool gender { get; set; }
+        public bool Gender { get; set; }
     }
 
-    public class DemoUserData
+    public static class UserExtensions
     {
-        public static ObservableCollection<UserDTO> getData()
+        public static void FillUserIdentityInfo(this UserDTO user, UserIdentityDTO identityInfo)
         {
-            var data = new ObservableCollection<UserDTO>();
-            data.Add(new UserDTO() { profilePic = "ms-appx:///Assets/DemoPurpose/Users/MenHair.jpg" });
-            data.Add(new UserDTO() { profilePic = "ms-appx:///Assets/DemoPurpose/Users/MenHair1.jpg" });
-            data.Add(new UserDTO() { profilePic = "ms-appx:///Assets/DemoPurpose/Users/MenHair2.jpg" });
-            data.Add(new UserDTO() { profilePic = "ms-appx:///Assets/DemoPurpose/Users/MenHair3.jpg" });
-            data.Add(new UserDTO() { profilePic = "ms-appx:///Assets/DemoPurpose/Users/MenHair4.jpg" });
-            data.Add(new UserDTO() { profilePic = "ms-appx:///Assets/DemoPurpose/Users/MenHair5.jpg" });
-            data.Add(new UserDTO() { profilePic = "ms-appx:///Assets/DemoPurpose/Users/MenHair6.jpg" });
-            data.Add(new UserDTO() { profilePic = "ms-appx:///Assets/DemoPurpose/Users/MenHair7.jpg" });
-            data.Add(new UserDTO() { profilePic = "ms-appx:///Assets/DemoPurpose/Users/MenHair8.jpg" });
-            data.Add(new UserDTO() { profilePic = "ms-appx:///Assets/DemoPurpose/Users/MenHair9.jpg" });
-            return data;
+            user.Guid          = identityInfo.Guid;
+            user.UserName      = identityInfo.UserName;
+            user.FirstName     = identityInfo.FirstName;
+            user.MiddleName    = identityInfo.MiddleName;
+            user.LastName      = identityInfo.LastName;
+            user.DateOfBirth   = identityInfo.DateOfBirth;
+            user.PhoneNumber   = identityInfo.PhoneNumber;
+        }
+
+
+        public static void FillUserIntranetInfo(this UserDTO user, UserDTO intranetUserInfo)
+        {
+            user.Bio                 = intranetUserInfo.Bio;
+            user.Former              = intranetUserInfo.Former;
+            user.Relationship        = intranetUserInfo.Relationship;
+            user.Like                = intranetUserInfo.Like;
+            user.Friendly            = intranetUserInfo.Friendly;
+            user.Enthusiastic        = intranetUserInfo.Enthusiastic;
+            user.Funny               = intranetUserInfo.Funny;
+            user.ProfilePic          = intranetUserInfo.ProfilePic;
+            user.Hobby               = intranetUserInfo.Hobby;
+            user.SpecialAward        = intranetUserInfo.SpecialAward;
+            user.SignalRConnectionId = intranetUserInfo.SignalRConnectionId;
         }
     }
 }

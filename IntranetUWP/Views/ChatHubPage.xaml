@@ -13,7 +13,6 @@
       xmlns:ui="using:Microsoft.Toolkit.Uwp.UI"
       xmlns:toolkitmedia="using:Microsoft.Toolkit.Uwp.UI.Media"
       Loaded="Page_Loaded"
-	  NavigationCacheMode="Enabled"
 	  mc:Ignorable="d">
 
     <Page.Resources>
@@ -24,7 +23,7 @@
 								TintLuminosityOpacity="0.270000012824312"
 								TintOpacity="0" />
 
-            <DataTemplate x:Key="UserItemTemplate"
+        <DataTemplate x:Key="UserItemTemplate"
                       x:DataType="DTO:UserDTO">
                 <Grid MinWidth="280">
                     <Grid.ColumnDefinitions>
@@ -44,7 +43,7 @@
                     <PersonPicture Width="50"
 							   VerticalAlignment="Center"
                                HorizontalAlignment="Center"
-							   ProfilePicture="{x:Bind profilePic, Converter={StaticResource StringToImageSourceConverter}}"/>
+							   ProfilePicture="{x:Bind ProfilePic, Converter={StaticResource StringToImageSourceConverter}}"/>
                     <Ellipse Width="15" 
                              Height="15"
                              Fill="#16c60c"
@@ -57,7 +56,7 @@
                            VerticalAlignment="Center"
                            HorizontalAlignment="Stretch"
                            FontWeight="Bold"
-                           Text="{x:Bind userName, Mode=OneWay}"/>
+                           Text="{x:Bind UserName, Mode=OneWay}"/>
                 <StackPanel Grid.Row="1"
                             Grid.Column="1"
                             VerticalAlignment="Bottom"
@@ -75,6 +74,49 @@
                 </StackPanel>
             </Grid>
             </DataTemplate>
+        <DataTemplate x:DataType="DTO:ChatMessageDTO"
+                      x:Key="ChatMessageBubble">
+            <ListViewItem Margin="5"
+						HorizontalAlignment="{x:Bind IsFromSelf, Converter={StaticResource BoolToFrameworkAlignmentConverter}}"
+						HorizontalContentAlignment="Left">
+                <StackPanel Margin="0,10,0,10"
+							Background="{ThemeResource CustomAcrylicInAppLuminosity}"
+							CornerRadius="5"
+							Orientation="Horizontal">
+                    <PersonPicture Width="50"
+								   Margin="5"
+								   VerticalAlignment="Top"
+								   ProfilePicture="{x:Bind User.ProfilePic, Converter={StaticResource StringToImageSourceConverter}}"
+								   Visibility="{x:Bind IsFromSelf, Converter={StaticResource ReverseBoolToVisibilityConverter}}" />
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Margin="5,5,5,0"
+								   HorizontalAlignment="{x:Bind IsFromSelf, Converter={StaticResource BoolToFrameworkAlignmentConverter}}"
+								   FontWeight="Bold"
+								   Text="{x:Bind User.UserName}"
+								   TextDecorations="Underline" />
+                        <TextBlock MaxWidth="700"
+								   Margin="5,5,5,0"
+								   HorizontalAlignment="{x:Bind IsFromSelf, Converter={StaticResource BoolToFrameworkAlignmentConverter}}"
+								   IsTextSelectionEnabled="True"
+								   Text="{x:Bind MessageContent}"
+								   TextWrapping="WrapWholeWords" />
+                        <StackPanel HorizontalAlignment="{x:Bind IsFromSelf, Converter={StaticResource BoolToFrameworkAlignmentConverter}}" Orientation="Horizontal">
+                            <SymbolIcon Margin="5"
+										VerticalAlignment="Bottom"
+										Symbol="Clock" />
+                            <TextBlock Margin="0,5,5,5"
+									VerticalAlignment="Bottom"
+									Text="{x:Bind SentTime}" />
+                        </StackPanel>
+                    </StackPanel>
+                    <PersonPicture Width="50"
+									Margin="5"
+									VerticalAlignment="Top"
+									ProfilePicture="{x:Bind User.ProfilePic, Converter={StaticResource StringToImageSourceConverter}}"
+									Visibility="{x:Bind IsFromSelf, Converter={StaticResource BoolToVisibilityConverter}}" />
+                </StackPanel>
+            </ListViewItem>
+        </DataTemplate>
     </Page.Resources>
 
 	<Grid>
@@ -117,21 +159,22 @@
 											   Width="60"
                                                VerticalAlignment="Center"
                                                HorizontalAlignment="Center"
-                                               ProfilePicture="{x:Bind vm.CurrentUser.profilePic, Mode=OneWay, Converter={StaticResource StringToImageSourceConverter}}"/>
+                                               ProfilePicture="{x:Bind vm.CurrentUser.ProfilePic, Mode=OneWay, Converter={StaticResource StringToImageSourceConverter}}"/>
                                 <FontIcon FontFamily="Segoe UI Emoji" Glyph="&#x1F7E2;" 
                                           VerticalAlignment="Bottom"
                                           HorizontalAlignment="Right"
                                           Margin="0,0,5,5"/>
                             </Grid>
                             <StackPanel VerticalAlignment="Center">
-                                <TextBlock Text="{x:Bind vm.CurrentUser.userName, Mode=OneWay}"/>
-                                <TextBlock Text="{x:Bind vm.CurrentUser.level, Mode=OneWay}"
-                                           Margin="0,10,0,0"/>
+                                <TextBlock Text="{x:Bind vm.CurrentUser.UserName, Mode=OneWay}"/>
+                                <!--<TextBlock Text="{x:Bind vm.CurrentUser., Mode=OneWay}"
+                                           Margin="0,10,0,0"/>-->
                             </StackPanel>
                         </StackPanel>
                     </controls:DockPanel>
                     <Pivot Grid.Row="1"
-                           VerticalAlignment="Stretch">
+                           VerticalAlignment="Stretch"
+                           SelectedIndex="{x:Bind vm.PivotIndex, Mode=TwoWay}">
                         <PivotItem>
                             <PivotItem.Header>
                                 <StackPanel Orientation="Horizontal">
@@ -150,7 +193,11 @@
                                                VerticalAlignment="Bottom"/>
                                 </StackPanel>
                             </PivotItem.Header>
-                            <usercontrols:RecentChat/>
+                            <usercontrols:RecentChat x:Name="RecentChatListView"
+                                                     Conversations="{x:Bind vm.Conversations, Mode=OneWay}"
+                                                     SelectedConversation="{x:Bind vm.SelectedConversation, Mode=TwoWay}"
+                                                     OnlineUsers="{x:Bind vm.signalRHelper.OnlineUsersList, Mode=OneWay}"
+                                                     SelectRecentChatEvent="RecentChat_SelectRecentChatEvent"/>
                         </PivotItem>
                         <PivotItem>
                             <PivotItem.Header>
@@ -177,6 +224,7 @@
                     </Grid.RowDefinitions>
                     <ListView x:Name="ChatList"
 							  ItemsSource="{x:Bind vm.ChatMessages, Mode=TwoWay}"
+                              ItemTemplate="{StaticResource ChatMessageBubble}"
 							  LostFocus="ChatList_LostFocus"
 							  SelectionMode="Extended"
                               MaxWidth="1100">
@@ -224,50 +272,6 @@
                                 </TextBlock>
                             </StackPanel>
                         </ListView.Header>
-                        <ListView.ItemTemplate>
-                            <DataTemplate x:DataType="DTO:ChatMessageDTO">
-                                <ListViewItem Margin="5"
-											  HorizontalAlignment="{x:Bind IsFromSelf, Converter={StaticResource BoolToFrameworkAlignmentConverter}}"
-											  HorizontalContentAlignment="Left">
-                                    <StackPanel Margin="0,10,0,10"
-												Background="{ThemeResource CustomAcrylicInAppLuminosity}"
-												CornerRadius="5"
-												Orientation="Horizontal">
-                                        <PersonPicture Width="50"
-													   Margin="5"
-													   VerticalAlignment="Top"
-													   ProfilePicture="{x:Bind ProfilePic, Converter={StaticResource StringToImageSourceConverter}}"
-													   Visibility="{x:Bind IsFromSelf, Converter={StaticResource ReverseBoolToVisibilityConverter}}" />
-                                        <StackPanel VerticalAlignment="Center">
-                                            <TextBlock Margin="5,5,5,0"
-													   HorizontalAlignment="{x:Bind IsFromSelf, Converter={StaticResource BoolToFrameworkAlignmentConverter}}"
-													   FontWeight="Bold"
-													   Text="{x:Bind UserName}"
-													   TextDecorations="Underline" />
-                                            <TextBlock MaxWidth="700"
-													   Margin="5,5,5,0"
-													   HorizontalAlignment="{x:Bind IsFromSelf, Converter={StaticResource BoolToFrameworkAlignmentConverter}}"
-													   IsTextSelectionEnabled="True"
-													   Text="{x:Bind MessageContent}"
-													   TextWrapping="WrapWholeWords" />
-                                            <StackPanel HorizontalAlignment="{x:Bind IsFromSelf, Converter={StaticResource BoolToFrameworkAlignmentConverter}}" Orientation="Horizontal">
-                                                <SymbolIcon Margin="5"
-															VerticalAlignment="Bottom"
-															Symbol="Clock" />
-                                                <TextBlock Margin="0,5,5,5"
-														   VerticalAlignment="Bottom"
-														   Text="{x:Bind SentTime}" />
-                                            </StackPanel>
-                                        </StackPanel>
-                                        <PersonPicture Width="50"
-													   Margin="5"
-													   VerticalAlignment="Top"
-													   ProfilePicture="{x:Bind ProfilePic, Converter={StaticResource StringToImageSourceConverter}}"
-													   Visibility="{x:Bind IsFromSelf, Converter={StaticResource BoolToVisibilityConverter}}" />
-                                    </StackPanel>
-                                </ListViewItem>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
                     </ListView>
                     <Grid x:Name="MessageInputArea"
                           Grid.Row="1"
@@ -287,8 +291,9 @@
 								 VerticalAlignment="Stretch"
 								 Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
 								 FontSize="15"
-								 PlaceholderText="Type a new message"
+								 PlaceholderText="Channel currently in development"
                                  CornerRadius="3"
+                                 IsEnabled="False"
 								 Text="{x:Bind vm.MessContent, Mode=TwoWay}">
                             <TextBox.KeyboardAccelerators>
                                 <KeyboardAccelerator Key="Enter" 
@@ -331,10 +336,16 @@
                                     Padding="0"/>
                         </StackPanel>
                     </Grid>
-                    <Frame x:Name="MemberDetailFrame"
+                    <Frame x:Name="ChatHubDetailFrame"
                            Margin="5,0,0,0"
                            CornerRadius="5"
-                           Grid.RowSpan="2"/>
+                           Grid.RowSpan="2">
+                        <Frame.ContentTransitions>
+                            <TransitionCollection>
+                                <NavigationThemeTransition  />
+                            </TransitionCollection>
+                        </Frame.ContentTransitions>
+                    </Frame>
                     <Button HorizontalAlignment="Right"
                             VerticalAlignment="Top"
                             Click="HamburgerButton_Click"

@@ -4,60 +4,96 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:IntranetUWP.UserControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:models="using:IntranetUWP.Models"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:models="using:IntranetUWP.Models" xmlns:winui="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400">
 
     <UserControl.Resources>
         <DataTemplate x:Key="DirectChatItemTemplate"
-                      x:DataType="models:ChatMessageDTO">
+                      x:DataType="models:ConversationDTO">
             <Grid Padding="0,10,10,10">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="210"/>
                 </Grid.ColumnDefinitions>
-                <PersonPicture ProfilePicture="{x:Bind ProfilePic, Mode=OneWay}"
+                <PersonPicture ProfilePicture="{x:Bind Users,
+                                                       Converter={StaticResource UserListToTargetUserProfilePicConverter},
+                                                       Mode=OneWay}"
                                Width="50"/>
                 <StackPanel Grid.Column="1"
                             VerticalAlignment="Center">
-                    <TextBlock Text="{x:Bind UserName}"
+                    <TextBlock Text="{x:Bind Users, 
+                                             Converter={StaticResource UserListToTargetUserNameConverter}}"
                                FontWeight="Bold"
                                Margin="5"/>
-                    <TextBlock Text="{x:Bind MessageContent}"
+                    <TextBlock Text="{x:Bind ChatMessages,
+                                             Converter={StaticResource ChatMessageToLastMessageConverter}}"
                                TextWrapping="Wrap"
                                TextTrimming="CharacterEllipsis"
                                Height="20"
                                Margin="5,0,5,5"/>
                 </StackPanel>
-                <TextBlock Grid.Column="2"
-                           Text="10 mins"
-                           FontSize="12"/>
+                <TextBlock Grid.Column="1"
+                           Text="{x:Bind LastInteractionTime,
+                                         Converter={StaticResource SmartDateTimeConverter}}"
+                           FontSize="12"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Top"/>
             </Grid>
         </DataTemplate>
-    </UserControl.Resources> 
-   
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-        <ListView ItemTemplate="{StaticResource DirectChatItemTemplate}"
-                  ItemsSource="{x:Bind dummyChat, Mode=OneWay}"
+    </UserControl.Resources>
+
+    <ListView x:Name="RecentChatList"
+                  ItemTemplate="{StaticResource DirectChatItemTemplate}"
+                  ItemsSource="{x:Bind Conversations,
+                                       Mode=OneWay}"
+                  SelectedItem="{x:Bind SelectedConversation,       
+                                        Mode=TwoWay}"
                   Padding="0,0,10,0"
-                  ScrollViewer.IsVerticalRailEnabled="False">
-            <ListView.Header>
+                  SelectionChanged="ListView_SelectionChanged">
+        <ListView.Header>
+            <StackPanel>
+                <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                                              HorizontalScrollMode="Auto"
+                                              IsVerticalScrollChainingEnabled="False"
+                                              VerticalScrollMode="Disabled">
+                    <winui:ItemsRepeater ItemsSource="{x:Bind OnlineUsers, Mode=OneWay}">
+                        <winui:ItemsRepeater.Layout>
+                            <winui:StackLayout Orientation="Horizontal"/>
+                        </winui:ItemsRepeater.Layout>
+                        <winui:ItemsRepeater.ItemTemplate>
+                            <DataTemplate x:DataType="models:UserDTO">
+                                <Grid Margin="0,0,10,15">
+                                    <Border CornerRadius="25"
+                                                    Padding="0"
+                                                    BorderThickness="2"
+                                                    BorderBrush="#16c60c">
+                                        <PersonPicture ProfilePicture="{x:Bind ProfilePic, 
+                                                                               Converter={StaticResource StringToImageSourceConverter}}"
+                                                       Width="40"
+                                                       Margin="0"/>
+                                    </Border>
+                                    <Ellipse Width="15" Height="15"
+                                                         Fill="#16c60c"
+                                                         HorizontalAlignment="Right"
+                                                         VerticalAlignment="Bottom"/>
+                                </Grid>
+                            </DataTemplate>
+                        </winui:ItemsRepeater.ItemTemplate>
+                    </winui:ItemsRepeater>
+                </ScrollViewer>
                 <AutoSuggestBox PlaceholderText="Search recent chat"
                                 QueryIcon="Find" Margin="0,0,0,10"/>
-            </ListView.Header>
-            <ListView.ItemContainerTransitions>
-                <TransitionCollection>
-                    <EntranceThemeTransition IsStaggeringEnabled="True" 
+            </StackPanel>
+        </ListView.Header>
+        <ListView.ItemContainerTransitions>
+            <TransitionCollection>
+                <EntranceThemeTransition IsStaggeringEnabled="True" 
                                              FromVerticalOffset="450"/>
-                    <AddDeleteThemeTransition/>
-                </TransitionCollection>
-            </ListView.ItemContainerTransitions>
-        </ListView>
-    </Grid>
+                <AddDeleteThemeTransition/>
+            </TransitionCollection>
+        </ListView.ItemContainerTransitions>
+    </ListView>
 </UserControl>

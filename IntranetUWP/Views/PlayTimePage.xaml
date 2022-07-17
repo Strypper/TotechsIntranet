@@ -9,6 +9,91 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.3*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <MediaElement Source="https://intranetblobstorages.blob.core.windows.net/avatarstorage/XboxSX.mp4"
+                          Stretch="UniformToFill"
+                          IsLooping="True"
+                          IsMuted="True"
+                          Grid.ColumnSpan="2"/>
+            <Button Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
+                  VerticalAlignment="Bottom"
+                  HorizontalAlignment="Right"
+                  Margin="30"
+                    Grid.Column="2">
+                <TextBlock Text="LET'S PLAY"
+                               VerticalAlignment="Bottom"
+                               FontSize="20"
+                               FontWeight="ExtraBold"
+                               Margin="5,10,5,5"
+                               Foreground="#107c10"/>
+            </Button>
+            <Button Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
+                      VerticalAlignment="Top"
+                      HorizontalAlignment="Left"
+                    Grid.Row="1"
+                    Margin="10,-60,0,0">
+                <StackPanel Orientation="Horizontal"
+                            Padding="20">
+                    <Image Source="/Assets/AppLogoAssets/XboxLogo.png"
+                           Height="50" Width="50"/>
+                    <TextBlock Text="XBOX GAMES"
+                               VerticalAlignment="Bottom"
+                               FontSize="30"
+                               FontWeight="ExtraBold"
+                               Margin="5,15,5,5"
+                               Foreground="#107c10"/>
+                </StackPanel>
+            </Button>
+            <StackPanel Grid.Row="1"
+                        Margin="10,70,10,0">
+                <TextBlock Text="GAME PASS:"
+                           FontSize="28"
+                           FontWeight="Bold"
+                           TextDecorations="Underline"/>
+                <TextBlock Text="Immerse yourself in a library of over 100 high-quality games. Enjoy the benefits of Xbox Live Gold, EA Play, and play across devices from the cloud when you join Xbox Game Pass Ultimate."
+                       FontSize="18"
+                       TextAlignment="Justify"
+                       TextWrapping="Wrap"
+                       HorizontalAlignment="Stretch"
+                       VerticalAlignment="Top"/>
+            </StackPanel>
+            <TextBlock Grid.Row="1"
+                       Grid.Column="1"
+                       Margin="0,10,0,0"
+                       FontSize="28"
+                       FontWeight="Bold"
+                       Text="GAMES WE PLAY"/>
+            <StackPanel 
+                   Grid.Column="2"
+                   Grid.Row="1"
+                   Orientation="Horizontal">
+                <StackPanel.ChildrenTransitions>
+                    <TransitionCollection>
+                        <EntranceThemeTransition IsStaggeringEnabled="True" 
+                                                 FromHorizontalOffset="1000"/>
+                    </TransitionCollection>
+                </StackPanel.ChildrenTransitions>
+                <Image  Source="/Assets/DemoPurpose/Others/HaloInfinite.png"
+                        Margin="0,60,30,10"
+                        Stretch="UniformToFill"/>
+                <Image  Source="/Assets/DemoPurpose/Others/MK11.jpg"
+                        Margin="0,60,30,10"
+                        Stretch="UniformToFill"/>
+                <Image  Source="/Assets/DemoPurpose/Others/ForzaHorizon5.jpg"
+                        Margin="0,60,30,10"
+                        Stretch="UniformToFill"/>
+                <Image  Source="/Assets/DemoPurpose/Others/Fifa.png"
+                        Margin="0,60,50,10"
+                        Stretch="UniformToFill"/>
+            </StackPanel>
+        </Grid>
     </Grid>
 </Page>

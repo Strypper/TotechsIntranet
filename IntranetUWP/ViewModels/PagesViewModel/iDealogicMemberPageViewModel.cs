@@ -1,12 +1,16 @@
 ﻿using IntranetUWP.Helpers;
 using IntranetUWP.Models;
+using IntranetUWP.RefitInterfaces;
 using IntranetUWP.UserControls.Dialogs;
 using IntranetUWP.ViewModels.Commands;
+using Refit;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -20,13 +24,13 @@ namespace IntranetUWP.ViewModels.PagesViewModel
     {
         public readonly string getUsersDataUrl = "User/GetAll";
         public readonly string deleteUserDataUrl = "User/Delete";
-        public readonly string getAllTeamsDataUrl = "Team/GetAll";
-        public readonly string getTeamsByUserIdDataUrl = "UserTeam/GetTeamByUser";
+        public readonly string getAllProjectDataUrl = "Project/GetAll";
+        public readonly string getProjectByUserIdDataUrl = "UserProjects/GetProjectsByUser";
         private IntranetHttpHelper httpHelper = new IntranetHttpHelper(); 
         private List<UserDTO> users = new List<UserDTO>();
         public ObservableCollection<UserDTO> Users { get; set; }
-        private List<TeamsDTO> teams = new List<TeamsDTO>();
-        public ObservableCollection<TeamsDTO> Teams { get; set; }
+        private List<ProjectDTO> projects = new List<ProjectDTO>();
+        public ObservableCollection<ProjectDTO> Projects { get; set; }
         public ICommand getAllUsersCommand { get; set; }
         public ICommand createNewUserCommand { get; set; }
         public ICommand askBeforeDeleteUserCommand { get; set; }
@@ -41,12 +45,12 @@ namespace IntranetUWP.ViewModels.PagesViewModel
                 OnPropertyChanged();
             }
         }
-
+        private readonly IUserData userData = RestService.For<IUserData>(App.BaseUrl);
         public iDealogicMemberPageViewModel()
         {
             IsBusy = false;
             Users = new ObservableCollection<UserDTO>();
-            Teams = new ObservableCollection<TeamsDTO>();
+            Projects = new ObservableCollection<ProjectDTO>();
 
             createNewUserCommand = new RelayCommand(async() => await OpenCreateMemberDialog());
             askBeforeDeleteUserCommand = new RelayCommand(async () => await AskBeforeRemove());
@@ -54,18 +58,18 @@ namespace IntranetUWP.ViewModels.PagesViewModel
 
         private async Task GetUserData() => users = await httpHelper.GetAsync<List<UserDTO>>(getUsersDataUrl);
 
-        private async Task GetTeamsData() => teams = await httpHelper.GetAsync<List<TeamsDTO>>(getAllTeamsDataUrl);
+        private async Task GetProjectData() => projects = await httpHelper.GetAsync<List<ProjectDTO>>(getAllProjectDataUrl);
 
         public async Task BindUsersBackToUI()
         {
             await GetUserData();
-            await GetTeamsData();
+            await GetProjectData();
             users.ForEach(u => Users.Add(u));
-            teams.ForEach(t => Teams.Add(t));
-            var userId = App.localSettings.Values["UserId"];
-            if (userId != null && Users.Count > 0)
+            projects.ForEach(t => Projects.Add(t));
+            var userGuid = App.localSettings.Values["UserGuid"].ToString();
+            if (userGuid != null && Users.Count > 0)
             {
-                SelectedUser = userId != null ? Users.FirstOrDefault(u => u.id == (int)userId) : null;
+                SelectedUser = userGuid != null ? Users.FirstOrDefault(u => u.Guid == userGuid) : null;
             }
             IsBusy = false;
         }
@@ -81,7 +85,7 @@ namespace IntranetUWP.ViewModels.PagesViewModel
                 var confirmDeleteDialog = await new ContentDialog()
                 {
                     Title = "🗑 Delete this user ?",
-                    Content = $"Check before you delete {removeUser.firstName} ?",
+                    Content = $"Check before you delete {removeUser.FirstName} ?",
                     PrimaryButtonText = "Yes",
                     SecondaryButtonText = "No",
                     PrimaryButtonStyle = confirmDeletButtonStyle,
@@ -90,9 +94,9 @@ namespace IntranetUWP.ViewModels.PagesViewModel
                         IsBusy = true;
                         if (removeUser != null)
                         {
-                            var food = Users.Where(u => u == removeUser).FirstOrDefault();
-                            var deleteResult = await httpHelper.RemoveAsync(deleteUserDataUrl, food.id);
-                            if (deleteResult == true) Users.Remove(food); else Debug.Write("Delete operation error");
+                            var user = Users.Where(u => u == removeUser).FirstOrDefault();
+                            var deleteResult = await userData.DeleteUser(user.Guid);
+                            if (deleteResult.StatusCode == HttpStatusCode.NoContent) Users.Remove(user); else Debug.Write("Delete operation error");
                         }
                         IsBusy = false;
                     })

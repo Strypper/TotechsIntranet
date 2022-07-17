@@ -48,7 +48,7 @@ namespace IntranetUWP.UserControls
             emailMessage.Subject = "This is a subject";
             emailMessage.Body = "Hello, this is sample email body.";
 
-            var emailRecipient = new EmailRecipient(UserInfo.userName);
+            var emailRecipient = new EmailRecipient(UserInfo.UserName);
             emailMessage.To.Add(emailRecipient);
 
             await EmailManager.ShowComposeNewEmailAsync(emailMessage);

@@ -39,14 +39,11 @@
                 <StackPanel Orientation="Horizontal" 
                             Margin="5">
                     <PersonPicture Width="40"
-                                   ProfilePicture="{x:Bind profilePic,
+                                   ProfilePicture="{x:Bind ProfilePic,
                                                     Mode=OneWay}"/>
                     <TextBlock VerticalAlignment="Center"
-                               Margin="15,5,5,5">
-                        <Run Text="{x:Bind lastName}"/>
-                        <Run Text="{x:Bind middleName}"/>
-                        <Run Text="{x:Bind firstName}"/>
-                    </TextBlock>
+                               Text="{x:Bind FullName}"
+                               Margin="15,5,5,5"/>
                 </StackPanel>
             </DataTemplate>
         </ListView.ItemTemplate>

@@ -40,7 +40,7 @@ namespace IntranetUWP.UserControls.Dialogs
             {
                 foreach (var user in SelectedUsers)
                 {
-                    MemberList.SelectedItems.Add(UsersList.Where(u => u.userName == user.userName).FirstOrDefault());
+                    MemberList.SelectedItems.Add(UsersList.Where(u => u.UserName == user.UserName).FirstOrDefault());
                 }
             }
         }

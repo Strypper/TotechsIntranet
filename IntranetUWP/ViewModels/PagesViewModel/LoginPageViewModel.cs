@@ -1,5 +1,10 @@
-﻿using IntranetUWP.Models;
+﻿using IntranetUWP.Constanst;
+using IntranetUWP.Contracts;
+using IntranetUWP.Models;
+using IntranetUWP.RefitInterfaces;
+using Microsoft.Toolkit.Mvvm.DependencyInjection;
 using Newtonsoft.Json;
+using Refit;
 using System;
 using System.Net;
 using System.Net.Http;
@@ -10,8 +15,6 @@ namespace IntranetUWP.ViewModels.PagesViewModel
 {
 	public class LoginPageViewModel : ViewModelBase
 	{
-		private readonly HttpClient httpClient;
-		private readonly string loginUrl = "https://intranetapi.azurewebsites.net/api/User/Login";
 		private bool showError;
 
 		public string Username { get; set; }
@@ -19,49 +22,39 @@ namespace IntranetUWP.ViewModels.PagesViewModel
 		public bool? RemainSignIn { get; set; }
 		public bool ShowError { get => showError; private set => Set(ref showError, value); }
 
+		private readonly ITotechsIdentity	totechIdentity	  = RestService.For<ITotechsIdentity>(HttpConstants.IdentityBaseUrl);
+		private readonly IUserData			userData		  = RestService.For<IUserData>(HttpConstants.BaseUrl);
+		private readonly IFoodData			foodData		  = RestService.For<IFoodData>(HttpConstants.BaseUrl);
+
 		public LoginPageViewModel()
 		{
 			Username = Password = string.Empty;
 			RemainSignIn = true;
 			showError = false;
 			IsBusy = false;
-			httpClient = new HttpClient();
 		}
 
-		public async Task LoginAsync()
+		public async Task<UserIdentityDTO> LoginAsync()
 		{
 			IsBusy = true;
 			ShowError = false;
 			try
 			{
 				var logininfo = new LoginModel() { userName = Username, password = Password };
-				var content = new StringContent(JsonConvert.SerializeObject(logininfo), Encoding.UTF8, "application/json");
-				var response = await httpClient.PostAsync(loginUrl, content);
-				var result = await response.Content.ReadAsStringAsync();
-				_ = response.EnsureSuccessStatusCode();
-				if (response.StatusCode == HttpStatusCode.OK)
-				{
-					var userInfo = JsonConvert.DeserializeObject<UserDTO>(result);
-					if (RemainSignIn == true)
-					{
-						App.localSettings.Values["UserId"] = userInfo.id;
-						App.localSettings.Values["UserName"] = userInfo.userName;
-						App.localSettings.Values["FirstName"] = userInfo.firstName;
-						App.localSettings.Values["LastName"] = userInfo.lastName;
-						App.localSettings.Values["Password"] = Password;
-						App.localSettings.Values["ProfilePic"] = userInfo.profilePic;
-						App.localSettings.Values["Company"] = userInfo.company;
-						var foodRequest = await httpClient.GetAsync(GetFoodUrl(userInfo.id));
-						var foodResult = await foodRequest.Content.ReadAsStringAsync();
-						var foodInfo = JsonConvert.DeserializeObject<UserFoodDTO>(foodResult);
-						if (foodInfo != null)
-							App.localSettings.Values["FoodId"] = foodInfo.food.id;
-					}
-				}
-				else
-				{
-					throw new Exception();
-				}
+				var identityInfo = await totechIdentity.Authenticate(logininfo);
+				if(identityInfo != null)
+                {
+                    var userIdentityInfo = identityInfo.UserInfo;
+                    if (RemainSignIn == true)
+                    {
+                        App.localSettings.Values["UserGuid"] = userIdentityInfo.Guid;
+                        App.localSettings.Values["Password"] = Password;
+                        //var foodInfo = await foodData.Get(UserInfo.id);
+                        //if (foodInfo != null)
+                        //	App.localSettings.Values["FoodId"] = foodInfo.food.id;
+                        return userIdentityInfo;
+                    }
+                }
 			}
 			catch
 			{
@@ -72,6 +65,7 @@ namespace IntranetUWP.ViewModels.PagesViewModel
 			{
 				IsBusy = false;
 			}
+			return null;
 		}
 
 		private string GetFoodUrl(int id) => $"https://intranetapi.azurewebsites.net/api/UserFood/GetUserSelectedFood/{id}";

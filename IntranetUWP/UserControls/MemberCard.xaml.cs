@@ -8,13 +8,12 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 
-// The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
 namespace IntranetUWP.UserControls
 {
     public sealed partial class MemberCard : UserControl
     {
-        public readonly string getTeamsByUserIdDataUrl = "UserTeam/GetTeamByUser";
+        public readonly string getProjectsByUserIdDataUrl = "UserProject/GetProjectByUser";
         public delegate void ClearSelectionMemberCardEventHandler(int userId);
         public delegate void DisableMemberCardEventHandler(int userId);
         public int UserId
@@ -23,7 +22,6 @@ namespace IntranetUWP.UserControls
             set { SetValue(UserIdProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for userId.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty UserIdProperty =
             DependencyProperty.Register("UserId", typeof(int), typeof(MemberCard), null);
 
@@ -33,7 +31,6 @@ namespace IntranetUWP.UserControls
             set { SetValue(ProfilePictureUrlProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for ProfilePictureUrl.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ProfilePictureUrlProperty =
             DependencyProperty.Register("ProfilePictureUrl", typeof(string), typeof(MemberCard), new PropertyMetadata(null));
 
@@ -54,7 +51,6 @@ namespace IntranetUWP.UserControls
             set { SetValue(CompanyProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for Company.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty CompanyProperty =
             DependencyProperty.Register("Company", typeof(bool), typeof(MemberCard), new PropertyMetadata(true));
 
@@ -66,7 +62,6 @@ namespace IntranetUWP.UserControls
             set { SetValue(FoodListProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for FoodList.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty FoodListProperty =
             DependencyProperty.Register("FoodList", typeof(ObservableCollection<FoodDTO>), typeof(MemberCard), new PropertyMetadata(null));
 
@@ -78,7 +73,6 @@ namespace IntranetUWP.UserControls
             set { SetValue(SelectedFoodProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for SelectedFood.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty SelectedFoodProperty =
             DependencyProperty.Register("SelectedFood", typeof(int), typeof(MemberCard), new PropertyMetadata(null));
 
@@ -101,8 +95,8 @@ namespace IntranetUWP.UserControls
             }
             SelectFoodCombobox.SelectionChanged += SelectFoodCombobox_SelectionChanged;
 
-            var teams = await httpHelper.GetByIdAsync<List<TeamsDTO>>(getTeamsByUserIdDataUrl, UserId);
-            TeamsText.Text = teams.Count == 0 ? "Not assigned to team yet" : string.Join(", ", teams.Select(t => t.TeamName));
+            var projects = await httpHelper.GetByIdAsync<List<ProjectDTO>>(getProjectsByUserIdDataUrl, UserId);
+            if (projects != null) ProjectsText.Text = projects.Count == 0 ? "Not assigned to project yet" : string.Join(", ", projects.Select(t => t.ProjectName));
         }
 
         private async void SelectFoodCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -122,23 +116,23 @@ namespace IntranetUWP.UserControls
         private void RemoveSelectionSwipe_Invoked(SwipeItem sender, SwipeItemInvokedEventArgs args) => ClearSelection?.Invoke(UserId);
         private void DisableUserSwipe_Invoked(SwipeItem sender, SwipeItemInvokedEventArgs args) => DisableUser?.Invoke(UserId);
 
-        private void TeamCard_PointerEntered(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
+        private void ProjectCard_PointerEntered(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
             Avatar.Scale = new Vector3(1.08f, 1.08f, 0);
 
             EmployeeNameText.Translation = new Vector3(5, 0, 0);
-            TeamsText.Translation = new Vector3(10, 0, 0);
-            TeamsText.Opacity = 1;
+            ProjectsText.Translation = new Vector3(10, 0, 0);
+            ProjectsText.Opacity = 1;
             CompanyText.Translation = new Vector3(5, 0, 0);
         }
 
-        private void TeamCard_PointerExited(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
+        private void ProjectCard_PointerExited(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
             Avatar.Scale = new Vector3(1, 1, 0);
 
             EmployeeNameText.Translation = new Vector3(0, 10, 0);
-            TeamsText.Translation = new Vector3(0, 0, 0);
-            TeamsText.Opacity = 0;
+            ProjectsText.Translation = new Vector3(0, 0, 0);
+            ProjectsText.Opacity = 0;
             CompanyText.Translation = new Vector3(0, -10, 0);
         }
     }

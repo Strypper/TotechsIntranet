@@ -1,63 +1,54 @@
-﻿using Microsoft.Toolkit.Uwp.UI.Helpers;
-using System;
-using Windows.Media.Core;
-using Windows.UI.Composition;
-using Windows.UI.Xaml;
+﻿using IntranetUWP.Models;
+using IntranetUWP.RefitInterfaces;
+using Refit;
+using Syncfusion.UI.Xaml.Charts;
+using System.Collections.ObjectModel;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media.Imaging;
 
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
 namespace IntranetUWP.Views
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
     public sealed partial class SettingsPage : Page
     {
-        Compositor compositor = Window.Current.Compositor;
+        public ObservableCollection<Model>           Collection     { get; set; } = new ObservableCollection<Model>();
+        public ObservableCollection<DeveloperStat>   DeveloperStats { get; set; } = new ObservableCollection<DeveloperStat>();
+        public ObservableCollection<ContributionDTO> Contributions  { get; set; } = new ObservableCollection<ContributionDTO>();
+        public UserDTO                               UserProfile    { get; set; } = new UserDTO();
+        private readonly IContributionData contributionData = RestService.For<IContributionData>(App.BaseUrl);
+        private readonly IUserData         userData         = RestService.For<IUserData>(App.BaseUrl);
         public SettingsPage()
         {
             this.InitializeComponent();
+
+
+            Collection.Add(new Model() { Country = "US", YValue = 15 });
+            Collection.Add(new Model() { Country = "Russia", YValue = 20 });
+            Collection.Add(new Model() { Country = "Ukraine", YValue = 16 });
+            Collection.Add(new Model() { Country = "VietNam", YValue = 25 });
+            Collection.Add(new Model() { Country = "Bruh", YValue = 1 });
         }
 
-        private void Page_Loaded(object sender, RoutedEventArgs e)
+        private async void Page_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            ProfileImage.Source = new BitmapImage(
-                                  new Uri(App.localSettings.Values["ProfilePic"]
-                                  as string)
-                                  );
-            UserName.Text = App.localSettings.Values["UserName"].ToString();
-
-            VideoBackGround.MediaPlayer.IsLoopingEnabled = true;
-
-            var currentTheme = Application.Current.RequestedTheme;
-            AdaptiveTheme(currentTheme);
-
-            //Detect theme change
-            var Listener = new ThemeListener();
-            Listener.ThemeChanged += Listener_ThemeChanged;
-        }
-
-        private void Listener_ThemeChanged(ThemeListener sender)
-        {
-            var theme = sender.CurrentTheme;
-            AdaptiveTheme(theme);
-        }
-
-        private void AdaptiveTheme(ApplicationTheme theme)
-        {
-            switch (theme)
+            var contributions = await contributionData.GetAllContributions();
+            UserProfile       = await userData.Get(App.localSettings.Values["UserGuid"].ToString());
+            foreach (var skill in UserProfile.Skills)
             {
-                case ApplicationTheme.Dark:
-                    VideoBackGround.Source = MediaSource.CreateFromUri(new Uri("https://intranetblobstorages.blob.core.windows.net/backgroundvideo/ProfileVideo.mp4"));
-                    break;
-                case ApplicationTheme.Light:
-                    VideoBackGround.Source = MediaSource.CreateFromUri(new Uri("https://intranetblobstorages.blob.core.windows.net/backgroundvideo/SnowVideo.mp4"));
-                    break;
-                default:
-                    break;
-            }
+                DeveloperStats.Add(new DeveloperStat() { StatName = skill.Name, YValue = skill.SkillValue });
+            };
+            contributions.ForEach(contribution => Contributions.Add(contribution));
         }
+    }
+
+    public class Model
+    {
+        public string Country { get; set; }
+        public double YValue { get; set; }
+
+    }
+    public class DeveloperStat
+    {
+        public string StatName { get; set; }
+        public double YValue { get; set; }
     }
 }

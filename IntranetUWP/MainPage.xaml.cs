@@ -1,28 +1,110 @@
-﻿using IntranetUWP.Views;
+﻿using IntranetUWP.Constanst;
+using IntranetUWP.Helpers;
+using IntranetUWP.Views;
+using IntranetUWP.Views.MemberChildPages;
+using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Toolkit.Mvvm.DependencyInjection;
+using Microsoft.WindowsAzure.Messaging;
+using Microsoft.Azure.NotificationHubs;
 using System;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Net.Http;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+using Windows.Networking.PushNotifications;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media.Imaging;
+using IntranetUWP.Models;
+using IntranetUWP.RefitInterfaces;
+using Refit;
+using Windows.UI.Xaml.Navigation;
+using IntranetUWP.Contracts;
+using IntranetUWP.Services;
+using Microsoft.Toolkit.Helpers;
+using Windows.Storage;
+using Newtonsoft.Json;
+using Microsoft.Toolkit.Uwp.Helpers;
 
-namespace IntranetUWP 
-{ 
-    public sealed partial class MainPage : Page
+namespace IntranetUWP
+{
+    public sealed partial class MainPage : Page, INotifyPropertyChanged
     {
-        public string ProfileImage { get; set; }
+        private UserDTO user;
+        public UserDTO User
+        {
+            get { return user; }
+            set
+            {
+                user = value;
+                OnPropertyChanged();
+            }
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
+        private IntranetSignalRHelper signalRHelper { get; set; }
+        private IServiceCollection _serviceCollection;
+        private ILocalUsersService localUsersService;
+        public UserIdentityDTO identityUser { get; set; }
+        private bool signalRStatus;
+        public bool SignalRStatus
+        {
+            get { return signalRStatus; }
+            set 
+            {
+                signalRStatus = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public static Ioc Context => _context;
+        public static Ioc _context = null;
+
+        private readonly IUserData userData = RestService.For<IUserData>(App.BaseUrl);
+
         public MainPage()
         {
             this.InitializeComponent();
-            TheMainFrame.Navigate(typeof(FoodOrderPage));
-            if(App.localSettings.Values["ProfilePic"] != null)
+            InitializeEnvironment();
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            identityUser = (UserIdentityDTO)e.Parameter;
+        }
+
+        private async void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            signalRHelper = MainPage.Context.GetRequiredService<IntranetSignalRHelper>();
+            localUsersService = MainPage.Context.GetRequiredService<ILocalUsersService>();
+            await signalRHelper.ConnectAsync().ContinueWith(async task =>
             {
-                ProfileImage = App.localSettings.Values["ProfilePic"] as string;
-            }
-            if (App.localSettings.Values["FirstName"] != null)
+                if (task.Exception != null)
+                {
+                    Debug.WriteLine("Unable to connect");
+                    SignalRStatus = false;
+                }
+                else
+                {
+                    Debug.WriteLine("Connection success");
+                    SignalRStatus = true;
+                }
+            });
+
+            if (App.localSettings.Values["UserGuid"] != null)
             {
-                PersonalName.Text = App.localSettings.Values["FirstName"] as String 
-                                 + (App.localSettings.Values["LastName"] != null 
-                                 ? (" " +  App.localSettings.Values["LastName"] as String) 
-                                 : " ");
+                User = await userData.GetUserByGuid(App.localSettings.Values["UserGuid"].ToString());
+                if (User != null)
+                {
+                    User.FillUserIdentityInfo(identityUser);
+
+                    await localUsersService.SaveLocalUserAsync(User);
+
+                    await InitNotificationsAsync();
+                    //Frame.Navigate(typeof(ProfilePage));
+                }
             }
         }
 
@@ -48,7 +130,10 @@ namespace IntranetUWP
                 case "ChatHub":
                     TheMainFrame.Navigate(typeof(ChatHubPage));
                     break;
-                case "Member":
+                case "Projects":
+                    TheMainFrame.Navigate(typeof(ProjectsPage));
+                    break;
+                case "Members":
                     TheMainFrame.Navigate(typeof(MemberPage));
                     break;
                 case "SettingsItem":
@@ -68,5 +153,48 @@ namespace IntranetUWP
             App.localSettings.Values.Clear();
             Frame.Navigate(typeof(LoginPage));
         }
+
+        private void InitializeEnvironment()
+        {
+            _context = new Ioc();
+
+            if (_serviceCollection == null)
+            {
+                _serviceCollection = new ServiceCollection();
+            }
+            ConfigureServices(_serviceCollection);
+            Context.ConfigureServices(_serviceCollection.BuildServiceProvider());
+        }
+        private void ConfigureServices(IServiceCollection services)
+        {
+            services.AddSingleton((_) => new HubConnectionBuilder()
+                    .WithAutomaticReconnect()
+                    .WithUrl(SignalRConstants.BaseUrl).Build());
+            services.AddSingleton((_) => new UserSerializer());
+            //.WithUrl(SignalRContants.LocalBaseUrl, options =>
+            //{
+            //    options.HttpMessageHandlerFactory = (handler) =>
+            //    {
+            //        if (handler is HttpClientHandler clientHandler)
+            //        {
+            //            clientHandler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+            //        }
+            //        return handler;
+            //    };
+            //}).Build());
+
+            services.AddSingleton<IntranetSignalRHelper>();
+            services.AddSingleton<ILocalUsersService, ToolkitObjectStorageServices>();
+        }
+        private async Task InitNotificationsAsync()
+        {
+            var channel = await PushNotificationChannelManager.CreatePushNotificationChannelForApplicationAsync();
+
+            var hub = new NotificationHubClient(AzureNotificationHubContants.ConnectionString,
+                                                AzureNotificationHubContants.HubName);
+            var result = await hub.CreateWindowsNativeRegistrationAsync(channel.Uri, new string[] { User.Guid });
+        }
+
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

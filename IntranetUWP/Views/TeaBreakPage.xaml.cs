@@ -6,23 +6,16 @@ using System.Numerics;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
-
 namespace IntranetUWP.Views
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
     public sealed partial class TeaBreakPage : Page
     {
         public FoodOrderPageViewModel vm = new FoodOrderPageViewModel();
-        public ObservableCollection<TeamsDTO> teams { get; set; }
+        public ObservableCollection<ProjectDTO> projects { get; set; }
         public TeaBreakPage()
         {
             this.InitializeComponent();
             this.DataContext = vm;
-
-            teams = DemoTeamsData.getData();
         }
 
         //private void Canvas_PointerEntered(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)

@@ -44,7 +44,7 @@ namespace IntranetUWP.UserControls
                 foreach (var user in Members.Take(5))
                 {
                     var userAvatar = new PersonPicture();
-                    userAvatar.ProfilePicture = new BitmapImage(new Uri(user.profilePic));
+                    userAvatar.ProfilePicture = new BitmapImage(new Uri(user.ProfilePic));
                     userAvatar.Width = 40;
                     StackLayout.Children.Add(userAvatar);
                 }

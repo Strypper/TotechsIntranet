@@ -10,7 +10,7 @@
     xmlns:local="using:IntranetUWP.Views.MemberChildPages"
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls" 
     xmlns:tbfx="using:TextBlockFX.Win2D.UWP"
-    xmlns:effects="using:TextBlockFX.Win2D.UWP.Effects"
+    xmlns:effects="using:TextBlockFX.Win2D.UWP.Effects" xmlns:chart="using:Syncfusion.UI.Xaml.Charts"
     mc:Ignorable="d" Loaded="Page_Loaded"
     muxc:BackdropMaterial.ApplyToRootOrPageBackground="True">
     <Page.Resources>
@@ -30,8 +30,8 @@
             </SwipeItem>
         </SwipeItems>
 
-        <DataTemplate x:Key="TeamFlipViewCard"
-                      x:DataType="model:TeamsDTO">
+        <DataTemplate x:Key="ProjectFlipViewCard"
+                      x:DataType="model:ProjectDTO">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
@@ -40,7 +40,7 @@
                 </Grid.RowDefinitions>
                 <TextBlock HorizontalAlignment="Center"
                            VerticalAlignment="Top"
-                           Text="{x:Bind TeamName}"
+                           Text="{x:Bind ProjectName}"
                            TextAlignment="Center"
                            FontWeight="ExtraBold"
                            FontSize="30"
@@ -49,7 +49,7 @@
                                VerticalAlignment="Center"
                                Width="100"
                                Grid.Row="1"
-                               ProfilePicture="{x:Bind local:MemberDetailPage.GetUserInfo(TechLead, (model:TeamsDTO))}"/>
+                               ProfilePicture="{x:Bind local:MemberDetailPage.GetUserInfo(TechLeadGuid, (model:ProjectDTO))}"/>
                 <muxc:ItemsRepeater ItemsSource="{x:Bind Members, Mode=OneWay}"
                                     Grid.Row="2"
                                     VerticalAlignment="Bottom"
@@ -59,7 +59,7 @@
                     </muxc:ItemsRepeater.Layout>
                     <muxc:ItemsRepeater.ItemTemplate>
                         <DataTemplate x:DataType="model:UserDTO">
-                            <PersonPicture ProfilePicture="{x:Bind profilePic, Mode=OneWay}"
+                            <PersonPicture ProfilePicture="{x:Bind ProfilePic, Mode=OneWay}"
                                            Width="40" Margin="5,0,5,5"/>
                         </DataTemplate>
                     </muxc:ItemsRepeater.ItemTemplate>
@@ -254,7 +254,7 @@
                             Text="Bio"
                             Margin="5,5,5,0"/>
                         <TextBlock TextWrapping="Wrap" Margin="5"
-                           Text="{x:Bind User.bio, Mode=OneWay}"/>
+                           Text="{x:Bind User.Bio, Mode=OneWay}"/>
                     </StackPanel>
             </ScrollViewer>
             <ListView
@@ -264,7 +264,7 @@
                   Margin="15,0,15,15"
                   CornerRadius="2"
                   HorizontalAlignment="Stretch"
-                  ItemsSource="{x:Bind User.skills}"
+                  ItemsSource="{x:Bind User.Skills}"
                   ItemTemplate="{StaticResource SkillTemplate}"
                   Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}">
                 <ListView.ItemContainerStyle>
@@ -316,66 +316,35 @@
                 <StackPanel VerticalAlignment="Center"
                             Padding="5">
                     <Grid>
-                        <controls:RadialProgressBar
-                                    x:Name="ProgressBar"
-                                    Maximum="100"
-                                    Minimum="0"
-                                    VerticalAlignment="Center"
-                                    HorizontalAlignment="Center"
-                                    Thickness="15"
-                                    Height="250"
-                                    Width="250">
-                            <controls:RadialProgressBar.Triggers>
-                                <EventTrigger>
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetName="ProgressBar"
-                                                         Storyboard.TargetProperty="Value"
-                                                         EnableDependentAnimation="True"
-                                                         From="0" Duration="0:0:5"
-                                                         To="80">
-                                                <DoubleAnimation.EasingFunction>
-                                                    <CubicEase/>
-                                                </DoubleAnimation.EasingFunction>
-                                            </DoubleAnimation>
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </EventTrigger>
-                            </controls:RadialProgressBar.Triggers>
-                        </controls:RadialProgressBar>
-                        <ToggleButton HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                CornerRadius="90"
-                                Width="180" Height="180">
-                            <StackPanel HorizontalAlignment="Center"
-                                        VerticalAlignment="Center">
-                                <FontIcon Glyph="&#x1F44D;"
-                                          FontFamily="Segoe UI Emoji"
-                                          HorizontalAlignment="Center"
-                                          FontSize="80"/>
-                                <TextBlock HorizontalAlignment="Center"
-                                           FontSize="35" FontWeight="ExtraBold">
-                                    <Run Text="{x:Bind ProgressBar.Value, Mode=OneWay
-                                                     , Converter={StaticResource DoubleToPercentConverter}}"/>
-                                </TextBlock>
-                            </StackPanel>
-                        </ToggleButton>
+                        <chart:SfChart Grid.Row="1"
+                                       Margin="0,5,0,0">
+                            <chart:RadarSeries ItemsSource   = "{x:Bind User.Skills, Mode=OneWay}" 
+                                           AnimationDuration = "00:00:02" 
+                                           EnableAnimation   = "True"
+                                           DrawType          = "Line"
+                                           XBindingPath      = "Name"
+                                           YBindingPath      = "SkillValue"
+                                           ShowTooltip       = "True">
+                                <chart:RadarSeries.YAxis>
+                                    <chart:NumericalAxis Minimum="0" Maximum="100"/>
+                                </chart:RadarSeries.YAxis>
+                            </chart:RadarSeries>
+                        </chart:SfChart>
                     </Grid>
                     <tbfx:TextBlockFX x:Name="SpecialRole"
-                           Text="{x:Bind User.specialAward, Mode=OneWay}"
+                           Text="{x:Bind User.SpecialAward, Mode=OneWay}"
                            TextAlignment="Center"
-                           Foreground="White"
+                           Foreground="{StaticResource SystemAccentColor}"
                            FontSize="36"
                            Height="30"
-                           Margin="5,10,5,15"
+                           Margin="5,0,5,15"
                            FontWeight="ExtraBold">
                         <tbfx:TextBlockFX.TextEffect>
                             <effects:Default/>
                         </tbfx:TextBlockFX.TextEffect>
                     </tbfx:TextBlockFX>
                     <StackPanel HorizontalAlignment="Center" 
-                                Orientation="Horizontal"
-                                Margin="5">
+                                Orientation="Horizontal">
                         <FontIcon Glyph="&#xE821;" 
                                   FontSize="20"
                                   Margin="5"
@@ -384,7 +353,7 @@
                                    FontSize="20"
                                    VerticalAlignment="Center">
                             <Run Text="Role: "/>
-                            <Run Text="{x:Bind User.role, Mode=OneWay}"/>
+                            <!--<Run Text="{x:Bind User.role, Mode=OneWay}"/>-->
                         </TextBlock>
                     </StackPanel>
                     <StackPanel HorizontalAlignment="Center"
@@ -399,7 +368,7 @@
                                    VerticalAlignment="Center"
                                    FontSize="20">
                             <Run Text="Level: "/>
-                            <Run Text="{x:Bind User.level, Mode=OneWay}"/>
+                            <!--<Run Text="{x:Bind User.level, Mode=OneWay}"/>-->
                         </TextBlock>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal"
@@ -449,18 +418,18 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <TextBlock HorizontalAlignment="Center"
-                           Text="TEAMS"
+                           Text="PROJECTS"
                            TextAlignment="Center"
                            TextDecorations="Underline"
                            FontWeight="ExtraBold"
                            FontSize="25"/>
-                <FlipView x:Name="TeamsCards"
+                <FlipView x:Name="ProjectsCards"
                           HorizontalAlignment="Center"
                           VerticalAlignment="Center"
                           CornerRadius="2"
                           Grid.Row="1"
                           Margin="5,0,5,5"
-                          ItemTemplate="{StaticResource TeamFlipViewCard}"/>
+                          ItemTemplate="{StaticResource ProjectFlipViewCard}"/>
             </Grid>
             <Border
                 x:Name="ThirdColumn"
@@ -475,7 +444,7 @@
                   CornerRadius="2"
                   Margin="25">
                 <Image x:Name="Avatar"
-                       Source="{x:Bind User.profilePic, Mode=OneWay,
+                       Source="{x:Bind User.CardPic, Mode=OneWay,
                                        Converter={StaticResource StringToImageSourceConverter}}"
                        VerticalAlignment="Stretch"
                        HorizontalAlignment="Stretch"
@@ -491,12 +460,17 @@
                     <Grid.TranslationTransition>
                         <Vector3Transition Duration="0:0:1"/>
                     </Grid.TranslationTransition>
-                    <Image x:Name="CompanyImage"
-                           Source="{x:Bind User.company, Mode=OneWay, 
-                                           Converter={StaticResource BoolToCompanyImageSourceConverter}}"
-                           Width="130" Height="50"
-                           VerticalAlignment="Center">
-                    </Image>
+                    <StackPanel Orientation="Horizontal">
+                        <Image x:Name="CompanyImage"
+                               Source="/Assets/AppLogoAssets/StoreLogo.scale-400.png"
+                               Height="40" Width="40" Margin="5"
+                               VerticalAlignment="Center"/>
+                        <TextBlock Text="ToTechs Corps"
+                                   FontWeight="Bold"
+                                   FontSize="18"
+                                   Margin="5"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
                 </Grid>
             </Grid>
             <ScrollViewer x:Name="ThirdColumnUserInfoGrid"
@@ -509,11 +483,8 @@
                     <TextBlock x:Name="FullName"
                                HorizontalAlignment="Center"
                                FontWeight="Bold"
-                               FontSize="20">
-                        <Run x:Name="LastName" Text="{x:Bind User.lastName}"/>
-                        <Run x:Name="MiddleName" Text="{x:Bind User.middleName}"/>
-                        <Run x:Name="FirstName" Text="{x:Bind User.firstName}"/>
-                    </TextBlock>
+                               FontSize="20"
+                               Text="{x:Bind User.FullName}"/>
                     <StackPanel Margin="15,0,15,15">
                         <StackPanel.ChildrenTransitions>
                             <TransitionCollection>
@@ -522,7 +493,7 @@
                             </TransitionCollection>
                         </StackPanel.ChildrenTransitions>
                         <Button x:Name="UserName"
-                                Content="{x:Bind User.userName, Mode=OneWay}"
+                                Content="{x:Bind User.UserName, Mode=OneWay}"
                                 FontSize="20"
                                 FontWeight="Bold"
                                 HorizontalAlignment="Center"
@@ -541,32 +512,38 @@
                                     <MenuFlyoutItem Text="Copy" 
                                                     Icon="Copy"
                                                     Click="CopyEmail_Click"/>
+                                    <MenuFlyoutItem Click="CallPhoneNumber_Click"
+                                                    Text="{x:Bind User.PhoneNumber}">
+                                        <MenuFlyoutItem.Icon>
+                                            <FontIcon Glyph="&#xE1C9;" />
+                                        </MenuFlyoutItem.Icon>
+                                    </MenuFlyoutItem>
                                 </MenuFlyout>
                             </Button.Flyout>
                         </Button>
                         <TextBlock x:Name="PhoneNumber"
                             Margin="5">
                             <Run FontFamily="Segoe UI Emoji" Text="&#x1F382;"/>
-                            <Run Text="{x:Bind User.dateOfBirth, Mode=OneWay,
+                            <Run Text="{x:Bind User.DateOfBirth, Mode=OneWay,
                                         Converter={StaticResource FullDateToDateConverter}}"/>
                         </TextBlock>
                         <TextBlock x:Name="Country"
                             Margin="5">
                             <Run FontFamily="Segoe UI Emoji" Text="&#x1F30F;"/>
-                            <Run Text="{x:Bind User.country, Mode=OneWay}"/>
+                            <!--<Run Text="{x:Bind User., Mode=OneWay}"/>-->
                         </TextBlock>
                         <TextBlock x:Name="Relationship"
                             Margin="5">
                             <Run FontFamily="Segoe UI Emoji" Text="&#x1F496;"/>
-                            <Run Text="{x:Bind User.relationship, Mode=OneWay}"/>
+                            <Run Text="{x:Bind User.Relationship, Mode=OneWay}"/>
                         </TextBlock>
                         <TextBlock x:Name="Hobby"
                             Margin="5">
                             <Run FontFamily="Segoe UI Emoji" Text="&#x1F3D3;"/>
-                            <Run Text="{x:Bind User.hobby, Mode=OneWay}"/>
+                            <Run Text="{x:Bind User.Hobby, Mode=OneWay}"/>
                         </TextBlock>
                         <TextBlock x:Name="Age"
-                           Text="{x:Bind User.age, Mode=OneWay}"
+                           Text="{x:Bind User.Age, Mode=OneWay}"
                            FontSize="45"
                            FontWeight="Bold"
                            HorizontalAlignment="Right"/>

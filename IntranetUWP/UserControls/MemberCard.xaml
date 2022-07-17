@@ -65,8 +65,8 @@
                            ui:Effects.Shadow="{StaticResource CommonShadow}"
                            CornerRadius="5" 
                            Padding="10"
-                           PointerEntered="TeamCard_PointerEntered"
-                           PointerExited="TeamCard_PointerExited">
+                           PointerEntered="ProjectCard_PointerEntered"
+                           PointerExited="ProjectCard_PointerExited">
                 <interactivity:Interaction.Behaviors>
                     <interactions:EventTriggerBehavior EventName="PointerEntered">
                         <behaviors:StartAnimationAction Animation="{StaticResource ShadowEnterAnimation}"/>
@@ -86,8 +86,10 @@
                     <Border.ScaleTransition>
                         <Vector3Transition />
                     </Border.ScaleTransition>
-                    <Image Source="{x:Bind ProfilePictureUrl, Converter={StaticResource StringToImageSourceConverter}, Mode=OneWay}"
-                           Width="70" Height="70" Stretch="UniformToFill"/>
+                    <PersonPicture Width="70" Height="70"
+                                   ProfilePicture="{x:Bind ProfilePictureUrl, 
+                                                           Converter={StaticResource StringToImageSourceConverter}, 
+                                                           Mode=OneWay}"/>
                 </Border>
                 <StackPanel RelativePanel.RightOf="Avatar" 
                             VerticalAlignment="Center"
@@ -101,8 +103,8 @@
                             <Vector3Transition />
                         </TextBlock.TranslationTransition>
                     </TextBlock>
-                    <TextBlock x:Name="TeamsText" 
-                               Text="Team" 
+                    <TextBlock x:Name="ProjectsText" 
+                               Text="Project" 
                                Translation="0,0,0"
                                Opacity="0"
                                MaxWidth="120"
@@ -115,7 +117,7 @@
                             <Vector3Transition />
                         </TextBlock.TranslationTransition>
                     </TextBlock>
-                    <TextBlock x:Name="CompanyText" Text="{x:Bind Company, Converter={StaticResource BoolToCompanyConverter}, Mode=OneWay}" 
+                    <TextBlock x:Name="CompanyText" Text="Totechs Corps" 
                                Margin="5" Translation="0,-10,0">
                         <TextBlock.TranslationTransition>
                             <Vector3Transition />

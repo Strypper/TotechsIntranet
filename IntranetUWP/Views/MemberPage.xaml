@@ -14,14 +14,9 @@
                     IsSettingsVisible="False"
                     SelectionChanged="NavigationViewPanel_SelectionChanged">
         <winui:NavigationView.MenuItems>
-            <winui:NavigationViewItem x:Name="iDealogic" IsSelected="True">
-                <Image Source="/Assets/iDealogic.png" Width="100" Height="25"/>
-            </winui:NavigationViewItem>
-            <winui:NavigationViewItem x:Name="Devinition">
-                <Image Source="/Assets/Devinition.png" Width="100" Height="25"/>
-            </winui:NavigationViewItem>
-            <winui:NavigationViewItem x:Name="TeamPage" 
-                                Content="Teams">
+            <winui:NavigationViewItem x:Name="AllMembers"
+                                      Content="All Members"
+                                      IsSelected="True">
                 <winui:NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xE902;" />
                 </winui:NavigationViewItem.Icon>

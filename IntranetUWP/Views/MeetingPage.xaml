@@ -1,0 +1,239 @@
+﻿<Page
+    x:Class="IntranetUWP.Views.MeetingPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:IntranetUWP.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:models="using:IntranetUWP.Models"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Page.Resources>
+        <DataTemplate x:Key="AttendanceHeaderTemplate">
+            <Grid>
+                <TextBlock Text="Attendance List"
+                               Margin="10"
+                               FontSize="28"/>
+                <Button HorizontalAlignment="Right"
+                                Height="50" Width="50"
+                                Margin="0,0,10,0">
+                    <SymbolIcon Symbol="AddFriend"/>
+                </Button>
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Key="AttendanceItemTemplate"
+                      x:DataType="models:AttendanceDTO">
+            <ListViewItem HorizontalAlignment="Stretch">
+                <Grid HorizontalAlignment="Stretch">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="230"/>
+                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="50"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Margin="10"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center">
+                        <TextBlock Text="FROM" 
+                           HorizontalAlignment="Center"/>
+                        <TextBlock Text="{x:Bind Attend.ToShortTimeString()}"
+                           HorizontalAlignment="Center"/>
+                        <MenuFlyoutSeparator/>
+                        <TextBlock Text="TO"
+                           HorizontalAlignment="Center"/>
+                        <TextBlock Text="{x:Bind Leave.ToShortTimeString()}"
+                           HorizontalAlignment="Center"/>
+                    </StackPanel>
+                    <PersonPicture Grid.Column="1"
+                                   Width="60"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Center"
+                                   Margin="10,0,0,0"
+                                   ProfilePicture="{x:Bind AttendanceInfo.ProfilePic, 
+                                                           Mode=OneWay,     
+                                                           Converter={StaticResource StringToImageSourceConverter}}"/>
+                    <StackPanel Grid.Column="2"
+                                VerticalAlignment="Center">
+                        <TextBlock Text="{x:Bind AttendanceInfo.FullName}"
+                                   FontSize="20"
+                                   Margin="5"/>
+                        <!--<TextBlock Text="{x:Bind AttendanceInfo.role}"
+                                   Margin="5,0,5,5"/>-->
+                    </StackPanel>
+                    <StackPanel Grid.Column="3"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center"
+                                Margin="10">
+                        <FontIcon Glyph="&#xF0E3;" 
+                                  FontSize="40"
+                                  Margin="5"/>
+                        <TextBlock Text="Resolve Tasks 1007, 7021 and 9023"
+                                   TextAlignment="Center"
+                                   TextWrapping="Wrap"
+                                   Margin="5"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="4"
+                                Margin="10"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center">
+                        <TextBlock Text="OVERNIGHT"/>
+                        <FontIcon Glyph="&#xE708;" 
+                                  FontSize="40"
+                                  Margin="5"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="5"
+                                Margin="10"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center">
+                        <TextBlock Text="CONTRIBUTE"/>
+                        <TextBlock Text="50,000 VNĐ"
+                                   FontSize="20"
+                                   HorizontalAlignment="Center"/>
+                    </StackPanel>
+                    <FontIcon Glyph="&#xE930;" 
+                                  FontSize="40"
+                                  Grid.Column="6"
+                                  Margin="5"
+                                  Foreground="#5bdd61"/>
+                </Grid>
+            </ListViewItem>
+        </DataTemplate>
+        <DataTemplate x:Key="TaskItemTemplate">
+            <GridViewItem BorderBrush="Black">
+                <Grid MaxWidth="200"
+                                  Margin="10">
+                    <StackPanel>
+                        <Border Width="35"
+                                            Height="35"
+                                            Margin="0,0,0,10"
+                                            CornerRadius="50"
+                                            Background="Green"
+                                            HorizontalAlignment="Left">
+
+                        </Border>
+                        <TextBlock Text="20/11/2022"/>
+                        <TextBlock Text="MAKE VIDEO CONCEPT FOR TOTECHS INTRANET"
+                                               TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Grid>
+            </GridViewItem>
+        </DataTemplate>
+    </Page.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.ColumnSpan="2"
+              VerticalAlignment="Top"
+              HorizontalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <RelativePanel HorizontalAlignment="Left">
+                <PersonPicture x:Name="ProfilePicture"
+                               Margin="10"
+                               RelativePanel.AlignLeftWithPanel="True"
+                               RelativePanel.AlignVerticalCenterWithPanel="True"
+                               ProfilePicture="{x:Bind MeetingSchedule.Planner.ProfilePic, Mode=OneWay}"/>
+                <StackPanel RelativePanel.RightOf="ProfilePicture"
+                            RelativePanel.AlignVerticalCenterWithPanel="True">
+                    <TextBlock FontSize="28"
+                               VerticalAlignment="Center"
+                               Text="{x:Bind MeetingSchedule.Planner.FullName, Mode=OneWay}"/>
+                    <!--<TextBlock x:Name="Role"
+                           RelativePanel.Below="FullName"
+                           VerticalAlignment="Center"
+                           Text="{x:Bind MeetingSchedule.Planner.role, Mode=OneWay}"/>-->
+                    <StackPanel Orientation="Horizontal"
+                                VerticalAlignment="Center">
+                        <FontIcon Glyph="&#xE1C9;" 
+                                  VerticalAlignment="Center"/>
+                        <HyperlinkButton Content="0348164682"
+                                         VerticalAlignment="Bottom"/>
+                    </StackPanel>
+                </StackPanel>
+            </RelativePanel>
+            <Grid Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <StackPanel HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
+                    <FontIcon Glyph="&#xE707;" 
+                              FontSize="28"
+                              Margin="10"/>
+                    <TextBlock Text="{x:Bind MeetingSchedule.MeetingInfo.Location, Mode=OneWay}"
+                               FontSize="20"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
+                    <TextBlock Text="FROM" 
+                               FontSize="20"
+                               HorizontalAlignment="Center"/>
+                    <TextBlock FontSize="20"
+                               HorizontalAlignment="Center"
+                               Text="{x:Bind MeetingSchedule.MeetingDate.ToShortTimeString(), Mode=OneWay}"/>
+                    <MenuFlyoutSeparator/>
+                    <TextBlock Text="TO"
+                               FontSize="20"
+                               HorizontalAlignment="Center"/>
+                    <TextBlock FontSize="20"
+                               HorizontalAlignment="Center"
+                               Text="{x:Bind MeetingSchedule.EndTime.ToShortTimeString(), Mode=OneWay}"/>
+                </StackPanel>
+            </Grid>
+            <Grid Grid.Column="2">
+                <TextBlock Text="LEVEL OF IMPORTANCE"
+                           Margin="10"/>
+                <TextBlock Text="SO FUCKING IMPORTANT"
+                           FontSize="28"
+                           Foreground="Red"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center"/>
+            </Grid>
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="900"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <ListView Grid.Row="1"
+                      HorizontalAlignment="Stretch"
+                      HeaderTemplate="{StaticResource AttendanceHeaderTemplate}"
+                      ItemTemplate="{StaticResource AttendanceItemTemplate}"
+                      ItemsSource="{x:Bind MeetingSchedule.Attendances, Mode=OneWay}"/>
+            <GridView Margin="0,10,0,0"
+                      Grid.Column="1"
+                      ItemTemplate="{StaticResource TaskItemTemplate}"
+                      ItemsSource="{x:Bind TestList,Mode=OneWay}">
+                <GridView.Header>
+                    <StackPanel>
+                        <TextBlock Text="MEETING INFO"
+                                   FontSize="20"
+                                   HorizontalAlignment="Center"/>
+                        <TextBlock Text="{x:Bind MeetingSchedule.MeetingInfo.Description}"
+                                   TextWrapping="Wrap"
+                                   TextAlignment="Justify"/>
+                        <StackPanel Orientation="Horizontal">
+                            <FontIcon Glyph="&#xE001;" 
+                                        Margin="5"/>
+                            <TextBlock Text="MUST DONE"
+                                        FontSize="20"
+                                        VerticalAlignment="Bottom"/>
+                        </StackPanel>
+                    </StackPanel>
+                </GridView.Header>
+            </GridView>
+        </Grid>
+    </Grid>
+</Page>

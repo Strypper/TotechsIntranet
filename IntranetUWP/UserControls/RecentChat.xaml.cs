@@ -1,43 +1,68 @@
 ﻿using IntranetUWP.Models;
-using System;
+using IntranetUWP.RefitInterfaces;
+using Microsoft.Toolkit.Collections;
+using Refit;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+using System.Threading;
+using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
-
-// The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
 namespace IntranetUWP.UserControls
 {
     public sealed partial class RecentChat : UserControl
     {
-        private ObservableCollection<ChatMessageDTO> dummyChat = new ObservableCollection<ChatMessageDTO>();
+        public delegate void RecentChatEventHandler(ConversationDTO recentChat);
+        public event RecentChatEventHandler SelectRecentChatEvent;
+        public ObservableCollection<ConversationDTO> Conversations
+        {
+            get { return (ObservableCollection<ConversationDTO>)GetValue(ConversationsProperty); }
+            set { SetValue(ConversationsProperty, value); }
+        }
+        public static readonly DependencyProperty ConversationsProperty =
+            DependencyProperty.Register("Conversations", typeof(ObservableCollection<ConversationDTO>), typeof(RecentChat), new PropertyMetadata(new ObservableCollection<ConversationDTO>()));
+
+        public ConversationDTO SelectedConversation
+        {
+            get { return (ConversationDTO)GetValue(SelectedConversationProperty); }
+            set { SetValue(SelectedConversationProperty, value); }
+        }
+        public static readonly DependencyProperty SelectedConversationProperty =
+            DependencyProperty.Register("SelectedConversation", typeof(ConversationDTO), typeof(RecentChat), null);
+
+        public ObservableCollection<UserDTO> OnlineUsers
+        {
+            get { return (ObservableCollection<UserDTO>)GetValue(OnlineUsersProperty); }
+            set { SetValue(OnlineUsersProperty, value); }
+        }
+
+        public static readonly DependencyProperty OnlineUsersProperty =
+            DependencyProperty.Register("OnlineUsers", typeof(ObservableCollection<UserDTO>), typeof(RecentChat), null);
+
+
+
+
         public RecentChat()
         {
             this.InitializeComponent();
-            loadDummyData();
         }
 
-        private void loadDummyData()
+        private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            for (int i = 0; i < 50; i++)
+            var selectedRecentChat = RecentChatList.SelectedItem as ConversationDTO;
+            SelectRecentChatEvent.Invoke(selectedRecentChat);
+        }
+
+        public void ChangeListViewOrder(int chatId)
+        {
+            var conversation = Conversations.FirstOrDefault(con => con.id == chatId);
+            var index = Conversations.IndexOf(conversation);
+            if(index != 0)
             {
-                dummyChat.Add(new ChatMessageDTO()
-                {
-                    UserName = "Strypper Jason",
-                    MessageContent = "Bruh we need better access data layers",
-                    ProfilePic = "https://i.imgur.com/vc9FudE.jpg"
-                });
+                Conversations.RemoveAt(index);
+                Conversations.Insert(0, conversation);
             }
         }
     }

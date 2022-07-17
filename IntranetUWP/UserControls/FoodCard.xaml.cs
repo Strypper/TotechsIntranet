@@ -2,7 +2,6 @@
 using IntranetUWP.Models;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using Windows.UI.Xaml;
@@ -10,8 +9,6 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media.Imaging;
-
-// The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
 namespace IntranetUWP.UserControls
 {
@@ -27,7 +24,6 @@ namespace IntranetUWP.UserControls
             set { SetValue(FoodIdProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for FoodId.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty FoodIdProperty =
             DependencyProperty.Register("FoodId", typeof(int), typeof(FoodCard), null);
 
@@ -39,7 +35,6 @@ namespace IntranetUWP.UserControls
             set { SetValue(FoodNameProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for FoodName.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty FoodNameProperty =
             DependencyProperty.Register("FoodName", typeof(string), typeof(FoodCard), null);
 
@@ -51,7 +46,6 @@ namespace IntranetUWP.UserControls
             set { SetValue(FoodEnglishNameProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for FoodEnglishName.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty FoodEnglishNameProperty =
             DependencyProperty.Register("FoodEnglishName", typeof(string), typeof(FoodCard), null);
 
@@ -61,7 +55,6 @@ namespace IntranetUWP.UserControls
             set { SetValue(IsSelectedProperty, value);}
         }
 
-        // Using a DependencyProperty as the backing store for IsSelected.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IsSelectedProperty =
             DependencyProperty.Register("IsSelected", typeof(bool), typeof(FoodCard), new PropertyMetadata(null));
 
@@ -71,7 +64,6 @@ namespace IntranetUWP.UserControls
             set { SetValue(IsUnavailableProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for IsUnavailable.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IsUnavailableProperty =
             DependencyProperty.Register("IsUnavailable", typeof(bool), typeof(FoodCard), new PropertyMetadata(null));
 
@@ -86,7 +78,6 @@ namespace IntranetUWP.UserControls
             }
         }
 
-        // Using a DependencyProperty as the backing store for MainFoodIcon.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty MainFoodIconProperty =
             DependencyProperty.Register("MainFoodIcon", typeof(int), typeof(FoodCard), null);
 
@@ -107,7 +98,6 @@ namespace IntranetUWP.UserControls
             }
         }
 
-        // Using a DependencyProperty as the backing store for SecondaryFoodIcon.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty SecondaryFoodIconProperty =
             DependencyProperty.Register("SecondaryFoodIcon", typeof(int?), typeof(FoodCard), null);
 
@@ -117,17 +107,19 @@ namespace IntranetUWP.UserControls
             { 2, "ms-appx:///Assets/FoodAssets/Bread.png"},
             { 3, "ms-appx:///Assets/FoodAssets/Spagheti.png"},
             { 4, "ms-appx:///Assets/FoodAssets/Noodle.png"},
-            { 5, "ms-appx:///Assets/FoodAssets/LunchFood.png"}
+            { 5, "ms-appx:///Assets/FoodAssets/LunchFood.png"},
+            { 6, "ms-appx:///Assets/FoodAssets/Soup.png"}
         };
 
         private readonly IDictionary<int?, string> _secondaryFoods = new Dictionary<int?, string>
         {
-            { 6, "ms-appx:///Assets/FoodAssets/Meat.png"},
-            { 7, "ms-appx:///Assets/FoodAssets/Chicken.png"},
-            { 8, "ms-appx:///Assets/FoodAssets/Egg.png"},
-            { 9, "ms-appx:///Assets/FoodAssets/Shrimp.png"},
+            { 6,  "ms-appx:///Assets/FoodAssets/Meat.png"},
+            { 7,  "ms-appx:///Assets/FoodAssets/Chicken.png"},
+            { 8,  "ms-appx:///Assets/FoodAssets/Egg.png"},
+            { 9,  "ms-appx:///Assets/FoodAssets/Shrimp.png"},
             { 10, "ms-appx:///Assets/FoodAssets/Falafel.png"},
-            { 11, null }
+            { 11, "ms-appx:///Assets/FoodAssets/Fish.png"},
+            { 12, null },
         };
 
 
@@ -176,10 +168,10 @@ namespace IntranetUWP.UserControls
             UnavaibleIcon.Visibility = IsUnavailable == true ? Visibility.Visible : Visibility.Collapsed;
             MainFoodImage.Opacity = IsUnavailable == true ? 0.3f : 1.0f;
             ChooseButton.IsEnabled = IsUnavailable == true ? false : true;
-            if (App.localSettings.Values["ProfilePic"] != null)
-            {
-                OwnerUser.ProfilePicture = new BitmapImage(new Uri(App.localSettings.Values["ProfilePic"].ToString()));
-            }
+            //if (App.localSettings.Values["ProfilePic"] != null)
+            //{
+            //    OwnerUser.ProfilePicture = new BitmapImage(new Uri(App.localSettings.Values["ProfilePic"].ToString()));
+            //}
             if (App.localSettings.Values["FoodId"] != null && IsUnavailable == false)
             {
                 ChooseButton.IsChecked = FoodId == (int)App.localSettings.Values["FoodId"] ? true : false;

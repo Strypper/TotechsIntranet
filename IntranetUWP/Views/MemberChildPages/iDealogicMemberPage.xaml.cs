@@ -30,7 +30,7 @@ namespace IntranetUWP.Views.MemberChildPages
 
         public ObservableCollection<SkillDTO> Skills { get; set; } = new ObservableCollection<SkillDTO>();
         public event PropertyChangedEventHandler PropertyChanged;
-        public readonly string getTeamsByUserIdDataUrl = "UserTeam/GetTeamByUser";
+        public readonly string getProjectsByUserIdDataUrl = "UserProject/GetProjectByUser";
         public iDealogicMemberPage()
         {
             this.InitializeComponent();
@@ -40,7 +40,7 @@ namespace IntranetUWP.Views.MemberChildPages
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
             vm.Users.Clear();
-            vm.Teams.Clear();
+            vm.Projects.Clear();
             await vm.BindUsersBackToUI();
         }
 
@@ -60,11 +60,11 @@ namespace IntranetUWP.Views.MemberChildPages
             if (UsersCarousel.SelectedItem as UserDTO != null)
             {
                 User = UsersCarousel.SelectedItem as UserDTO;
-                var teams = await httpHelper.GetByIdAsync<ObservableCollection<TeamsDTO>>(getTeamsByUserIdDataUrl, User.id);
-                Teams.Text = teams.Count == 0 ? "Not assigned to team yet" : string.Join(", ", teams.Select(t => t.TeamName));
+                //var projects = await httpHelper.GetByIdAsync<ObservableCollection<ProjectDTO>>(getProjectsByUserIdDataUrl, User.Guid);
+                //Projects.Text = projects.Count == 0 ? "Not assigned to project yet" : string.Join(", ", projects.Select(t => t.ProjectName));
                 if(User != null && Skills.Count == 0)
                 {
-                    foreach (var skill in User.skills.Take(5)) { Skills.Add(skill); }
+                    foreach (var skill in User.Skills.Take(5)) { Skills.Add(skill); }
                 }
                 DisableAndDeleteBar.Visibility = Visibility.Visible;
             }

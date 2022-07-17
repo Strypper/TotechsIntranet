@@ -37,7 +37,7 @@
             <Image Width="270" Height="380" 
                    VerticalAlignment="Center"
                    Stretch="UniformToFill" 
-                   Source="{x:Bind UserInfo.profilePic, Mode=OneWay}"/>
+                   Source="{x:Bind UserInfo.CardPic, Mode=OneWay}"/>
 
             <Grid x:Name="GradientLayer" Height="380"
                   Background="{StaticResource DefaultColor}"
@@ -48,16 +48,16 @@
                     <Vector3Transition Duration="0:0:1"/>
                 </Grid.TranslationTransition>
                 <StackPanel VerticalAlignment="Bottom">
-                    <TextBlock Text="{x:Bind UserInfo.firstName}"
+                    <TextBlock Text="{x:Bind UserInfo.FirstName}"
                            FontWeight="ExtraBold"
                            TextDecorations="Underline"
                            FontSize="30"
                            Foreground="White"
                            Margin="10,10,10,0"/>
-                    <TextBlock Text="{x:Bind UserInfo.level}"
+                    <!--<TextBlock Text="{x:Bind UserInfo.level}"
                                FontWeight="Bold"
                                Foreground="White"
-                               Margin="10,0,10,10"/>
+                               Margin="10,0,10,10"/>-->
                     <Grid>
                         <StackPanel Orientation="Horizontal"
                                     Margin="10,0,10,10">

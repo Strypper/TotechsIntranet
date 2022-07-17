@@ -19,11 +19,6 @@ namespace IntranetUWP.UserControls
 			Loaded += (sender, args) =>
 			{
 				// Register a handler for when the title bar visibility changes.
-				// For example, when the title bar is invoked in full screen mode.
-				//GetCoreTitleBar().IsVisibleChanged += CoreTitleBarIsVisibleChanged;
-
-				// Register a handler for when the size of the overlaid caption control changes.
-				// For example, when the app moves to a screen with a different DPI.
 				GetCoreTitleBar().LayoutMetricsChanged += CoreTitleBarLayoutMetricsChanged;
 
 				ApplyLayout();

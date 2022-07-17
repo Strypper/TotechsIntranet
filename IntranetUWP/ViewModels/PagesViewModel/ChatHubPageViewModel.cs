@@ -7,27 +7,45 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Microsoft.Toolkit.Mvvm.DependencyInjection;
+using System.Diagnostics;
+using IntranetUWP.RefitInterfaces;
+using Refit;
+using Microsoft.Toolkit.Uwp;
 
 namespace IntranetUWP.ViewModels.PagesViewModel
 {
     public class ChatHubPageViewModel : ViewModelBase
     {   
-        public readonly string getUserDataUrl            = "User/Get";
-        public readonly string getAllUsersDataUrl        = "User/GetAll";
-        public readonly string getConversationDataUrl    = "Conversation/Get";
-        public readonly string createConversationDataUrl = "Conversation/Create";
-        public  ObservableCollection<ChatMessageDTO> ChatMessages       { get; set; }
-        public  ObservableCollection<UserDTO>        Users              { get; set; }
-        private IntranetSignalRHelper                signalRHelper      { get; set; }
-        public  SignalRSendMessageCommandParameter   sendMessageCommand { get; set; }
+        public readonly string getUserDataUrl                 = "User/Get";
+        public readonly string getAllUsersDataUrl             = "User/GetAll";
+        public readonly string createConversationDataUrl      = "UserConversation/Create";
+        public readonly string getByUserIdDirectModeDataUrl   = "Conversation/GetByUserIdDirectMode";
+        public  ObservableCollection<ChatMessageDTO>  ChatMessages       { get; set; }
+        public  ObservableCollection<ConversationDTO> Conversations      { get; set; }
+        public  ObservableCollection<UserDTO>         Users              { get; set; }
+        public  IntranetSignalRHelper                 signalRHelper      { get; set; }
+        public  SignalRSendMessageCommandParameter    sendMessageCommand { get; set; }
+
+        public delegate void ReorderRecentChatEventHandler(int chatId);
+        public event ReorderRecentChatEventHandler ReorderRecentChat;
 
         private string messContent;
 
-        public string MessContent
+        public  string MessContent
         {
             get { return messContent; }
             set { messContent = value; OnPropertyChanged("MessContent"); }
         }
+
+        private int pivotIndex;
+
+        public  int PivotIndex
+        {
+            get { return pivotIndex; }
+            set { pivotIndex = value; OnPropertyChanged("PivotIndex"); }
+        }
+
 
         private UserDTO currentUser;
 
@@ -42,68 +60,43 @@ namespace IntranetUWP.ViewModels.PagesViewModel
         public ConversationDTO SelectedConversation
         {
             get { return selectedConversation; }
-            set { selectedConversation = value; OnPropertyChanged("User"); }
+            set { selectedConversation = value; OnPropertyChanged("SelectedConversation"); }
         }
-
-
-        private ObservableCollection<ConversationDTO> conversations;
-
-        public ObservableCollection<ConversationDTO> Conversations
-        {
-            get { return conversations; }
-            set { conversations = value; OnPropertyChanged("Conversations"); }
-        }
-
 
         private IntranetHttpHelper httpHelper = new IntranetHttpHelper();
-
-
-        public static ChatHubPageViewModel CreatedConnectedChatHubVM(IntranetSignalRHelper service)
+        private readonly IUserData userData = RestService.For<IUserData>(App.BaseUrl);
+        private readonly IConversationData conversationData = RestService.For<IConversationData>(App.BaseUrl);
+        public ChatHubPageViewModel()
         {
-            ChatHubPageViewModel vm = new ChatHubPageViewModel(service);
-            service.ConnectAsync().ContinueWith(task =>
-            {
-                if (task.Exception != null)
-                {
-                    System.Diagnostics.Debug.WriteLine("Unable to connect");
-                }
-                else
-                {
-                    System.Diagnostics.Debug.WriteLine("Connection success");
-                }
-            });
-            return vm;
-        }
-        public ChatHubPageViewModel(IntranetSignalRHelper service)
-        {
-            signalRHelper      = service;
-            sendMessageCommand = new SignalRSendMessageCommandParameter(this);
-            conversations      = new ObservableCollection<ConversationDTO>();
+            signalRHelper      = MainPage.Context.GetRequiredService<IntranetSignalRHelper>();
             ChatMessages       = new ObservableCollection<ChatMessageDTO>();
             Users              = new ObservableCollection<UserDTO>();
-            signalRHelper.GeneralChatMessageReceived += ChatMessReceived;
+            sendMessageCommand = new SignalRSendMessageCommandParameter(this);
+            Conversations      = new IncrementalLoadingCollection<ConversationSupportIncrementalLoading, ConversationDTO>();
+            //signalRHelper.GeneralChatMessageReceived += ChatMessReceived;
         }
 
         public async Task InitDefaultValue()
         {
-            CurrentUser             = await httpHelper
-                                            .GetByIdAsync<UserDTO>(getUserDataUrl, (int)App.localSettings.Values["UserId"]);
-
-            var usersResult         = await httpHelper
-                                            .GetAsync<List<UserDTO>>(getAllUsersDataUrl);
-            if(usersResult != null)          usersResult.Where(u => u.id != currentUser.id)
-                                                        .ToList()
-                                                        .ForEach(user => Users.Add(user));   
-
-            var conversationsResult = await httpHelper
-                                            .GetAsync<List<ConversationDTO>>(getConversationDataUrl);
-            if(conversationsResult != null) conversationsResult.ForEach(conversation => Conversations.Add(conversation));
-
+            CurrentUser = await userData.GetUserByGuid(App.localSettings.Values["UserGuid"].ToString());
+            var usersResult = await httpHelper.GetAsync<List<UserDTO>>(getAllUsersDataUrl);
+            if(usersResult != null) usersResult.Where(u => u.Guid != currentUser.Guid)
+                                               .ToList()
+                                               .ForEach(user => Users.Add(user));
         }
 
-        public async Task SendMessage(ChatMessageDTO messContent)
+        public void InvokeRecentChatOrder(int chatId)
         {
-            await signalRHelper.SendMessageAsync(messContent.MessageContent, SelectedConversation.id);
+            ReorderRecentChat.Invoke(chatId);
+        }
+
+        public async Task SendMessage(SendMessageDTO sendMessageDTO)
+        {
+            await signalRHelper.SendMessageAsync(sendMessageDTO.ChatMessage.MessageContent, 
+                                                 sendMessageDTO.ChatMessage.SentTime,
+                                                 sendMessageDTO.Conversation.id,
+                                                 sendMessageDTO.FromUser.Guid,
+                                                 sendMessageDTO.ToUser.Guid);
             MessContent = "";
         }
 
@@ -112,18 +105,29 @@ namespace IntranetUWP.ViewModels.PagesViewModel
             IsBusy = true;
             if (CurrentUser != null)
             {
-                var conversation = new ConversationDTO()
+                var createConversationDTO = new CreateUpdateUserConversationDTO()
                 {
-                    Users = new List<UserDTO>()
-                                          {   
-                                              currentUser,
-                                              targetUser
-                                          }
+                    CurrentUserGuid = CurrentUser.Guid,
+                    TargetUserGuid = targetUser.Guid
                 };
-                var createResult = await httpHelper.CreateAsync<ConversationDTO>(createConversationDataUrl, conversation);
-                if (createResult != null)
+                var createResult = await httpHelper.CreateAsync<ConversationDTO>(createConversationDataUrl, createConversationDTO);
+                if (createResult != null && Conversations != null)
                 {
-                    Conversations.Add(createResult);
+                    bool existingConversation = Conversations.Any(conversation => conversation.id == createResult.id);
+                    if (existingConversation)
+                    {
+                        //true
+                    }
+                    else
+                    {
+                        //false
+                        Conversations.Add(createResult);
+                    }
+                    PivotIndex = 1;
+                    if (Conversations != null & Conversations.Count != 0)
+                    {
+                        SelectedConversation = Conversations.First(conversation => conversation.id == createResult.id);
+                    }
                 }
                 IsBusy = false;
             }

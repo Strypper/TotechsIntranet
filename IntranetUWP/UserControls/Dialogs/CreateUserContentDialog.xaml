@@ -7,7 +7,8 @@
     xmlns:usercontrols="using:IntranetUWP.UserControls" 
     xmlns:muxc="using:Windows.UI.Xaml.Controls"
     xmlns:ui="using:Microsoft.Toolkit.Uwp.UI"
-    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls" xmlns:model="using:IntranetUWP.Models"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls" 
+    xmlns:model="using:IntranetUWP.Models"
     mc:Ignorable="d"
     Title="😀 NEW MEMBER"
     DefaultButton="Primary"
@@ -21,97 +22,133 @@
 
     <Grid>
         <ScrollViewer Padding="0,0,5,0">
-            <StackPanel VerticalAlignment="Center" 
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <StackPanel VerticalAlignment="Center" 
                         HorizontalAlignment="Center">
-                <StackPanel.ChildrenTransitions>
-                    <TransitionCollection>
-                        <EntranceThemeTransition IsStaggeringEnabled="True"  
+                    <StackPanel.ChildrenTransitions>
+                        <TransitionCollection>
+                            <EntranceThemeTransition IsStaggeringEnabled="True"  
                                                  FromVerticalOffset="1000"/>
-                        <AddDeleteThemeTransition/>
-                    </TransitionCollection>
-                </StackPanel.ChildrenTransitions>
-                <usercontrols:AvatarUploadImage x:Name="Avatar"
-                    OpenCameraEventHandler="AvatarUploadImage_OpenCameraEventHandler"
-                    OpenFileEventHandler="AvatarUploadImage_OpenFileEventHandler"/>
-                <TextBox x:Name="UserName" Header="User Name" HorizontalAlignment="Center" MinWidth="400" Margin="5"/>
-                <TextBox x:Name="FirstName" Header="First Name" HorizontalAlignment="Center" MinWidth="400" />
-                <Grid HorizontalAlignment="Stretch">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBox x:Name="MiddleName" Header="Middle Name" HorizontalAlignment="Stretch" Margin="5"/>
-                    <TextBox x:Name="LastName" Grid.Column="1" Header="Last Name" HorizontalAlignment="Stretch" Margin="0,5,5,5"/>
-                </Grid>
-                <DatePicker x:Name="DateOfBirthPicker"
+                            <AddDeleteThemeTransition/>
+                        </TransitionCollection>
+                    </StackPanel.ChildrenTransitions>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Button HorizontalAlignment="Stretch"
+                                Margin="5">
+                            <SymbolIcon Symbol="Camera"/>
+                        </Button>
+                        <Button HorizontalAlignment="Stretch"
+                                Click="AvatarUploadImage_OpenFileEventHandler"
+                                Grid.Column="1"
+                                Margin="5">
+                            <SymbolIcon Symbol="OpenFile"/>
+                        </Button>
+                    </Grid>
+                    <TextBox x:Name="UserName" Header="User Name" HorizontalAlignment="Center" MinWidth="400" Margin="5"/>
+                    <TextBox x:Name="FirstName" Header="First Name" HorizontalAlignment="Center" MinWidth="400" />
+                    <Grid HorizontalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="MiddleName" Header="Middle Name" HorizontalAlignment="Stretch" Margin="5"/>
+                        <TextBox x:Name="LastName" Grid.Column="1" Header="Last Name" HorizontalAlignment="Stretch" Margin="0,5,5,5"/>
+                    </Grid>
+                    <DatePicker x:Name="DateOfBirthPicker"
                             Header="Date of birth"
                             HorizontalAlignment="Stretch"
                             Margin="5"/>
-                <Border CornerRadius="5"
+                    <Border CornerRadius="5"
                         Padding="0"
                         Margin="5">
-                    <controls:TokenizingTextBox
-                            x:Name="TeamsFinder"
+                        <controls:TokenizingTextBox
+                            x:Name="ProjectsFinder"
                             Width="400"
                             HorizontalAlignment="Center"
-                            Header="Teams (Not ready)"
+                            Header="Projects (Not ready)"
                             IsEnabled="False"
-                            SuggestionChosen="TeamsFinder_SuggestionChosen">
-                        <controls:TokenizingTextBox.SuggestedItemTemplate>
-                            <DataTemplate x:DataType="model:TeamsDTO">
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{x:Bind TeamName}" Padding="4,0,0,0"/>
-                                </StackPanel>
-                            </DataTemplate>
-                        </controls:TokenizingTextBox.SuggestedItemTemplate>
-                        <controls:TokenizingTextBox.TokenItemTemplate>
-                            <DataTemplate x:DataType="model:TeamsDTO">
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{x:Bind TeamName}" Padding="4,0,0,0"/>
-                                </StackPanel>
-                            </DataTemplate>
-                        </controls:TokenizingTextBox.TokenItemTemplate>
-                    </controls:TokenizingTextBox>
-                </Border>
-                <TextBox x:Name="Role" 
+                            SuggestionChosen="ProjectsFinder_SuggestionChosen">
+                            <controls:TokenizingTextBox.SuggestedItemTemplate>
+                                <DataTemplate x:DataType="model:ProjectDTO">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{x:Bind ProjectName}" Padding="4,0,0,0"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </controls:TokenizingTextBox.SuggestedItemTemplate>
+                            <controls:TokenizingTextBox.TokenItemTemplate>
+                                <DataTemplate x:DataType="model:ProjectDTO">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{x:Bind ProjectName}" Padding="4,0,0,0"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </controls:TokenizingTextBox.TokenItemTemplate>
+                        </controls:TokenizingTextBox>
+                    </Border>
+                    <TextBox x:Name="Role" 
                          Header="Role" 
                          PlaceholderText="Fullstack dev, Manager, etc..."
                          HorizontalAlignment="Center" 
                          MinWidth="400" />
-                <TextBox x:Name="Level" 
+                    <TextBox x:Name="Level" 
                          Header="Level" 
                          PlaceholderText="Associate, Professional, Senior, Teachlead, etc..."
                          HorizontalAlignment="Center" 
                          MinWidth="400" />
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <StackPanel.ChildrenTransitions>
-                        <TransitionCollection>
-                            <EntranceThemeTransition IsStaggeringEnabled="True"  FromHorizontalOffset="1000"/>
-                        </TransitionCollection>
-                    </StackPanel.ChildrenTransitions>
-                    <ToggleButton x:Name="iDealogicToggle" Width="100" Content="iDealogic" Click="iDealogicToggle_Click" Margin="5" Style="{StaticResource ToggleButtonRevealStyle}"/>
-                    <ToggleButton x:Name="DevinitionToggle" Width="100" Content="Devinition" Click="DeviToggle_Click" Margin="0,5,5,5" Style="{StaticResource ToggleButtonRevealStyle}"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <StackPanel.ChildrenTransitions>
-                        <TransitionCollection>
-                            <EntranceThemeTransition IsStaggeringEnabled="True"  FromHorizontalOffset="1000"/>
-                        </TransitionCollection>
-                    </StackPanel.ChildrenTransitions>
-                    <ToggleButton x:Name="BoyToggle" 
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <StackPanel.ChildrenTransitions>
+                            <TransitionCollection>
+                                <EntranceThemeTransition IsStaggeringEnabled="True"  FromHorizontalOffset="1000"/>
+                            </TransitionCollection>
+                        </StackPanel.ChildrenTransitions>
+                        <ToggleButton x:Name="BoyToggle" 
                                   Margin="5" 
                                   Width="100"
                                   Style="{StaticResource ToggleButtonRevealStyle}" 
                                   Content="Male"/>
-                    <ToggleButton x:Name="GirlToggle" 
+                        <ToggleButton x:Name="GirlToggle" 
                                   Margin="0,5,5,5"
                                   Width="100"
                                   Style="{StaticResource ToggleButtonRevealStyle}" 
                                   Content="Female"/>
+                    </StackPanel>
+                    <muxc:ProgressBar x:Name="WorkingBar" 
+                                  Visibility="Collapsed" 
+                                  IsIndeterminate="True"
+                                  Margin="5"/>
                 </StackPanel>
-                <muxc:ProgressBar x:Name="WorkingBar" 
-                                      Visibility="Collapsed" IsIndeterminate="True" Margin="5"/>
-            </StackPanel>
+                <StackPanel Grid.Column="1">
+                    <TextBlock Text="PREVIEW"
+                               HorizontalAlignment="Center"/>
+                    <Border CornerRadius="100"
+                            Width="110"
+                            Height="110"
+                            Padding="0"
+                            Margin="5">
+                        <controls:ImageCropper x:Name="AvatarCropper"
+                                           Width="110" 
+                                           Height="110" 
+                                           Padding="0"
+                                           CropShape="Circular"
+                                           ThumbPlacement="All"/>
+                    </Border>
+                    <TextBlock Text="Adjust your profile card"
+                               HorizontalAlignment="Center"/>
+                    <controls:ImageCropper x:Name="CardCropper"
+                                       Width="270" 
+                                       Height="380" 
+                                       Padding="0"
+                                       CropShape="Rectangular"
+                                       ThumbPlacement="All"/>
+                </StackPanel>
+            </Grid>
         </ScrollViewer>
     </Grid>
 </ContentDialog>

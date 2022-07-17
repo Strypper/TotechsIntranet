@@ -3,10 +3,12 @@ using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using IntranetUWP.Helpers;
 using IntranetUWP.Models;
+using IntranetUWP.RefitInterfaces;
 using IntranetUWP.UserControls;
 using IntranetUWP.UserControls.Dialogs;
 using IntranetUWP.ViewModels.Commands;
 using Microsoft.Toolkit.Uwp.Notifications;
+using Refit;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -28,9 +30,12 @@ namespace IntranetUWP.ViewModels.PagesViewModel
     public class FoodOrderPageViewModel : ViewModelBase
     {
         public string getFoodsDataUrl            = "Food/GetAll";
+        public string getContributionsDataUrl    = "Contribution/GetAll";
         public string createFoodDataUrl          = "Food/Create";
         public string createFoodListUrl          = "Food/CreateMultipleFood";
+        public string createContributionDataUrl  = "Contribution/Create";
         public string updateFoodDataUrl          = "Food/Update";
+        public string updateContributionDataUrl  = "Contribution/UpdateApprove";
         public string deleteFoodDataUrl          = "Food/Delete";
         public string deleteAllFoodDataUrl       = "Food/DeleteAll";
         public string getUsersDataUrl            = "User/GetAll";
@@ -47,14 +52,15 @@ namespace IntranetUWP.ViewModels.PagesViewModel
         public ICommand notifyTeamCommand { get; set; }
         public ICommand generateWordDocument { get; set; }
         private ObservableCollection<UserDTO> users = new ObservableCollection<UserDTO>();
-        public ObservableCollection<UserDTO> Users { get; set; }
-        public ObservableCollection<UserDTO> NonSelectedUser { get; set; }
+        public  ObservableCollection<UserDTO> Users { get; set; }
+        public  ObservableCollection<UserDTO> NonSelectedUser { get; set; }
         private ObservableCollection<FoodDTO> foods { get; set; } = new ObservableCollection<FoodDTO>();
-        public ObservableCollection<FoodDTO> Foods { get; set; }
-        public ObservableCollection<UserFoodDTO> UserFoods { get; set; }
-        public ObservableCollection<UserFoodDTO> iDealogicUsersFood { get; set; }
-        public ObservableCollection<UserFoodDTO> DevinitionUsersFood { get; set; }
-        public FoodDTO SelectedFood { get; set; }
+        public  ObservableCollection<FoodDTO> Foods { get; set; }
+        public  ObservableCollection<UserFoodDTO> UserFoods { get; set; }
+        public  ObservableCollection<UserFoodDTO>     iDealogicUsersFood { get; set; }
+        public  ObservableCollection<UserFoodDTO>     DevinitionUsersFood { get; set; }
+        public  ObservableCollection<ContributionDTO> Contributions { get; set; }
+        public  FoodDTO SelectedFood { get; set; }
         private bool deleteAllFoodButtonState = false;
         public bool DeleteAllFoodButtonState
         {
@@ -67,6 +73,13 @@ namespace IntranetUWP.ViewModels.PagesViewModel
             get { return numberOfFood; }
             set { numberOfFood = value; OnPropertyChanged("NumberOfFood"); }
         }
+        private decimal sumOfContribution;
+
+        public decimal SumOfContribution
+        {
+            get { return sumOfContribution; }
+            set { sumOfContribution = value; OnPropertyChanged("SumOfContribution"); }
+        }
 
 
         public readonly IDictionary<int, string> _mainFoods = new Dictionary<int, string>
@@ -75,7 +88,8 @@ namespace IntranetUWP.ViewModels.PagesViewModel
             { 2, "ms-appx:///Assets/FoodAssets/Bread.png"},
             { 3, "ms-appx:///Assets/FoodAssets/Spagheti.png"},
             { 4, "ms-appx:///Assets/FoodAssets/Noodle.png"},
-            { 5, "ms-appx:///Assets/FoodAssets/LunchFood.png"}
+            { 5, "ms-appx:///Assets/FoodAssets/LunchFood.png"},
+            { 6, "ms-appx:///Assets/FoodAssets/Soup.png"}
         };
         public readonly IDictionary<int?, string> _secondaryFoods = new Dictionary<int?, string>
         {
@@ -88,26 +102,29 @@ namespace IntranetUWP.ViewModels.PagesViewModel
         };
         public IDictionary<int, int> _foodCount = new Dictionary<int, int>();
 
+        private readonly IUserData userData = RestService.For<IUserData>(App.BaseUrl);
+        private readonly IFoodData foodData = RestService.For<IFoodData>(App.BaseUrl);
 
         public FoodOrderPageViewModel()
         {
-            IsBusy = true;
-            Users = new ObservableCollection<UserDTO>();
-            NonSelectedUser = new ObservableCollection<UserDTO>();
-            Foods = new ObservableCollection<FoodDTO>();
-            Foods.CollectionChanged += Foods_CollectionChanged;
-            UserFoods = new ObservableCollection<UserFoodDTO>();
-            iDealogicUsersFood = new ObservableCollection<UserFoodDTO>();
-            DevinitionUsersFood = new ObservableCollection<UserFoodDTO>();
-            getAllFoodCommand = new RelayCommand(async () => await GetAllFood());
-            createFoodCommand = new RelayCommand(async () => await CreateFood());
+            IsBusy                     = true;
+            Users                      = new ObservableCollection<UserDTO>();
+            NonSelectedUser            = new ObservableCollection<UserDTO>();
+            Foods                      = new ObservableCollection<FoodDTO>();
+            UserFoods                  = new ObservableCollection<UserFoodDTO>();
+            iDealogicUsersFood         = new ObservableCollection<UserFoodDTO>();
+            DevinitionUsersFood        = new ObservableCollection<UserFoodDTO>();
+            Contributions              = new ObservableCollection<ContributionDTO>();
+            getAllFoodCommand          = new RelayCommand(async () => await GetAllFood());
+            createFoodCommand          = new RelayCommand(async () => await CreateFood());
             askBeforeDeleteFoodCommand = new RelayCommand(async () => await AskBeforeRemove());
-            deleteAllFoodCommand = new RelayCommand(async () => await RemoveAllFood());
-            editFoodCommand = new RelayCommand(async () => await EditFood());
-            getUserCommand = new RelayCommand(async () => await GetUserFoodsData());
-            getFoodFromClipboard = new RelayCommand(async () => await PasteFoodFromClipboard());
-            notifyTeamCommand = new RelayCommand(() => NotifyTeam());
-            generateWordDocument = new RelayCommand(async () => await GenerateWordDocument());
+            deleteAllFoodCommand       = new RelayCommand(async () => await RemoveAllFood());
+            editFoodCommand            = new RelayCommand(async () => await EditFood());
+            getUserCommand             = new RelayCommand(async () => await GetUserFoodsData());
+            getFoodFromClipboard       = new RelayCommand(async () => await PasteFoodFromClipboard());
+            generateWordDocument       = new RelayCommand(async () => await GenerateWordDocument());
+            notifyTeamCommand          = new RelayCommand(() => NotifyTeam());
+            Foods.CollectionChanged    += Foods_CollectionChanged;
         }
         private async Task GetAllFood() 
             => foods = await httpHelper.GetAsync<ObservableCollection<FoodDTO>>(getFoodsDataUrl);
@@ -200,13 +217,13 @@ namespace IntranetUWP.ViewModels.PagesViewModel
             if (editedFood != null)
             {
                 var food = Foods.Where(f => f.id == editedFood.id).FirstOrDefault();
-                editedFood.id = food.id;
-                editedFood.itemNo = food.itemNo;
-                editedFood.IsSelected = food.IsUnavailable != true ? food.IsSelected : false;
+                editedFood.id                   = food.id;
+                editedFood.itemNo               = food.itemNo;
+                editedFood.IsSelected           = food.IsUnavailable != true ? food.IsSelected : false;
                 editedFood.NumberOfSelectedUser = food.IsUnavailable != true ? food.NumberOfSelectedUser : 0;
-                editedFood.Percentage = food.IsUnavailable != true ? food.Percentage : 0;
-                editedFood.IsUnavailable = food.IsUnavailable;
-                var updateResult = await httpHelper.UpdateAsync(updateFoodDataUrl, editedFood);
+                editedFood.Percentage           = food.IsUnavailable != true ? food.Percentage : 0;
+                editedFood.IsUnavailable        = food.IsUnavailable;
+                var updateResult                = await httpHelper.UpdateAsync(updateFoodDataUrl, editedFood);
 
                 if (food.IsUnavailable == true)
                 {
@@ -251,9 +268,16 @@ namespace IntranetUWP.ViewModels.PagesViewModel
                 .AddButton(new ToastButton().SetContent("Order this food").AddArgument("chosenFood", "foodList"))
                 .AddAudio(new ToastAudio() { Src = new Uri("ms-appx:///Assets/AppAudio/clearly-602.mp3") })
                 .Show();
+
         private void BindUsersBackToUI(ObservableCollection<UserDTO> usersList)
         {
             foreach (var user in usersList) { Users.Add(user); }
+        }
+        private async Task BindBudgetListBackToUi()
+        {
+            var budgetList = await httpHelper.GetAsync<List<ContributionDTO>>(getContributionsDataUrl);
+            budgetList.ForEach(budget => Contributions.Add(budget));
+            SumOfContribution = budgetList.Where(bl =>bl.IsApproved == true).Select(bl => bl.Amount).Sum();
         }
         private void BindFoodBackToUI(ObservableCollection<FoodDTO> foodList, ObservableCollection<UserFoodDTO> userFoods)
         {
@@ -278,7 +302,7 @@ namespace IntranetUWP.ViewModels.PagesViewModel
             }
 
             var selectedUsers = UserFoods.Select(uf => uf.user);
-            var nonSelectedUser = Users.Where(u => selectedUsers.All(su => su.id != u.id)).ToList();
+            var nonSelectedUser = Users.Where(u => selectedUsers.All(su => su.Guid != u.Guid)).ToList();
             if (nonSelectedUser.Count > 0)
             {
                 foreach (var user in nonSelectedUser)
@@ -308,7 +332,7 @@ namespace IntranetUWP.ViewModels.PagesViewModel
                     NumberOfSelectedUser = numberOfSelectedUser,
                     IsUnavailable = food.IsUnavailable,
                     usersAvatar = userFoods.Where(f => f.food.id == food.id)
-                                           .Select(uf => uf.user.profilePic)
+                                           .Select(uf => uf.user.ProfilePic)
                                            .Where(i => i != App.localSettings.Values["ProfilePic"] as string)
                                            .ToList<string>()
                 });
@@ -336,7 +360,7 @@ namespace IntranetUWP.ViewModels.PagesViewModel
 
             foreach (var user in Users)
             {
-                if (userSelectedFoods.Any(u => u.user.id == user.id) == false)
+                if (userSelectedFoods.Any(u => u.user.Guid == user.Guid) == false)
                 {
                     FoodDTO food = new FoodDTO() { id = -1 };
                     userSelectedFoods.Add(new UserFoodDTO() { user = user, food = food, foodList = Foods });
@@ -348,18 +372,14 @@ namespace IntranetUWP.ViewModels.PagesViewModel
                 userSelectedFood.foodList = Foods;
                 //Legacy code need change
                 UserFoods.Add(userSelectedFood);
-
-                if (userSelectedFood.user.company == true)
-                {
-                    iDealogicUsersFood.Add(userSelectedFood);
-                }
-                else DevinitionUsersFood.Add(userSelectedFood); 
+                iDealogicUsersFood.Add(userSelectedFood);
             };
 
 
 
             BindUsersBackToUI(users);
             BindFoodBackToUI(foods, userSelectedFoods);
+            await BindBudgetListBackToUi();
             IsBusy = false;
         }
         private async Task PasteFoodFromClipboard()
